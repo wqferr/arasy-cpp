@@ -1,0 +1,9 @@
+[requires]
+lua/5.4.7
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[layout]
+cmake_layout
