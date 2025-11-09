@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 project(arasy LANGUAGES CXX)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LUA REQUIRED)
 find_package(GTest CONFIG REQUIRED)
@@ -8,12 +9,20 @@ find_package(GTest CONFIG REQUIRED)
 include_directories("include/")
 include_directories(${LUA_INCLUDE_DIRS})
 
+add_library(
+    core
+    "include/arasy.hpp"
+    src/arasy.cpp
+)
+target_include_directories(core PUBLIC ${LUA_INCLUDE_DIR})
+target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
+
 enable_testing()
 add_executable(
     unit_tests
-    tests/deleteme.cpp
+    tests/core.cpp
 )
-target_link_libraries(unit_tests PRIVATE ${LUA_LIBRARY} GTest::gtest_main)
+target_link_libraries(unit_tests PUBLIC core ${LUA_LIBRARIES} GTest::gtest_main)
 
 add_custom_target(
     run_unit_tests
