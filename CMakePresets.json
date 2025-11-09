@@ -1,0 +1,12 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "vcpkg",
+            "displayName": "Configure preset using vcpkg toolchain file",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "C:/Users/wqfer/source/vcpkg/scripts/buildsystems/vcpkg.cmake"
+            }
+        }
+    ]
+}

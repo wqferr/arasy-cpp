@@ -1,0 +1,4 @@
+Running main() from C:\Users\wqfer\source\vcpkg\buildtrees\gtest\src\v1.14.0-bcf93537a8.clean\googletest\src\gtest_main.cc
+[==========] Running 0 tests from 0 test suites.
+[==========] 0 tests from 0 test suites ran. (0 ms total)
+[  PASSED  ] 0 tests.
