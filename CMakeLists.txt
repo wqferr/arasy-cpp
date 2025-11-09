@@ -15,10 +15,10 @@ add_executable(
 )
 target_link_libraries(unit_tests PRIVATE ${LUA_LIBRARY} GTest::gtest_main)
 
-add_custom_command(
-    TARGET unit_tests
-    POST_BUILD
+add_custom_target(
+    run_unit_tests
     COMMAND $<TARGET_FILE:unit_tests> | tee tests/report.txt
+    DEPENDS unit_tests
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 

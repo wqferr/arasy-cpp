@@ -45,3 +45,4 @@
 /.vs/
 /CMakeCache.txt
 /CMakeUserPresets.json
+/tests/report.txt
