@@ -39,7 +39,7 @@ namespace arasy::core {
             return nil;
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<LuaStackReader<T>::defined>>
+        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(int idx) const {
             if (checkIndexExists(idx)) {
                 return LuaStackReader<T>::readAt(state, idx);
@@ -48,47 +48,20 @@ namespace arasy::core {
             }
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<LuaStackReader<T>::defined>>
+        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        bool has(int idx) const {
+            if (checkIndexExists(idx)) {
+                return LuaStackReader<T>::checkAt(state, idx);
+            } else {
+                return std::nullopt;
+            }
+        }
+
+        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> getTop() const {
             return get<T>(-1);
         }
 
         operator lua_State*() const { return state; }
     };
-
-    /*template<>
-    inline std::optional<LuaBoolean> Lua::getDetail(int idx) const {
-        return lua_toboolean(state, idx);
-    }
-
-    template<>
-    inline std::optional<LuaNumber> Lua::getDetail(int idx) const {
-        int valid;
-        lua_Number num = lua_tonumberx(state, idx, &valid);
-        if (valid) {
-            return num;
-        } else {
-            return std::nullopt;
-        }
-    }
-
-    template<>
-    inline std::optional<LuaInteger> Lua::getDetail(int idx) const {
-        int valid;
-        lua_Integer num = lua_tointegerx(state, idx, &valid);
-        if (valid) {
-            return num;
-        } else {
-            return std::nullopt;
-        }
-    }
-
-    template<>
-    inline std::optional<LuaString> Lua::getDetail(int idx) const {
-        if (size() > 0) {
-            return lua_tostring(state, idx);
-        } else {
-            return std::nullopt;
-        }
-    } */
 }
