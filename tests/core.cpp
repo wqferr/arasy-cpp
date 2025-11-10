@@ -59,6 +59,14 @@ TEST(SCOPE, PushWrapperTypes) {
     Lua L;
 
     {
+        ASSERT_EQ(arasy::nil, LuaNil{}) << "Not all nils are equal";
+        L.push(arasy::nil);
+        ASSERT_EQ(lua_gettop(L), 1) << "Number of pushed values was not exactly 1";
+        ASSERT_TRUE(lua_isnil(L, -1)) << "Value pushed was not nil";
+        lua_pop(L, 1);
+    }
+
+    {
         LuaNumber x = 5.0;
         ASSERT_FLOAT_EQ(x, 5.0) << "Type coersion from LuaNumber to lua_Number is not accurate";
         L.push(x);
@@ -85,7 +93,7 @@ TEST(SCOPE, PushWrapperTypes) {
         L.push(str);
         ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isstring(L, -1)) << "Value pushed was not a string";
-        ASSERT_STREQ(lua_tostring(L, -1), str) << "Recovered value is different from value pushed";
+        ASSERT_STREQ(lua_tostring(L, -1), str.str) << "Recovered value is different from value pushed";
         lua_pop(L, 1);
     }
 }

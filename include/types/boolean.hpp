@@ -2,10 +2,9 @@
 
 namespace arasy::core {
     class LuaBoolean {
-        const bool value;
-
     public:
-        LuaBoolean(bool value_): value(value_) {}
-        operator bool() const { return value; }
+        const bool value;
+        constexpr LuaBoolean(bool value_): value(value_) {}
+        constexpr operator bool() const { return value; }
     };
 }

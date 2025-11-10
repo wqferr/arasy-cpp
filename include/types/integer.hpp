@@ -7,7 +7,7 @@ namespace arasy::core {
         const lua_Integer value;
 
     public:
-        LuaInteger(lua_Integer value_): value(value_) {}
-        operator lua_Integer() const { return value; }
+        constexpr LuaInteger(lua_Integer value_): value(value_) {}
+        constexpr operator lua_Integer() const { return value; }
     };
 }

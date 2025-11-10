@@ -24,7 +24,7 @@ struct Pusher {
     }
 
     void operator()(const LuaString& s) const {
-        lua_pushstring(L, s);
+        lua_pushstring(L, s.str);
     }
 };
 
@@ -33,4 +33,8 @@ void Lua::push(const LuaValue& value) {
         Pusher{*this},
         value
     );
+}
+
+LuaValue Lua::pop() {
+    return LuaNil{};
 }

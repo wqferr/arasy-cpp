@@ -16,6 +16,7 @@ namespace arasy::core {
         ~Lua() { lua_close(state); }
 
         void push(const LuaValue& value);
+        LuaValue pop();
 
         operator lua_State*() const { return state; }
     };
