@@ -62,16 +62,20 @@ TEST(SCOPE, PushWrapperTypes) {
         LuaNumber x = 5.0;
         ASSERT_FLOAT_EQ(x, 5.0) << "Type coersion from LuaNumber to lua_Number is not accurate";
         L.push(x);
+        ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isnumber(L, -1)) << "Value pushed was not a number";
         ASSERT_FLOAT_EQ(lua_tonumber(L, -1), x) << "Recovered value is different from value pushed";
+        lua_pop(L, 1);
     }
 
     {
         LuaInteger i = 3;
         ASSERT_EQ(i, 3) << "Type coersion from LuaInteger to lua_Integer is not accurate";
         L.push(i);
+        ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isinteger(L, -1)) << "Value pushed was not an integer";
         ASSERT_EQ(lua_tointeger(L, -1), i) << "Recovered value is different from value pushed";
+        lua_pop(L, 1);
     }
 
     {
@@ -79,7 +83,9 @@ TEST(SCOPE, PushWrapperTypes) {
         LuaString str {rawstr};
         ASSERT_EQ(str, rawstr) << "LuaString allocated memory; it should have made a shallow copy of the cstring";
         L.push(str);
+        ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isstring(L, -1)) << "Value pushed was not a string";
         ASSERT_STREQ(lua_tostring(L, -1), str) << "Recovered value is different from value pushed";
+        lua_pop(L, 1);
     }
 }
