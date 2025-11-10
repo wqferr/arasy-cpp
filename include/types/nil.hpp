@@ -20,5 +20,5 @@ namespace arasy::core {
 }
 
 namespace arasy {
-    constexpr const inline core::LuaNil& nil = core::nil;
+    constexpr const inline core::LuaNil nil = core::nil;
 }

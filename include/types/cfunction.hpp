@@ -10,12 +10,23 @@ namespace arasy::core {
         LuaCFunction(lua_CFunction cfunc_): cfunc(cfunc_) {}
 
         void invokeNoPush() const;
+        void invoke();
 
-        template<typename T>
-        void invoke(const T& t);
+        void invoke(const internal::LuaBaseType& t);
 
         void pushOnto(lua_State* L) const override {
             lua_pushcfunction(L, cfunc);
+        }
+    };
+
+    template<>
+    struct LuaStackReader<LuaCFunction> {
+        static std::optional<LuaCFunction> readAt(lua_State* L, int idx) {
+            if (lua_iscfunction(L, idx)) {
+                return lua_tocfunction(L, idx);
+            } else {
+                return std::nullopt;
+            }
         }
     };
 }
