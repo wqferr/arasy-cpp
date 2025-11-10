@@ -19,10 +19,10 @@ namespace arasy::core {
             }
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type<T>::value>>
-        std::optional<T> getDetail(int idx) const {
-            return nil;
-        }
+        // template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        // std::optional<T> getDetail(int idx) const {
+        //     return nil;
+        // }
 
     public:
         lua_State *const state;
@@ -33,22 +33,22 @@ namespace arasy::core {
         int size() const;
         void push(const LuaValue& value);
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type<T>::value>>
+        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> pop() {
             lua_pop(state, 1);
             return nil;
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type<T>::value>>
+        template<typename T = LuaNil, typename = std::enable_if_t<LuaStackReader<T>::defined>>
         std::optional<T> get(int idx) const {
             if (checkIndexExists(idx)) {
-                return getDetail<T>(idx);
+                return LuaStackReader<T>::readAt(state, idx);
             } else {
                 return std::nullopt;
             }
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type<T>::value>>
+        template<typename T = LuaNil, typename = std::enable_if_t<LuaStackReader<T>::defined>>
         std::optional<T> getTop() const {
             return get<T>(-1);
         }
@@ -56,7 +56,7 @@ namespace arasy::core {
         operator lua_State*() const { return state; }
     };
 
-    template<>
+    /*template<>
     inline std::optional<LuaBoolean> Lua::getDetail(int idx) const {
         return lua_toboolean(state, idx);
     }
@@ -90,5 +90,5 @@ namespace arasy::core {
         } else {
             return std::nullopt;
         }
-    }
+    } */
 }

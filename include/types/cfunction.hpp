@@ -1,11 +1,9 @@
 #pragma once
 
-#include "types/forwarddeclare.hpp"
-
 #include "types/base.hpp"
 
 namespace arasy::core {
-    class LuaCFunction : public LuaBaseType {
+    class LuaCFunction : public internal::LuaBaseType {
         lua_CFunction cfunc;
 
     public:
