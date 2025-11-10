@@ -14,6 +14,10 @@ namespace arasy::core {
 
     template<>
     struct LuaStackReader<LuaNumber> {
+        static bool checkAt(lua_State* L, int idx) {
+            return lua_isnumber(L, idx);
+        }
+
         static std::optional<LuaNumber> readAt(lua_State* L, int idx) {
             int valid;
             lua_Number num = lua_tonumberx(L, idx, &valid);

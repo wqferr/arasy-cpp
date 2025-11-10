@@ -22,6 +22,7 @@ namespace arasy::core {
 
     template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
     struct LuaStackReader {
+        static bool checkAt(lua_State *L, int idx);
         static std::optional<T> readAt(lua_State* L, int idx);
     };
 }

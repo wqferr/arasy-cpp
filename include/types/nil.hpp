@@ -13,6 +13,10 @@ namespace arasy::core {
 
     template<>
     struct LuaStackReader<LuaNil> {
+        static bool checkAt(lua_State* L, int idx) {
+            return lua_isnil(L, idx);
+        }
+
         static std::optional<LuaNil> readAt(lua_State* L, int idx) {
             return nil;
         }

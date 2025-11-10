@@ -21,6 +21,10 @@ namespace arasy::core {
 
     template<>
     struct LuaStackReader<LuaCFunction> {
+        static bool checkAt(lua_State* L, int idx) {
+            return lua_iscfunction(L, idx);
+        }
+
         static std::optional<LuaCFunction> readAt(lua_State* L, int idx) {
             if (lua_iscfunction(L, idx)) {
                 return lua_tocfunction(L, idx);
