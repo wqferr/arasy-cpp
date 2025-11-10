@@ -2,6 +2,8 @@
 
 #include "lua.hpp"
 
+#include <memory>
+
 namespace arasy::core {
     class LuaBaseType {
     public:
