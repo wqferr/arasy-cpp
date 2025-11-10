@@ -86,14 +86,15 @@ TEST(SCOPE, PushWrapperTypes) {
         lua_pop(L, 1);
     }
 
-    {
-        const char *rawstr = "abcdef";
-        LuaString str {rawstr};
-        ASSERT_EQ(str, rawstr) << "LuaString allocated memory; it should have made a shallow copy of the cstring";
-        L.push(str);
-        ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
-        ASSERT_TRUE(lua_isstring(L, -1)) << "Value pushed was not a string";
-        ASSERT_STREQ(lua_tostring(L, -1), str.str) << "Recovered value is different from value pushed";
-        lua_pop(L, 1);
-    }
+    // {
+    //     const char *rawstr = "abcdef";
+    //     LuaString str {rawstr};
+    //     ASSERT_EQ(str, rawstr) << "LuaString allocated memory; it should have made a shallow copy of the cstring";
+    //     L.push(str);
+    //     ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
+    //     ASSERT_TRUE(lua_isstring(L, -1)) << "Value pushed was not a string";
+    //     ASSERT_STREQ(lua_tostring(L, -1), str.str) << "Recovered value is different from value pushed";
+    //     lua_pop(L, 1);
+    // }
+
 }

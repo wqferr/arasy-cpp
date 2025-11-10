@@ -3,10 +3,12 @@
 #include <cstring>
 
 namespace arasy::core {
-    class LuaString {
+    class LuaString : public LuaBaseType {
     public:
-        const char *const str;
+        const char *str;
         constexpr LuaString(const char *str_): str(str_) {}
+        void pushOnto(lua_State* L) const override { lua_pushstring(L, str); };
+
         bool operator==(const LuaString& other) const { return strcmp(str, other.str) == 0; }
     };
 }

@@ -3,11 +3,10 @@
 #include <variant>
 
 #include "lua.hpp"
+#include "types/base.hpp"
 #include "types/all.hpp"
 
 namespace arasy::core {
-    using LuaValue = std::variant<LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString>;
-
     class Lua {
     public:
         lua_State *const state;
@@ -15,6 +14,7 @@ namespace arasy::core {
         Lua(): state(luaL_newstate()) {}
         ~Lua() { lua_close(state); }
 
+        int gettop() const;
         void push(const LuaValue& value);
         LuaValue pop();
 

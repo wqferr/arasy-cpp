@@ -3,38 +3,40 @@
 using namespace arasy;
 using namespace arasy::core;
 
-struct Pusher {
-    Lua& L;
-    Pusher(Lua& L_): L(L_) {}
-
-    void operator()(const LuaNil&) const {
-        lua_pushnil(L);
-    }
-
-    void operator()(const bool& b) const {
-        lua_pushboolean(L, b);
-    }
-
-    void operator()(const LuaInteger& i) const {
-        lua_pushinteger(L, i);
-    }
-
-    void operator()(const LuaNumber& v) const {
-        lua_pushnumber(L, v);
-    }
-
-    void operator()(const LuaString& s) const {
-        lua_pushstring(L, s.str);
-    }
-};
+int Lua::gettop() const {
+    return lua_gettop(state);
+}
 
 void Lua::push(const LuaValue& value) {
     std::visit(
-        Pusher{*this},
+        [this](const auto& v) {
+            v.pushOnto(this->state);
+        },
         value
     );
 }
 
 LuaValue Lua::pop() {
-    return LuaNil{};
+    LuaValue ret = nil;
+
+    if (gettop() != 0) {
+        switch (lua_type(state, -1)) {
+            case LUA_TNIL:
+                // ret already contains nil
+                break;
+
+            case LUA_TNUMBER:
+                if (lua_isinteger(state, -1)) {
+                    ret.emplace<LuaInteger>(lua_tointeger(state, -1));
+                } else {
+                    ret.emplace<LuaNumber>(lua_tonumber(state, -1));
+                }
+                break;
+
+            case LUA_TFUNCTION:
+                break;
+        }
+        lua_pop(state, 1);
+    }
+    return ret;
 }

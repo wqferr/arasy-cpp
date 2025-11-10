@@ -1,8 +1,12 @@
 #pragma once
 
+#include "types/base.hpp"
+
 namespace arasy::core {
-    struct LuaNil {
+    struct LuaNil : public LuaBaseType {
         constexpr bool operator==(const LuaNil& other) const { return true; }
+
+        void pushOnto(lua_State* L) const override { lua_pushnil(L); };
     };
 }
 
