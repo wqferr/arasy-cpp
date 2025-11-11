@@ -14,15 +14,10 @@ TEST(SCOPE, GetGlobal) {
     ASSERT_EQ(luaL_dostring(L, "x = 1 + 2"), LUA_OK) << "Snippet didn't compile";
 
     {
-        lua_getglobal(L, "x");
-        int x = lua_tointeger(L, -1);
-        ASSERT_EQ(x, 3) << "Global had unexpected value";
-        lua_pop(L, 1);
-    }
-
-    {
-        // TODO
-        // FAIL(nimpl) << "TODO global variable proxy that allows you to set or get globals with C++ syntax";
+        auto val = L["x"].value();
+        ASSERT_TRUE(std::holds_alternative<LuaInteger>(val)) << "Global variable indexing did not return an integer";
+        ASSERT_EQ(std::get<LuaInteger>(val), 3) << "Global had unexpected value";
+        EXPECT_EQ(L.size(), 0) << "Extra values pushed onto the stack";
     }
 }
 
@@ -30,18 +25,12 @@ TEST(SCOPE, SetGlobal) {
     Lua L;
     int original = -4;
     {
-        lua_pushinteger(L, original);
-        lua_setglobal(L, "x");
+        L["x"] = original;
         ASSERT_EQ(luaL_dostring(L, "out = 2*x"), LUA_OK) << "Snippet didn't compile";
-        lua_getglobal(L, "out");
-        int real = lua_tointeger(L, -1);
-        ASSERT_EQ(real, 2*original) << "Global was not set properly";
-        lua_pop(L, 1);
-    }
-
-    {
-        // TODO
-        // FAIL(nimpl) << "TODO global variable proxy that allows you to set or get globals with C++ syntax";
+        auto result = L["out"].value();
+        EXPECT_TRUE(result.isA<LuaNumber>()) << "Global was not the correct type";
+        ASSERT_EQ(result, 2*original) << "Global was not set properly";
+        EXPECT_EQ(L.size(), 0) << "Extra values pushed onto the stack";
     }
 }
 
@@ -146,8 +135,6 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer with a positive index";
     v = L.get<LuaInteger>(2);
     ASSERT_NE(v, std::nullopt) << "get<>() did not fetch an integer value with a positive index";
-    // auto b = *v;
-    // (void) (b == 123);
     EXPECT_EQ(*v, 123) << "get<>() did not fetch the correct integer with a positive index";
     v = L.get<LuaNumber>(2);
     ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number value from an integer with a positive index";

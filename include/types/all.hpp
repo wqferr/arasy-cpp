@@ -13,7 +13,50 @@
 #include <variant>
 
 namespace arasy::core {
-    using LuaValue = std::variant<LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaCFunction>;
+
+#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaCFunction
+    using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
+    class LuaValue : public LuaValueVariant {
+    public:
+        using LuaValueVariant::LuaValueVariant;
+        using LuaValueVariant::operator=;
+
+        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        constexpr bool isA() const {
+            return std::holds_alternative<T>(*this);
+        }
+
+        constexpr int luaTypeId() const {
+            return index();
+        }
+
+        template<typename R=void, typename C>
+        R visit(C&& callable) {
+            return std::visit<R>(callable, static_cast<LuaValueVariant&>(*this));
+        }
+
+        template<typename R=void, typename C>
+        R visit(C&& callable) const {
+            return std::visit<R>(
+                std::forward<C>(callable),
+                static_cast<const LuaValueVariant&>(*this)
+            );
+        }
+
+        void pushOnto(lua_State* L) const {
+            return std::visit(
+                [L](const auto& x) { x.pushOnto(L); },
+                static_cast<const LuaValueVariant&>(*this)
+            );
+        }
+    };
+
+    struct LuaValueVarIndex {
+        enum {
+            _ARASY_LUA_VARIANT_ORDER
+        };
+    };
+#undef _ARASY_LUA_VARIANT_ORDER
 
     template<>
     constexpr const bool is_lua_wrapper_type_v<LuaValue> = true;
