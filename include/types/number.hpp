@@ -5,7 +5,7 @@
 namespace arasy::core {
     class LuaNumber : public internal::LuaBaseType {
     public:
-        const lua_Number value;
+        lua_Number value;
 
         constexpr LuaNumber(lua_Number value_): value(value_) {}
         constexpr operator lua_Number() const { return value; }

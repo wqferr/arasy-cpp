@@ -125,31 +125,43 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     L.pushNil();
     L.pushNum(-0.5);
 
-    EXPECT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number";
+    EXPECT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number with a negative index";
     EXPECT_TRUE(L.hasTop<LuaNumber>()) << "hasTop<>() did not index the stack correctly";
     EXPECT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
 
-    EXPECT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil";
+    EXPECT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil with a negative index";
     std::optional<LuaValue> v = L.get<LuaNil>(-2);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value";
-    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
-    EXPECT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number";
-    EXPECT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer";
-    EXPECT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string";
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value with a negative index";
+    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value with a negative index";
+    EXPECT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number with a negative index";
+    EXPECT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer with a negative index";
+    EXPECT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string with a negative index";
 
-    EXPECT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify correctly with positive index";
+    EXPECT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify a string with a positive index";
     std::optional<LuaString> s = L.get<LuaString>(1);
-    ASSERT_NE(s, std::nullopt) << "get<>() fetched a non-string value";
-    EXPECT_STREQ(s->str, "abc") << "get<>() did not fetch correct string";
+    ASSERT_NE(s, std::nullopt) << "get<>() fetched a non-string value with a positive index";
+    EXPECT_STREQ(s->str, "abc") << "get<>() did not fetch correct string with a positive index";
 
-    EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer using positive indices";
-    EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer using positive indices";
+    EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer with a positive index";
+    EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer with a positive index";
     auto i = L.get<LuaInteger>(2);
-    EXPECT_NE(i, std::nullopt) << "get<>() did not fetch an integer value";
-    EXPECT_EQ(*i, 123) << "get<>() did not fetch the correct integer";
+    ASSERT_NE(i, std::nullopt) << "get<>() did not fetch an integer value with a positive index";
+    EXPECT_EQ(*i, 123) << "get<>() did not fetch the correct integer with a positive index";
     auto x = L.get<LuaNumber>(2);
-    EXPECT_NE(x, std::nullopt) << "get<>() did not fetch a number value from an integer";
-    EXPECT_EQ(*x, 123) << "get<>() did not fetch the correct number";
+    ASSERT_NE(x, std::nullopt) << "get<>() did not fetch a number value from an integer with a positive index";
+    EXPECT_EQ(*x, 123) << "get<>() did not fetch the correct number with a positive index";
+
+    EXPECT_TRUE(L.has<LuaNil>(3)) << "has<>() did not identify a nil with a positive index";
+    v = L.get<LuaNil>(3);
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value with a positive index";
+    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
+
+    EXPECT_TRUE(L.has<LuaNumber>(4)) << "has<>() did not identify a number with a positive index";
+    i = L.get<LuaInteger>(4);
+    EXPECT_EQ(i, std::nullopt) << "get<>() fetched an integer from a non-integer number";
+    x = L.get<LuaNumber>(4);
+    ASSERT_NE(x, std::nullopt) << "get<>() did not fetch a number with a positive index";
+    EXPECT_EQ(*x, -0.5) << "get<>() fetched the wrong number with a positive index";
 }
 
 // TEST(SCOPE, LuaValueOstream) {
