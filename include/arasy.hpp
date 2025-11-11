@@ -11,18 +11,13 @@
 
 namespace arasy::core {
     class Lua {
-        bool checkIndexExists(int idx) {
+        bool checkIndexExists(int idx) const {
             if (idx < 0) {
                 return size() >= -idx;
             } else {
                 return size() <= idx;
             }
         }
-
-        // template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        // std::optional<T> getDetail(int idx) const {
-        //     return nil;
-        // }
 
     public:
         lua_State *const state;
@@ -31,7 +26,12 @@ namespace arasy::core {
         ~Lua() { lua_close(state); }
 
         int size() const;
+
         void push(const LuaValue& value);
+        void pushInt(lua_Integer i) { push(LuaInteger{i}); }
+        void pushNum(lua_Number x) { push(LuaNumber{x}); }
+        void pushStr(const char *str) { push(LuaString{str}); }
+        void pushNil() { push(nil); }
 
         template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> pop() {
@@ -42,7 +42,7 @@ namespace arasy::core {
         template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(int idx) const {
             if (checkIndexExists(idx)) {
-                return LuaStackReader<T>::readAt(state, idx);
+                return internal::LuaStackReader<T>::readAt(state, idx);
             } else {
                 return std::nullopt;
             }
@@ -51,10 +51,15 @@ namespace arasy::core {
         template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         bool has(int idx) const {
             if (checkIndexExists(idx)) {
-                return LuaStackReader<T>::checkAt(state, idx);
+                return internal::LuaStackReader<T>::checkAt(state, idx);
             } else {
-                return std::nullopt;
+                return false;
             }
+        }
+
+        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        bool hasTop() const {
+            return has<T>(-1);
         }
 
         template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>

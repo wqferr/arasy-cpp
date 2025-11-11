@@ -3,6 +3,7 @@
 #include "lua.hpp"
 
 #include <type_traits>
+#include <optional>
 
 namespace arasy::core {
     namespace internal {
@@ -20,9 +21,11 @@ namespace arasy::core {
     template<typename T>
     constexpr const inline bool is_lua_wrapper_type_v = is_lua_wrapper_type<T>::value;
 
-    template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-    struct LuaStackReader {
-        static bool checkAt(lua_State *L, int idx);
-        static std::optional<T> readAt(lua_State* L, int idx);
-    };
+    namespace internal {
+        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        struct LuaStackReader {
+            static bool checkAt(lua_State *L, int idx);
+            static std::optional<T> readAt(lua_State* L, int idx);
+        };
+    }
 }

@@ -11,14 +11,16 @@ namespace arasy::core {
         void pushOnto(lua_State* L) const override { lua_pushboolean(L, value); };
     };
 
-    template<>
-    struct LuaStackReader<LuaBoolean> {
-        static bool checkAt(lua_State* L, int idx) {
-            return lua_isstring(L, idx);
-        }
+    namespace internal {
+        template<>
+        struct internal::LuaStackReader<LuaBoolean> {
+            static bool checkAt(lua_State* L, int idx) {
+                return lua_isstring(L, idx);
+            }
 
-        static std::optional<LuaBoolean> readAt(lua_State* L, int idx) {
-            return lua_toboolean(L, idx);
-        }
-    };
+            static std::optional<LuaBoolean> readAt(lua_State* L, int idx) {
+                return lua_toboolean(L, idx);
+            }
+        };
+    }
 }

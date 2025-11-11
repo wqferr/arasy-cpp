@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 project(arasy LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LUA REQUIRED)
@@ -8,8 +8,8 @@ find_package(GTest CONFIG REQUIRED)
 
 add_library(
     core
-    "include/arasy.hpp"
     src/arasy.cpp
+    src/types.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})

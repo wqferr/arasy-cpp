@@ -7,23 +7,42 @@
 
 using namespace arasy::core;
 
+const auto nimpl = testing::AssertionResult("Not implemented");
+
 TEST(SCOPE, GetGlobal) {
     Lua L;
     ASSERT_EQ(luaL_dostring(L, "x = 1 + 2"), LUA_OK) << "Snippet didn't compile";
-    lua_getglobal(L, "x");
-    int x = lua_tointeger(L, -1);
-    ASSERT_EQ(x, 3) << "Global had unexpected value";
+
+    {
+        lua_getglobal(L, "x");
+        int x = lua_tointeger(L, -1);
+        ASSERT_EQ(x, 3) << "Global had unexpected value";
+        lua_pop(L, 1);
+    }
+
+    {
+        // TODO
+        // FAIL(nimpl) << "TODO global variable proxy that allows you to set or get globals with C++ syntax";
+    }
 }
 
 TEST(SCOPE, SetGlobal) {
     Lua L;
     int original = -4;
-    lua_pushinteger(L, original);
-    lua_setglobal(L, "x");
-    ASSERT_EQ(luaL_dostring(L, "out = 2*x"), LUA_OK) << "Snippet didn't compile";
-    lua_getglobal(L, "out");
-    int real = lua_tointeger(L, -1);
-    ASSERT_EQ(real, 2*original) << "Global was not set properly";
+    {
+        lua_pushinteger(L, original);
+        lua_setglobal(L, "x");
+        ASSERT_EQ(luaL_dostring(L, "out = 2*x"), LUA_OK) << "Snippet didn't compile";
+        lua_getglobal(L, "out");
+        int real = lua_tointeger(L, -1);
+        ASSERT_EQ(real, 2*original) << "Global was not set properly";
+        lua_pop(L, 1);
+    }
+
+    {
+        // TODO
+        // FAIL(nimpl) << "TODO global variable proxy that allows you to set or get globals with C++ syntax";
+    }
 }
 
 TEST(SCOPE, LoadFile) {
@@ -96,4 +115,24 @@ TEST(SCOPE, PushWrapperTypes) {
         ASSERT_STREQ(lua_tostring(L, -1), str.str) << "Recovered value is different from value pushed";
         lua_pop(L, 1);
     }
+}
+
+TEST(SCOPE, ArasyApiHasGetPop) {
+    Lua L;
+
+    L.pushStr("abc");
+    L.pushInt(123);
+    L.pushNil();
+    L.pushNum(-0.5);
+
+    ASSERT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number";
+    ASSERT_TRUE(L.hasTop<LuaNumber>()) << "hasTop<>() did not index the stack correctly";
+    ASSERT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
+
+    ASSERT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil";
+    ASSERT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number";
+    ASSERT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer";
+    ASSERT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string";
+
+    ASSERT_TRUE(L.has<LuaString>(1));
 }
