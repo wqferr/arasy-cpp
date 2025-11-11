@@ -19,7 +19,7 @@ add_executable(
     arasy_unit_tests
     tests/core.cpp
 )
-target_link_libraries(arasy_unit_tests PRIVATE core GTest::gtest GTest::gtest_main)
+target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
 
 add_custom_target(
     run_unit_tests
