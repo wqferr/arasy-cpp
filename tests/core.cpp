@@ -130,9 +130,17 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     ASSERT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
 
     ASSERT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil";
+    std::optional<LuaValue> v = L.get<LuaNil>(-2);
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value";
+    ASSERT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
     ASSERT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number";
     ASSERT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer";
     ASSERT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string";
 
-    ASSERT_TRUE(L.has<LuaString>(1));
+    ASSERT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify correctly with positive index";
+    ASSERT_STREQ(L.get<LuaString>(1)->str, "abc") << "get<>() did not fetch correct string";
 }
+
+// TEST(SCOPE, LuaValueOstream) {
+//     Lua L;
+// }

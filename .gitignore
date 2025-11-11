@@ -43,6 +43,6 @@
 /build/
 /.vscode/
 /.vs/
-/CMakeCache.txt
+/CmakePresets.json
 /CMakeUserPresets.json
 /tests/report.txt

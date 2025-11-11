@@ -13,7 +13,7 @@ namespace arasy::core {
 
     namespace internal {
         template<>
-        struct internal::LuaStackReader<LuaBoolean> {
+        struct LuaStackReader<LuaBoolean> {
             static bool checkAt(lua_State* L, int idx) {
                 return lua_isstring(L, idx);
             }

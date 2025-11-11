@@ -16,17 +16,17 @@ target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
 add_executable(
-    unit_tests
+    arasy_unit_tests
     tests/core.cpp
 )
-target_link_libraries(unit_tests PRIVATE core GTest::gtest_main)
+target_link_libraries(arasy_unit_tests PRIVATE core GTest::gtest GTest::gtest_main)
 
 add_custom_target(
     run_unit_tests
-    COMMAND $<TARGET_FILE:unit_tests> | tee tests/report.txt
-    DEPENDS unit_tests
+    COMMAND $<TARGET_FILE:arasy_unit_tests> | tee tests/report.txt
+    DEPENDS arasy_unit_tests
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 include(GoogleTest)
-gtest_discover_tests(unit_tests)
+gtest_discover_tests(arasy_unit_tests)
