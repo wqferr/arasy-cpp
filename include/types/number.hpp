@@ -13,13 +13,9 @@ namespace arasy::core {
         constexpr bool operator==(const LuaNumber& other) const {
             return value == other.value;
         }
-
-        constexpr bool operator==(const lua_Number& other) const {
-            return value == other;
-        }
     };
 
-    constexpr inline bool operator==(const lua_Number& a, const LuaNumber& b) {
+    constexpr bool operator==(const lua_Number& a, const LuaNumber& b) {
         return a == b.value;
     }
 
