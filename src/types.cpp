@@ -39,4 +39,24 @@ namespace arasy::core {
         std::visit(visitor{os}, lv);
         return os;
     }
+
+    namespace internal {
+        std::optional<LuaValue> LuaStackReader<LuaValue>::readAt(lua_State* L, int idx) {
+            if (LuaStackReader<LuaNil>::checkAt(L, idx)) {
+                return nil;
+            } else if (LuaStackReader<LuaInteger>::checkAt(L, idx)) {
+                return LuaStackReader<LuaInteger>::readAt(L, idx);
+            } else if (LuaStackReader<LuaNumber>::checkAt(L, idx)) {
+                return LuaStackReader<LuaNumber>::readAt(L, idx);
+            } else if (LuaStackReader<LuaString>::checkAt(L, idx)) {
+                return LuaStackReader<LuaString>::readAt(L, idx);
+            } else if (LuaStackReader<LuaCFunction>::checkAt(L, idx)) {
+                return LuaStackReader<LuaCFunction>::readAt(L, idx);
+            } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
+                return LuaStackReader<LuaBoolean>::readAt(L, idx);
+            } else {
+                return nil;
+            }
+        }
+    }
 }

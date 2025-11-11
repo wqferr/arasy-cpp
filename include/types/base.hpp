@@ -14,12 +14,7 @@ namespace arasy::core {
     }
 
     template<typename T>
-    struct is_lua_wrapper_type {
-        constexpr const static bool value = std::is_base_of_v<internal::LuaBaseType, T>;
-    };
-
-    template<typename T>
-    constexpr const inline bool is_lua_wrapper_type_v = is_lua_wrapper_type<T>::value;
+    constexpr const inline bool is_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 
     namespace internal {
         template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>

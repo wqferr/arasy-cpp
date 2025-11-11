@@ -15,6 +15,17 @@
 namespace arasy::core {
     using LuaValue = std::variant<LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaCFunction>;
 
+    template<>
+    constexpr const bool is_lua_wrapper_type_v<LuaValue> = true;
+
+    namespace internal {
+        template<>
+        struct LuaStackReader<LuaValue> {
+            static constexpr bool checkAt(lua_State *L, int idx) { return true; }
+            static std::optional<LuaValue> readAt(lua_State* L, int idx);
+        };
+    }
+
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv);
 
     template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>

@@ -15,3 +15,15 @@ void Lua::push(const LuaValue& value) {
         value
     );
 }
+
+
+Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const LuaValue& value) {
+    L.push(value);
+    lua_setglobal(L, globalName.c_str());
+    return *this;
+}
+
+Lua::GlobalVariableProxy::operator LuaValue() const {
+    lua_getglobal(L, globalName.c_str());
+    return L.getTop().value_or(nil);
+}

@@ -19,6 +19,21 @@ namespace arasy::core {
             }
         }
 
+        class GlobalVariableProxy {
+        public:
+            const std::string& name() { return globalName; }
+
+        private:
+            Lua& L;
+            const std::string globalName;
+
+            GlobalVariableProxy(Lua& L_, const char *var): L(L_), globalName(var) {}
+            GlobalVariableProxy& operator=(const LuaValue& value);
+            operator LuaValue() const;
+
+            friend class Lua;
+        };
+
     public:
         lua_State *const state;
 
@@ -33,13 +48,13 @@ namespace arasy::core {
         void pushStr(const char *str) { push(LuaString{str}); }
         void pushNil() { push(nil); }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> pop() {
             lua_pop(state, 1);
             return nil;
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(int idx) const {
             if (checkIndexExists(idx)) {
                 return internal::LuaStackReader<T>::readAt(state, idx);
@@ -48,7 +63,7 @@ namespace arasy::core {
             }
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         bool has(int idx) const {
             if (checkIndexExists(idx)) {
                 return internal::LuaStackReader<T>::checkAt(state, idx);
@@ -57,12 +72,12 @@ namespace arasy::core {
             }
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         bool hasTop() const {
             return has<T>(-1);
         }
 
-        template<typename T = LuaNil, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> getTop() const {
             return get<T>(-1);
         }
