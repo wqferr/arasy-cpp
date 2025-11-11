@@ -87,21 +87,21 @@ TEST(SCOPE, PushWrapperTypes) {
 
     {
         LuaNumber x = 5.0;
-        ASSERT_FLOAT_EQ(x, 5.0) << "Type coersion from LuaNumber to lua_Number is not accurate";
+        ASSERT_FLOAT_EQ(x.value, 5.0) << "Type coersion from LuaNumber to lua_Number is not accurate";
         L.push(x);
         ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isnumber(L, -1)) << "Value pushed was not a number";
-        ASSERT_FLOAT_EQ(lua_tonumber(L, -1), x) << "Recovered value is different from value pushed";
+        ASSERT_FLOAT_EQ(lua_tonumber(L, -1), x.value) << "Recovered value is different from value pushed";
         lua_pop(L, 1);
     }
 
     {
         LuaInteger i = 3;
-        ASSERT_EQ(i, 3) << "Type coersion from LuaInteger to lua_Integer is not accurate";
+        ASSERT_EQ(i.value, 3) << "Type coersion from LuaInteger to lua_Integer is not accurate";
         L.push(i);
         ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isinteger(L, -1)) << "Value pushed was not an integer";
-        ASSERT_EQ(lua_tointeger(L, -1), i) << "Recovered value is different from value pushed";
+        ASSERT_EQ(lua_tointeger(L, -1), i.value) << "Recovered value is different from value pushed";
         lua_pop(L, 1);
     }
 
@@ -144,12 +144,14 @@ TEST(SCOPE, ArasyApiHasGetPop) {
 
     EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer with a positive index";
     EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer with a positive index";
-    auto i = L.get<LuaInteger>(2);
-    ASSERT_NE(i, std::nullopt) << "get<>() did not fetch an integer value with a positive index";
-    EXPECT_EQ(*i, 123) << "get<>() did not fetch the correct integer with a positive index";
-    auto x = L.get<LuaNumber>(2);
-    ASSERT_NE(x, std::nullopt) << "get<>() did not fetch a number value from an integer with a positive index";
-    EXPECT_EQ(*x, 123) << "get<>() did not fetch the correct number with a positive index";
+    v = L.get<LuaInteger>(2);
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch an integer value with a positive index";
+    // auto b = *v;
+    // (void) (b == 123);
+    EXPECT_EQ(*v, 123) << "get<>() did not fetch the correct integer with a positive index";
+    v = L.get<LuaNumber>(2);
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number value from an integer with a positive index";
+    EXPECT_EQ(*v, 123) << "get<>() did not fetch the correct number with a positive index";
 
     EXPECT_TRUE(L.has<LuaNil>(3)) << "has<>() did not identify a nil with a positive index";
     v = L.get<LuaNil>(3);
@@ -157,11 +159,11 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
 
     EXPECT_TRUE(L.has<LuaNumber>(4)) << "has<>() did not identify a number with a positive index";
-    i = L.get<LuaInteger>(4);
-    EXPECT_EQ(i, std::nullopt) << "get<>() fetched an integer from a non-integer number";
-    x = L.get<LuaNumber>(4);
-    ASSERT_NE(x, std::nullopt) << "get<>() did not fetch a number with a positive index";
-    EXPECT_EQ(*x, -0.5) << "get<>() fetched the wrong number with a positive index";
+    v = L.get<LuaInteger>(4);
+    EXPECT_EQ(v, std::nullopt) << "get<>() fetched an integer from a non-integer number";
+    v = L.get<LuaNumber>(4);
+    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number with a positive index";
+    EXPECT_EQ(*v, -0.5) << "get<>() fetched the wrong number with a positive index";
 }
 
 // TEST(SCOPE, LuaValueOstream) {

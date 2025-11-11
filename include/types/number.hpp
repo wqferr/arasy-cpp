@@ -8,9 +8,20 @@ namespace arasy::core {
         lua_Number value;
 
         constexpr LuaNumber(lua_Number value_): value(value_) {}
-        constexpr operator lua_Number() const { return value; }
-        void pushOnto(lua_State* L) const override { lua_pushnumber(L, value); };
+        void pushOnto(lua_State* L) const override { lua_pushnumber(L, value); }
+
+        constexpr bool operator==(const LuaNumber& other) const {
+            return value == other.value;
+        }
+
+        constexpr bool operator==(const lua_Number& other) const {
+            return value == other;
+        }
     };
+
+    constexpr inline bool operator==(const lua_Number& a, const LuaNumber& b) {
+        return a == b.value;
+    }
 
     namespace internal {
         template<>

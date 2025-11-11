@@ -39,4 +39,12 @@ namespace arasy::core {
         std::visit(visitor{os}, lv);
         return os;
     }
+
+    bool operator==(const LuaInteger& a, lua_Integer b) {
+        return a.value == b;
+    }
+
+    bool operator==(lua_Integer a, const LuaInteger& b) {
+        return a == b.value;
+    }
 }

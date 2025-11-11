@@ -8,7 +8,8 @@ namespace arasy::core {
         const bool value;
         constexpr LuaBoolean(bool value_): value(value_) {}
         constexpr operator bool() const { return value; }
-        void pushOnto(lua_State* L) const override { lua_pushboolean(L, value); };
+        void pushOnto(lua_State* L) const override { lua_pushboolean(L, value); }
+        constexpr bool operator==(const LuaBoolean& other) const { return value == other.value; }
     };
 
     namespace internal {

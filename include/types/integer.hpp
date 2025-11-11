@@ -9,9 +9,24 @@ namespace arasy::core {
         lua_Integer value;
 
         constexpr LuaInteger(lua_Integer value_): value(value_) {}
-        constexpr operator lua_Integer() const { return value; }
         void pushOnto(lua_State* L) const override { lua_pushinteger(L, value); };
+
+        constexpr bool operator==(const LuaInteger& other) const {
+            return value == other.value;
+        }
+
+        constexpr bool operator==(const lua_Integer& other) const {
+            return value == other;
+        }
+
+        constexpr std::enable_if_t<!std::is_same_v<lua_Integer, int>, bool> operator==(const int& other) const {
+            return value == other;
+        }
     };
+
+    constexpr inline bool operator==(const lua_Integer& a, const LuaInteger& b) {
+        return a == b.value;
+    }
 
     namespace internal {
         template<>

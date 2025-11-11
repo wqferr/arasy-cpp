@@ -9,6 +9,8 @@ namespace arasy::core {
 
         LuaCFunction(lua_CFunction cfunc_): cfunc(cfunc_) {}
 
+        bool operator==(const LuaCFunction& other) const { return cfunc == other.cfunc; }
+
         void invokeNoPush() const;
         void invoke();
 
