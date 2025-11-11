@@ -120,6 +120,10 @@ namespace arasy::core {
             setGlobal<LuaString>(name, value.c_str());
         }
 
+        void eraseGlobal(const std::string& name) {
+            setGlobal<LuaNil>(name, nil);
+        }
+
         operator lua_State*() const { return state; }
     };
 }
