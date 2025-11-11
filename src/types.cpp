@@ -1,7 +1,5 @@
 #include "types/all.hpp"
 
-#include "util.hpp"
-
 #include <variant>
 #include <iomanip>
 
@@ -10,27 +8,35 @@ using namespace arasy::core::internal;
 
 namespace arasy::core {
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv) {
-        const auto visitor = internal::overloads{
-            [&os](const LuaBoolean& b) {
+        struct visitor {
+            std::ostream& os;
+            visitor(std::ostream& os_): os(os_) {}
+
+            void operator()(const LuaBoolean& b) {
                 os << b.value;
-            },
-            [&os](const LuaInteger& i) {
+            }
+
+            void operator()(const LuaInteger& i) {
                 os << i.value;
-            },
-            [&os](const LuaNumber& x) {
+            }
+
+            void operator()(const LuaNumber& x) {
                 os << x.value;
-            },
-            [&os](const LuaString& s) {
+            }
+
+            void operator()(const LuaString& s) {
                 os << '"' << std::quoted(s.str) << '"';
-            },
-            [&os](const LuaNil&) {
+            }
+            void operator()(const LuaNil&) {
                 os << "nil";
-            },
-            [&os](const LuaCFunction& cf) {
-                os << "<cfunction @ " << std::hex << cf.cfunc << ">";
+            }
+
+            void operator()(const LuaCFunction& cf) {
+                os << "<function: " << std::hex << cf.cfunc << ">";
             }
         };
-        std::visit(visitor, lv);
+
+        std::visit(visitor{os}, lv);
         return os;
     }
 }

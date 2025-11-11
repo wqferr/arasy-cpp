@@ -125,22 +125,32 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     L.pushNil();
     L.pushNum(-0.5);
 
-    ASSERT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number";
-    ASSERT_TRUE(L.hasTop<LuaNumber>()) << "hasTop<>() did not index the stack correctly";
-    ASSERT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
+    EXPECT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number";
+    EXPECT_TRUE(L.hasTop<LuaNumber>()) << "hasTop<>() did not index the stack correctly";
+    EXPECT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
 
-    ASSERT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil";
+    EXPECT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil";
     std::optional<LuaValue> v = L.get<LuaNil>(-2);
     ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value";
-    ASSERT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
-    ASSERT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number";
-    ASSERT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer";
-    ASSERT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string";
+    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
+    EXPECT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number";
+    EXPECT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer";
+    EXPECT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string";
 
-    ASSERT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify correctly with positive index";
-    ASSERT_STREQ(L.get<LuaString>(1)->str, "abc") << "get<>() did not fetch correct string";
+    EXPECT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify correctly with positive index";
+    std::optional<LuaString> s = L.get<LuaString>(1);
+    ASSERT_NE(s, std::nullopt) << "get<>() fetched a non-string value";
+    EXPECT_STREQ(s->str, "abc") << "get<>() did not fetch correct string";
+
+    EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer using positive indices";
+    EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer using positive indices";
+    auto i = L.get<LuaInteger>(2);
+    EXPECT_NE(i, std::nullopt) << "get<>() did not fetch an integer value";
+    EXPECT_EQ(*i, 123) << "get<>() did not fetch the correct integer";
+    auto x = L.get<LuaNumber>(2);
+    EXPECT_NE(x, std::nullopt) << "get<>() did not fetch a number value from an integer";
+    EXPECT_EQ(*x, 123) << "get<>() did not fetch the correct number";
 }
 
 // TEST(SCOPE, LuaValueOstream) {
-//     Lua L;
 // }
