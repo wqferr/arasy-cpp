@@ -99,6 +99,27 @@ namespace arasy::core {
             return get<T>(-1);
         }
 
+        LuaValue getGlobal(const std::string& name);
+
+
+        template<typename T = LuaValue, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        void setGlobal(const std::string& name, const T& value) {
+            push(value);
+            lua_setglobal(state, name.c_str());
+        }
+
+        void setGlobalInt(const std::string& name, lua_Integer value) {
+            setGlobal<LuaInteger>(name, value);
+        }
+
+        void setGlobalNum(const std::string& name, lua_Number value) {
+            setGlobal<LuaNumber>(name, value);
+        }
+
+        void setGlobalStr(const std::string& name, const std::string& value) {
+            setGlobal<LuaString>(name, value.c_str());
+        }
+
         operator lua_State*() const { return state; }
     };
 }

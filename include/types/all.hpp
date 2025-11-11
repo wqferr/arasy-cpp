@@ -15,13 +15,19 @@
 namespace arasy::core {
 
 #define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaCFunction
-    using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
-    class LuaValue : public LuaValueVariant {
-    public:
-        using LuaValueVariant::LuaValueVariant;
-        using LuaValueVariant::operator=;
+    namespace internal {
+        using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
+    }
 
-        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+    class LuaValue : public internal::LuaValueVariant {
+    public:
+        using internal::LuaValueVariant::LuaValueVariant;
+        using internal::LuaValueVariant::operator=;
+
+        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        LuaValue(const T& val): internal::LuaValueVariant(val) {}
+
+        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
         constexpr bool isA() const {
             return std::holds_alternative<T>(*this);
         }
@@ -46,7 +52,7 @@ namespace arasy::core {
         void pushOnto(lua_State* L) const {
             return std::visit(
                 [L](const auto& x) { x.pushOnto(L); },
-                static_cast<const LuaValueVariant&>(*this)
+                static_cast<const internal::LuaValueVariant&>(*this)
             );
         }
     };

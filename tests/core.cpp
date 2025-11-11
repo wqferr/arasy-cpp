@@ -23,13 +23,15 @@ TEST(SCOPE, GetGlobal) {
 
 TEST(SCOPE, SetGlobal) {
     Lua L;
-    int original = -4;
+    int a = -4;
+    int b = 2;
     {
-        L["x"] = original;
-        ASSERT_EQ(luaL_dostring(L, "out = 2*x"), LUA_OK) << "Snippet didn't compile";
+        L["x"] = a;
+        L.setGlobalInt("y", b);
+        ASSERT_EQ(luaL_dostring(L, "out = x*y"), LUA_OK) << "Snippet didn't compile";
         auto result = L["out"].value();
         EXPECT_TRUE(result.isA<LuaNumber>()) << "Global was not the correct type";
-        ASSERT_EQ(result, 2*original) << "Global was not set properly";
+        ASSERT_EQ(result, a*b) << "Global was not set properly";
         EXPECT_EQ(L.size(), 0) << "Extra values pushed onto the stack";
     }
 }

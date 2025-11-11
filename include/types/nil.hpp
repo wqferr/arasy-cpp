@@ -9,7 +9,7 @@ namespace arasy::core {
         void pushOnto(lua_State* L) const override { lua_pushnil(L); }
     };
 
-    constexpr const inline LuaNil nil {};
+    constexpr const LuaNil nil {};
 
     namespace internal {
         template<>

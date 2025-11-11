@@ -9,12 +9,15 @@ int Lua::size() const {
 
 void Lua::push(const LuaValue& value) {
     value.pushOnto(state);
-    // value.visit(
-    //     [this](const auto& v) {
-    //         v.pushOnto(this->state);
-    //     }
-    // );
 }
+
+LuaValue Lua::getGlobal(const std::string& name) {
+    lua_pushstring(state, name.c_str());
+    return pop().value_or(nil);
+}
+
+
+
 
 Lua::GlobalVariableProxy& Lua::operator[](const std::string& name) {
     latestVariableAccessed.emplace(*this, name);
