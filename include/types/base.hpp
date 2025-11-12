@@ -19,6 +19,9 @@ namespace arasy::core {
     template<typename T>
     constexpr const bool is_nonvariant_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 
+    template<typename T>
+    constexpr const bool is_potentially_callable_v = false;
+
     namespace internal {
         template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         struct LuaStackReader {

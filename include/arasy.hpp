@@ -12,11 +12,7 @@
 namespace arasy::core {
     class Lua {
         bool checkIndexExists(int idx) const {
-            if (idx < 0) {
-                return size() >= -idx;
-            } else {
-                return size() >= idx;
-            }
+            return !lua_isnone(state, idx);
         }
 
         class GlobalVariableProxy {
@@ -48,17 +44,21 @@ namespace arasy::core {
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
     public:
-        lua_State *const state;
+        lua_State* const state;
+        const bool external = false;
 
         Lua(): state(luaL_newstate()) {}
-        ~Lua() { lua_close(state); }
+        Lua(lua_State* L): state(L), external(true) {}
+        ~Lua() { if (external) { lua_close(state); } }
 
         int size() const;
 
         void push(const LuaValue& value);
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }
         void pushNum(lua_Number x) { push(LuaNumber{x}); }
-        void pushStr(const char *str) { push(LuaString{str}); }
+        void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
+        void pushFmt(const char *fmt, ...);
+
         void pushNil() { push(nil); }
 
         // WARNING! NOT THREAD SAFE!!

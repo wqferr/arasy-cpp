@@ -5,21 +5,19 @@
 namespace arasy::core {
     class LuaCFunction : public internal::LuaBaseType {
     public:
-        const lua_CFunction cfunc;
+        lua_CFunction cfunc;
 
         LuaCFunction(lua_CFunction cfunc_): cfunc(cfunc_) {}
 
         bool operator==(const LuaCFunction& other) const { return cfunc == other.cfunc; }
 
-        void invokeNoPush() const;
-        void invoke();
-
-        void invoke(const internal::LuaBaseType& t);
-
         void pushOnto(lua_State* L) const override {
             lua_pushcfunction(L, cfunc);
         }
     };
+
+    template<>
+    constexpr const bool is_potentially_callable_v<LuaCFunction> = true;
 
     namespace internal {
         template<>
