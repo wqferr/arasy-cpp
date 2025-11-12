@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <memory>
 #include <optional>
+#include <ostream>
 
 #include "lua.hpp"
 #include "types/base.hpp"
@@ -12,12 +13,14 @@
 namespace arasy::error {
     enum class PushFmtError {
         NONE,
-        TOO_MANY_ARGS,
         TOO_FEW_ARGS,
+        TOO_MANY_ARGS,
         INVALID_PLACEHOLDER,
         INCOMPATIBLE_ARG,
         UNSPECIFIED
     };
+
+    std::ostream& operator<<(std::ostream& os, const PushFmtError& err);
 }
 
 namespace arasy::core {
@@ -55,8 +58,13 @@ namespace arasy::core {
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
         template<typename... Args>
-        constexpr arasy::error::PushFmtError checkPushFmt(const std::string_view fmt) {
-            if (fmt.find('%') != std::string_view::npos) {
+        arasy::error::PushFmtError checkPushFmt(const std::string_view fmt) {
+            auto idx = fmt.find('%');
+            if (idx == std::string_view::npos) {
+                return arasy::error::PushFmtError::NONE;
+            }
+            idx = idx + 1;
+            if (idx < fmt.size() && fmt.at(idx) != '%') {
                 return arasy::error::PushFmtError::TOO_FEW_ARGS;
             } else {
                 return arasy::error::PushFmtError::NONE;
@@ -64,7 +72,7 @@ namespace arasy::core {
         }
 
         template<typename T1, typename... Args>
-        constexpr arasy::error::PushFmtError checkPushFmt(const std::string_view fmt, T1 firstArg, Args... args) {
+        arasy::error::PushFmtError checkPushFmt(const std::string_view fmt, T1& firstArg, Args&... args) {
             auto idx = fmt.find('%');
             if (idx == std::string_view::npos) {
                 return arasy::error::PushFmtError::TOO_MANY_ARGS;
@@ -129,7 +137,7 @@ namespace arasy::core {
                 }
             } while (parsing);
 
-            return checkPushFmt(fmt.substr(idx+1), std::forward(args)...);
+            return checkPushFmt(fmt.substr(idx+1), args...);
         }
 
 

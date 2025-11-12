@@ -10,6 +10,8 @@ add_library(
     core
     src/arasy.cpp
     src/types.cpp
+    src/thread.cpp
+    src/errors.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
@@ -20,6 +22,18 @@ add_executable(
     tests/core.cpp
 )
 target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
+
+file(GLOB all_test_scripts ${CMAKE_SOURCE_DIR}/tests/scripts/**)
+add_custom_target(
+    test_lua_scripts
+    DEPENDS ${all_test_scripts}
+)
+add_custom_command(
+    TARGET test_lua_scripts
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/tests/scripts ./tests/scripts/
+)
 
 add_custom_target(
     run_unit_tests

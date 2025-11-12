@@ -48,7 +48,6 @@ TEST(SCOPE, LoadFile) {
         lua_pushnumber(L, 0.5);
         status = lua_pcall(L, 2, 2, 0);
     }
-    status = status && lua_pcall(L, 2, 2, 0);
     if (status != LUA_OK) {
         ASSERT_TRUE(lua_isstring(L, -1));
         FAIL() << lua_tostring(L, -1);
@@ -155,16 +154,28 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     EXPECT_EQ(*v, -0.5) << "get<>() fetched the wrong number with a positive index";
 }
 
-TEST(SCOPE, PushFmt) {
+#undef SCOPE
+#define SCOPE PushFmt
+
+TEST(SCOPE, DoesntMangleSimpleStrings) {
     using arasy::error::PushFmtError;
     Lua L;
     EXPECT_EQ(L.pushFmt("this is a simple string"), PushFmtError::NONE)
         << "pushFmt() expected arguments even in the absence of placeholders";
     auto res = L.getTop<LuaString>();
-    EXPECT_NE(res, std::nullopt) << "pushFmt() did not push result onto the stack";
+    ASSERT_NE(res, std::nullopt) << "pushFmt() did not push result onto the stack";
     EXPECT_EQ(*res, "this is a simple string") << "pushFmt() mangled a simple string with no arguments";
 }
 
-TEST(SCOPE, Threads) {
-    Lua mainThread;
+TEST(SCOPE, DoesntMangleCorrectlyNotatedArguments) {
+    Lua L;
+    EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%%", "interpolated", 123, 0.5), arasy::error::PushFmtError::NONE)
+        << "pushFmt() incorrectly identified errors in simple interpolation";
+    auto str = L.getTop<LuaString>();
+    ASSERT_NE(str, std::nullopt);
+    EXPECT_STREQ(str->str, "literal then interpolated (123) -> 0.5%");
 }
+
+// TEST(SCOPE, Threads) {
+//     Lua mainThread;
+// }
