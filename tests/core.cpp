@@ -155,5 +155,16 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     EXPECT_EQ(*v, -0.5) << "get<>() fetched the wrong number with a positive index";
 }
 
-// TEST(SCOPE, LuaValueOstream) {
-// }
+TEST(SCOPE, PushFmt) {
+    using arasy::error::PushFmtError;
+    Lua L;
+    EXPECT_EQ(L.pushFmt("this is a simple string"), PushFmtError::NONE)
+        << "pushFmt() expected arguments even in the absence of placeholders";
+    auto res = L.getTop<LuaString>();
+    EXPECT_NE(res, std::nullopt) << "pushFmt() did not push result onto the stack";
+    EXPECT_EQ(*res, "this is a simple string") << "pushFmt() mangled a simple string with no arguments";
+}
+
+TEST(SCOPE, Threads) {
+    Lua mainThread;
+}

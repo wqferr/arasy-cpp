@@ -1,7 +1,5 @@
 #include "arasy.hpp"
 
-#include <cstdarg>
-
 using namespace arasy;
 using namespace arasy::core;
 
@@ -12,16 +10,6 @@ int Lua::size() const {
 void Lua::push(const LuaValue& value) {
     value.pushOnto(state);
 }
-
-void Lua::pushFmt(const char *fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    lua_pushvfstring(state, fmt, args);
-    va_end(args);
-}
-
-
-
 
 LuaValue Lua::getGlobal(const std::string& name) {
     lua_pushstring(state, name.c_str());
