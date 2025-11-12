@@ -172,9 +172,19 @@ TEST(SCOPE, DoesntMangleCorrectlyNotatedArguments) {
     EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%%", "interpolated", 123, 0.5), arasy::error::PushFmtError::NONE)
         << "pushFmt() incorrectly identified errors in simple interpolation";
     auto str = L.getTop<LuaString>();
-    ASSERT_NE(str, std::nullopt);
-    EXPECT_STREQ(str->str, "literal then interpolated (123) -> 0.5%");
+    ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
+    EXPECT_STREQ(str->str, "literal then interpolated (123) -> 0.5%") << "pushFmt() mangled a simple formatting job";
 }
+
+TEST(SCOPE, UnderstandsAllIntegerFormats) {
+    Lua L;
+    EXPECT_EQ(L.pushFmt("%d %c", 100, 65), arasy::error::PushFmtError::NONE);
+    auto str = L.getTop<LuaString>();
+    ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
+    EXPECT_EQ(*str, "100 A");
+}
+
+// TODO test %g %G %e %E
 
 // TEST(SCOPE, Threads) {
 //     Lua mainThread;

@@ -78,64 +78,42 @@ namespace arasy::core {
                 return arasy::error::PushFmtError::TOO_MANY_ARGS;
             }
 
-            bool parsing = false;
-            do {
-                idx++;
-                if (idx >= fmt.size()) {
+            idx++;
+            if (idx >= fmt.size()) {
+                return arasy::error::PushFmtError::INVALID_PLACEHOLDER;
+            }
+
+            switch (fmt.at(idx)) {
+                case '%':
+                    break;
+
+                case 'd':
+                case 'c':
+                    if constexpr (!std::is_convertible_v<T1, LuaInteger>) {
+                        return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
+                    }
+                    break;
+
+                case 'f':
+                case 'g':
+                case 'G':
+                case 'e':
+                case 'E':
+                    if constexpr (!std::is_convertible_v<T1, LuaNumber>) {
+                        return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
+                    }
+                    break;
+
+                case 's':
+                case 'q':
+                    if constexpr (!std::is_convertible_v<T1, LuaString>) {
+                        return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
+                    }
+                    break;
+
+                default:
                     return arasy::error::PushFmtError::INVALID_PLACEHOLDER;
-                }
-
-                switch (fmt.at(idx)) {
-                    case '0':
-                    case '1':
-                    case '2':
-                    case '3':
-                    case '4':
-                    case '5':
-                    case '6':
-                    case '7':
-                    case '8':
-                    case '9':
-                    case '-':
-                    case '+':
-                    case '.':
-                        parsing = true;
-                        break;
-
-                    case '%':
-                        break;
-
-                    case 'd':
-                    case 'c':
-                    case 'o':
-                    case 'x':
-                    case 'X':
-                        if constexpr (!std::is_convertible_v<T1, LuaInteger>) {
-                            return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
-                        }
-                        break;
-
-                    case 'f':
-                    case 'g':
-                    case 'G':
-                    case 'e':
-                    case 'E':
-                        if constexpr (!std::is_convertible_v<T1, LuaNumber>) {
-                            return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
-                        }
-                        break;
-
-                    case 's':
-                    case 'q':
-                        if constexpr (!std::is_convertible_v<T1, LuaString>) {
-                            return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
-                        }
-                        break;
-
-                    default:
-                        return arasy::error::PushFmtError::INVALID_PLACEHOLDER;
-                }
-            } while (parsing);
+            }
 
             return checkPushFmt(fmt.substr(idx+1), args...);
         }
