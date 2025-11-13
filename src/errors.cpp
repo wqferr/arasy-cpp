@@ -15,7 +15,25 @@ namespace arasy::error {
                 return os << "<Incompatible arg>";
             case PushFmtError::UNSPECIFIED:
                 return os << "<Unspecified error>";
+            default:
+                return os << "<Unknown error code: please contact an Arasy developer>";
         }
-        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const ExecuteError& err) {
+        switch (err) {
+            case ExecuteError::NONE:
+                return os << "<No error>";
+            case ExecuteError::IO_ERROR:
+                return os << "<I/O error>";
+            case ExecuteError::LOAD_ERROR:
+                return os << "<Load error>";
+            case ExecuteError::RUNTIME_ERROR:
+                return os << "<Runtime error>";
+            case ExecuteError::UNSPECIFIED:
+                return os << "<Unspecified error>";
+            default:
+                return os << "<Unknown error code: please contact an Arasy developer>";
+        }
     }
 }

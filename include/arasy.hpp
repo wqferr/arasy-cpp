@@ -9,19 +9,7 @@
 #include "arasy/lua.hpp"
 #include "arasy/types/base.hpp"
 #include "arasy/types/all.hpp"
-
-namespace arasy::error {
-    enum class PushFmtError {
-        NONE,
-        TOO_FEW_ARGS,
-        TOO_MANY_ARGS,
-        INVALID_SPECIFIER,
-        INCOMPATIBLE_ARG,
-        UNSPECIFIED
-    };
-
-    std::ostream& operator<<(std::ostream& os, const PushFmtError& err);
-}
+#include "arasy/errors.hpp"
 
 namespace arasy::core {
     class Lua {
