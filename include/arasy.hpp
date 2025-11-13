@@ -32,9 +32,8 @@ namespace arasy::core {
             GlobalVariableProxy(Lua& L_, const std::string& var): L(L_), globalName(var) {}
 
             template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-            GlobalVariableProxy& operator=(const LuaValue& value) {
-                L.push(value);
-                lua_setglobal(L, globalName.c_str());
+            GlobalVariableProxy& operator=(const T& value) {
+                L.setGlobal<T>(globalName, value);
                 return *this;
             }
 
