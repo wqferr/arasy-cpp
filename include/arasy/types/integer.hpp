@@ -1,7 +1,7 @@
 #pragma once
 
-#include "lua.hpp"
-#include "types/base.hpp"
+#include "arasy/lua.hpp"
+#include "arasy/types/base.hpp"
 
 namespace arasy::core {
     class LuaInteger : public internal::LuaBaseType {

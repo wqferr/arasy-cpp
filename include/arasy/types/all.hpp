@@ -1,13 +1,13 @@
 #pragma once
 
-#include "types/nil.hpp"
-#include "types/boolean.hpp"
-#include "types/number.hpp"
-#include "types/integer.hpp"
-#include "types/string.hpp"
-#include "types/cfunction.hpp"
+#include "arasy/types/nil.hpp"
+#include "arasy/types/boolean.hpp"
+#include "arasy/types/number.hpp"
+#include "arasy/types/integer.hpp"
+#include "arasy/types/string.hpp"
+#include "arasy/types/cfunction.hpp"
 
-#include "utils.hpp"
+#include "arasy/utils.hpp"
 
 #include <ostream>
 #include <variant>

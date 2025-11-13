@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lua.hpp"
+#include "arasy/lua.hpp"
 
 #include <type_traits>
 #include <optional>

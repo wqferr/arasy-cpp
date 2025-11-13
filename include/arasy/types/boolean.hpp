@@ -1,6 +1,6 @@
-#include "lua.hpp"
+#include "arasy/lua.hpp"
 
-#include "types/base.hpp"
+#include "arasy/types/base.hpp"
 
 namespace arasy::core {
     class LuaBoolean : public internal::LuaBaseType {

@@ -1,4 +1,4 @@
-#include "lua.hpp"
+#include "arasy/lua.hpp"
 
 int main(void) {
     lua_State *L = luaL_newstate();

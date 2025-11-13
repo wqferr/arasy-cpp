@@ -1,4 +1,4 @@
-#include "types/thread.hpp"
+#include "arasy/types/thread.hpp"
 #include "arasy.hpp"
 
 using namespace arasy::core;

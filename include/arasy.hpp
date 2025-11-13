@@ -6,9 +6,9 @@
 #include <optional>
 #include <ostream>
 
-#include "lua.hpp"
-#include "types/base.hpp"
-#include "types/all.hpp"
+#include "arasy/lua.hpp"
+#include "arasy/types/base.hpp"
+#include "arasy/types/all.hpp"
 
 namespace arasy::error {
     enum class PushFmtError {

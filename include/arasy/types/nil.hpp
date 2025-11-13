@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types/base.hpp"
+#include "arasy/types/base.hpp"
 
 namespace arasy::core {
     struct LuaNil : public internal::LuaBaseType {
