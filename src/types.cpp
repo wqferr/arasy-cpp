@@ -1,4 +1,6 @@
 #include "arasy/types/all.hpp"
+#include "arasy/utils.hpp"
+#include "arasy.hpp"
 
 #include <variant>
 #include <iomanip>
@@ -10,33 +12,34 @@ namespace arasy::core {
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv) {
         struct visitor {
             std::ostream& os;
-            visitor(std::ostream& os_): os(os_) {}
-
-            void operator()(const LuaBoolean& b) {
-                os << b.value;
-            }
-
-            void operator()(const LuaInteger& i) {
-                os << i.value;
-            }
-
-            void operator()(const LuaNumber& x) {
-                os << x.value;
-            }
-
-            void operator()(const LuaString& s) {
-                os << '"' << std::quoted(s.str) << '"';
-            }
-            void operator()(const LuaNil&) {
-                os << "nil";
-            }
-
-            void operator()(const LuaCFunction& cf) {
-                os << "<function: " << std::hex << cf.cfunc << ">";
-            }
         };
 
-        std::visit(visitor{os}, lv);
+        std::visit(
+            utils::internal::overload{
+                [&os](const LuaBoolean& b) {
+                    os << b.value;
+                },
+                [&os](const LuaInteger& i) {
+                    os << i.value;
+                },
+                [&os](const LuaNumber& x) {
+                    os << x.value;
+                },
+                [&os](const LuaString& s) {
+                    os << '"' << std::quoted(s.str()) << '"';
+                },
+                [&os](const LuaNil&) {
+                    os << "nil";
+                },
+                [&os](const LuaCFunction& cf) {
+                    os << "function: " << std::hex << cf.cfunc;
+                },
+                [&os](const LuaThread& thr) {
+                    os << "thread: " << std::hex << thr.thread().state;
+                }
+            },
+            lv
+        );
         return os;
     }
 

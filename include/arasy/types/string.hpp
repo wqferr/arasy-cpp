@@ -1,15 +1,16 @@
 #pragma once
 
-#include <cstring>
+#include <string>
 
 namespace arasy::core {
     class LuaString : public internal::LuaBaseType {
+        std::string str_;
     public:
-        const char *str;
-        constexpr LuaString(const char *str_): str(str_) {}
-        void pushOnto(lua_State* L) const override { lua_pushstring(L, str); }
+        LuaString(const char *str_): str_(str_) {}
+        const char *str() const { return str_.c_str(); }
+        void pushOnto(lua_State* L) const override { lua_pushstring(L, str_.c_str()); }
 
-        bool operator==(const LuaString& other) const { return strcmp(str, other.str) == 0; }
+        bool operator==(const LuaString& other) const { return str_ == other.str_; }
     };
 
     namespace internal {

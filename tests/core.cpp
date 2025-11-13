@@ -96,7 +96,7 @@ TEST(BasicLua, PushWrapperTypes) {
         L.push(str);
         ASSERT_EQ(lua_gettop(L), 1) << "More than one value was pushed";
         ASSERT_TRUE(lua_isstring(L, -1)) << "Value pushed was not a string";
-        ASSERT_STREQ(lua_tostring(L, -1), str.str) << "Recovered value is different from value pushed";
+        ASSERT_STREQ(lua_tostring(L, -1), str.str()) << "Recovered value is different from value pushed";
         lua_pop(L, 1);
     }
 }
@@ -124,7 +124,7 @@ TEST(BasicLua, ArasyApiHasGetPop) {
     EXPECT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify a string with a positive index";
     std::optional<LuaString> s = L.get<LuaString>(1);
     ASSERT_NE(s, std::nullopt) << "get<>() fetched a non-string value with a positive index";
-    EXPECT_STREQ(s->str, "abc") << "get<>() did not fetch correct string with a positive index";
+    EXPECT_STREQ(s->str(), "abc") << "get<>() did not fetch correct string with a positive index";
 
     EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer with a positive index";
     EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer with a positive index";

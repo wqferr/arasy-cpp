@@ -5,5 +5,5 @@ using namespace arasy::core;
 
 void LuaThread::pushOnto(lua_State* L) const {
     (void) L;
-    lua_pushthread(thread->state);
+    lua_pushthread(thread_->state);
 }

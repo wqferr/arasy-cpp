@@ -8,13 +8,15 @@ namespace arasy::core {
     class Lua;
 
     class LuaThread : public internal::LuaBaseType {
-        std::unique_ptr<Lua> thread;
+        std::unique_ptr<Lua> thread_;
 
     public:
-        LuaThread(lua_State* L): thread(std::make_unique<Lua>(L)) {}
+        LuaThread(lua_State* L): thread_(std::make_unique<Lua>(L)) {}
         void pushOnto(lua_State* L) const override;
+        Lua& thread() { return *thread_; }
+        const Lua& thread() const { return *thread_; }
 
-        operator Lua&() { return *thread; }
+        operator Lua&() { return *thread_; }
     };
 
     namespace internal {
@@ -26,7 +28,7 @@ namespace arasy::core {
 
             static std::optional<LuaThread> readAt(lua_State* L, int idx) {
                 if (lua_isthread(L, idx)) {
-                    return LuaThread{lua_tothread(L, idx)};
+                    return std::optional<LuaThread>{lua_tothread(L, idx)};
                 } else {
                     return std::nullopt;
                 }
