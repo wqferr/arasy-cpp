@@ -147,8 +147,10 @@ namespace arasy::core {
             setGlobal<LuaNil>(name, nil);
         }
 
-        std::optional<arasy::error::ExecuteError> executeString(std::string_view code);
-        std::optional<arasy::error::ExecuteError> executeFile(std::string_view fileName);
+        std::optional<arasy::error::ScriptError> loadString(const std::string& code);
+        std::optional<arasy::error::ScriptError> executeString(const std::string& code);
+        std::optional<arasy::error::ScriptError> loadFile(const std::string& fileName);
+        std::optional<arasy::error::ScriptError> executeFile(const std::string& fileName);
 
         operator lua_State*() const { return state; }
     };

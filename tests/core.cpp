@@ -22,7 +22,9 @@ TEST(BasicLua, SetGlobal) {
     {
         L["x"] = a;
         L.setGlobalInt("y", b);
-        ASSERT_EQ(luaL_dostring(L, "out = x*y"), LUA_OK) << "Snippet didn't compile";
+
+        ASSERT_EQ(L.executeString("out = x*y"), std::nullopt) << "Snippet didn't compile";
+        // ASSERT_EQ(luaL_dostring(L, "out = x*y"), LUA_OK) << "Snippet didn't compile";
         auto result = L["out"].value();
         EXPECT_TRUE(result.isA<LuaNumber>()) << "Global was not the correct type";
         ASSERT_EQ(result, a*b) << "Global was not set properly";

@@ -1,7 +1,9 @@
 #include "arasy.hpp"
+#include "lua.hpp"
 
 using namespace arasy;
 using namespace arasy::core;
+using namespace arasy::error;
 
 int Lua::stackSize() const {
     return lua_gettop(state);
@@ -15,6 +17,100 @@ LuaValue Lua::getGlobal(const std::string& name) {
     lua_pushstring(state, name.c_str());
     return popStack().value_or(nil);
 }
+
+namespace {
+    std::optional<ScriptError> tryExecuteChunk(Lua& L) {
+        int runError = lua_pcall(L, 0, LUA_MULTRET, 0);
+        if (runError == LUA_ERRRUN) {
+            std::string errMsg;
+            if (auto luaStr = L.popStack<LuaString>()) {
+                errMsg = luaStr->str();
+            } else {
+                errMsg = "No error message";
+            }
+            return ScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                std::move(errMsg)
+            };
+        } else if (runError == LUA_ERRMEM) {
+            return ScriptError{
+                ScriptErrorCode::MEMORY_ERROR,
+                "Runtime memory allocation error"
+            };
+        } else if (runError == LUA_ERRERR) {
+            return ScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                "Memory allocation error"
+            };
+        } else if (runError != LUA_OK) {
+            return ScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                "Unknown runtime error"
+            };
+        }
+
+        return std::nullopt;
+    }
+
+    std::optional<ScriptError> checkLoadChunk(Lua& L, int loadError) {
+        if (loadError == LUA_ERRSYNTAX) {
+            return ScriptError{
+                ScriptErrorCode::LOAD_ERROR,
+                "Syntax error"
+            };
+        } else if (loadError == LUA_ERRMEM) {
+            return ScriptError{
+                ScriptErrorCode::MEMORY_ERROR,
+                "Memory allocation error"
+            };
+        } else if (loadError != LUA_OK) {
+            return ScriptError{
+                ScriptErrorCode::LOAD_ERROR,
+                "Unknown load error"
+            };
+        } else {
+            return std::nullopt;
+        }
+    }
+}
+
+
+std::optional<ScriptError> Lua::loadString(const std::string& code) {
+    int loadError = luaL_loadstring(state, code.c_str());
+    if (auto err = checkLoadChunk(*this, loadError)) {
+        return err;
+    } else {
+        return std::nullopt;
+    }
+}
+
+std::optional<ScriptError> Lua::loadFile(const std::string& fileName) {
+    int loadError = luaL_loadfile(state, fileName.c_str());
+    if (auto err = checkLoadChunk(*this, loadError)) {
+        return err;
+    } else {
+        return std::nullopt;
+    }
+}
+
+std::optional<ScriptError> Lua::executeString(const std::string& code) {
+    if (auto err = loadString(code.c_str())) {
+        return err;
+    } else {
+        return tryExecuteChunk(*this);
+    }
+}
+
+std::optional<ScriptError> Lua::executeFile(const std::string& fileName) {
+    if (auto err = loadFile(fileName.c_str())) {
+        return err;
+    } else {
+        return tryExecuteChunk(*this);
+    }
+}
+
+
+// GlobalVarProxy
 
 Lua::GlobalVariableProxy& Lua::operator[](const std::string& name) {
     latestVariableAccessed.emplace(*this, name);

@@ -11,23 +11,19 @@ namespace arasy::error {
                 return os << "<Invalid placeholder>";
             case PushFmtErrorCode::INCOMPATIBLE_ARG:
                 return os << "<Incompatible arg>";
-            case PushFmtErrorCode::UNSPECIFIED:
-                return os << "<Unspecified error>";
             default:
                 return os << "<Unknown error code: please contact an Arasy developer>";
         }
     }
 
-    std::ostream& operator<<(std::ostream& os, const ExecuteError& err) {
+    std::ostream& operator<<(std::ostream& os, const ScriptError& err) {
         switch (err.code) {
-            case ExecuteErrorCode::IO_ERROR:
+            case ScriptErrorCode::IO_ERROR:
                 os << "<I/O error";
-            case ExecuteErrorCode::LOAD_ERROR:
+            case ScriptErrorCode::LOAD_ERROR:
                 os << "<Load error";
-            case ExecuteErrorCode::RUNTIME_ERROR:
+            case ScriptErrorCode::RUNTIME_ERROR:
                 os << "<Runtime error";
-            case ExecuteErrorCode::UNSPECIFIED:
-                os << "<Unspecified error";
             default:
                 return os << "<Unknown error code: please contact an Arasy developer>";
         }

@@ -7,20 +7,19 @@ namespace arasy::error {
         TOO_FEW_ARGS,
         TOO_MANY_ARGS,
         INVALID_SPECIFIER,
-        INCOMPATIBLE_ARG,
-        UNSPECIFIED
+        INCOMPATIBLE_ARG
     };
     std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err);
 
-    enum class ExecuteErrorCode {
+    enum class ScriptErrorCode {
         IO_ERROR,
         LOAD_ERROR,
         RUNTIME_ERROR,
-        UNSPECIFIED
+        MEMORY_ERROR
     };
-    struct ExecuteError {
-        ExecuteErrorCode code;
+    struct ScriptError {
+        ScriptErrorCode code;
         std::string message;
     };
-    std::ostream& operator<<(std::ostream& os, const ExecuteError& err);
+    std::ostream& operator<<(std::ostream& os, const ScriptError& err);
 }
