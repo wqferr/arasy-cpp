@@ -13,7 +13,7 @@ void Lua::push(const LuaValue& value) {
 
 LuaValue Lua::getGlobal(const std::string& name) {
     lua_pushstring(state, name.c_str());
-    return pop().value_or(nil);
+    return popStack().value_or(nil);
 }
 
 Lua::GlobalVariableProxy& Lua::operator[](const std::string& name) {
@@ -27,7 +27,7 @@ Lua::GlobalVariableProxy::operator LuaValue() const {
 
 LuaValue Lua::GlobalVariableProxy::value() const {
     lua_getglobal(L, globalName.c_str());
-    return L.pop().value_or(nil);
+    return L.popStack().value_or(nil);
 }
 
 Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const lua_Number& value) {

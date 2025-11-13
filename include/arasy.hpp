@@ -88,14 +88,14 @@ namespace arasy::core {
         GlobalVariableProxy& operator[](const std::string& name);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        std::optional<T> pop() {
-            auto val = get<T>(-1);
+        std::optional<T> popStack() {
+            auto val = readStack<T>(-1);
             lua_pop(state, 1);
             return val;
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        std::optional<T> get(int idx) const {
+        std::optional<T> readStack(int idx) const {
             if (checkIndexExists(idx)) {
                 return internal::LuaStackReader<T>::readAt(state, idx);
             } else {
@@ -104,7 +104,7 @@ namespace arasy::core {
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        bool has(int idx) const {
+        bool checkStack(int idx) const {
             if (checkIndexExists(idx)) {
                 return internal::LuaStackReader<T>::checkAt(state, idx);
             } else {
@@ -113,13 +113,13 @@ namespace arasy::core {
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        bool hasTop() const {
-            return has<T>(-1);
+        bool checkStackTop() const {
+            return checkStack<T>(-1);
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        std::optional<T> getTop() const {
-            return get<T>(-1);
+        std::optional<T> getStackTop() const {
+            return readStack<T>(-1);
         }
 
         LuaValue getGlobal(const std::string& name);

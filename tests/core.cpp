@@ -10,7 +10,7 @@ TEST(BasicLua, GetGlobal) {
     {
         auto val = L["x"].value();
         ASSERT_TRUE(std::holds_alternative<LuaInteger>(val)) << "Global variable indexing did not return an integer";
-        ASSERT_EQ(std::get<LuaInteger>(val), 3) << "Global had unexpected value";
+        ASSERT_EQ(std::readStack<LuaInteger>(val), 3) << "Global had unexpected value";
         EXPECT_EQ(L.stackSize(), 0) << "Extra values pushed onto the stack";
     }
 }
@@ -109,41 +109,41 @@ TEST(BasicLua, ArasyApiHasGetPop) {
     L.pushNil();
     L.pushNum(-0.5);
 
-    EXPECT_TRUE(L.has<LuaNumber>(-1)) << "has<>() did not identify a number with a negative index";
-    EXPECT_TRUE(L.hasTop<LuaNumber>()) << "hasTop<>() did not index the stack correctly";
-    EXPECT_FALSE(L.hasTop<LuaInteger>()) << "hasTop<>() identified a non-integer number as an integer";
+    EXPECT_TRUE(L.checkStack<LuaNumber>(-1)) << "checkStack<>() did not identify a number with a negative index";
+    EXPECT_TRUE(L.checkStackTop<LuaNumber>()) << "checkStackTop<>() did not index the stack correctly";
+    EXPECT_FALSE(L.checkStackTop<LuaInteger>()) << "checkStackTop<>() identified a non-integer number as an integer";
 
-    EXPECT_TRUE(L.has<LuaNil>(-2)) << "has<>() did not identify nil with a negative index";
-    std::optional<LuaValue> v = L.get<LuaNil>(-2);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value with a negative index";
-    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value with a negative index";
-    EXPECT_TRUE(L.has<LuaNumber>(-3)) << "has<>() did not identify an integer as a number with a negative index";
-    EXPECT_TRUE(L.has<LuaInteger>(-3)) << "has<>() did not identify an integer with a negative index";
-    EXPECT_TRUE(L.has<LuaString>(-4)) << "has<>() did not identify a string with a negative index";
+    EXPECT_TRUE(L.checkStack<LuaNil>(-2)) << "checkStack<>() did not identify nil with a negative index";
+    std::optional<LuaValue> v = L.readStack<LuaNil>(-2);
+    ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a nil value with a negative index";
+    EXPECT_EQ(*v, LuaNil{}) << "readStack<>() fetched a non-nil value with a negative index";
+    EXPECT_TRUE(L.checkStack<LuaNumber>(-3)) << "checkStack<>() did not identify an integer as a number with a negative index";
+    EXPECT_TRUE(L.checkStack<LuaInteger>(-3)) << "checkStack<>() did not identify an integer with a negative index";
+    EXPECT_TRUE(L.checkStack<LuaString>(-4)) << "checkStack<>() did not identify a string with a negative index";
 
-    EXPECT_TRUE(L.has<LuaString>(1)) << "has<>() did not identify a string with a positive index";
-    std::optional<LuaString> s = L.get<LuaString>(1);
-    ASSERT_NE(s, std::nullopt) << "get<>() fetched a non-string value with a positive index";
-    EXPECT_STREQ(s->str(), "abc") << "get<>() did not fetch correct string with a positive index";
+    EXPECT_TRUE(L.checkStack<LuaString>(1)) << "checkStack<>() did not identify a string with a positive index";
+    std::optional<LuaString> s = L.readStack<LuaString>(1);
+    ASSERT_NE(s, std::nullopt) << "readStack<>() fetched a non-string value with a positive index";
+    EXPECT_STREQ(s->str(), "abc") << "readStack<>() did not fetch correct string with a positive index";
 
-    EXPECT_TRUE(L.has<LuaNumber>(2)) << "has<>() did not identify an integer with a positive index";
-    EXPECT_TRUE(L.has<LuaInteger>(2)) << "has<>() did not identify an integer with a positive index";
-    v = L.get<LuaInteger>(2);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch an integer value with a positive index";
-    EXPECT_EQ(*v, 123) << "get<>() did not fetch the correct integer with a positive index";
-    v = L.get<LuaNumber>(2);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number value from an integer with a positive index";
-    EXPECT_EQ(*v, 123) << "get<>() did not fetch the correct number with a positive index";
+    EXPECT_TRUE(L.checkStack<LuaNumber>(2)) << "checkStack<>() did not identify an integer with a positive index";
+    EXPECT_TRUE(L.checkStack<LuaInteger>(2)) << "checkStack<>() did not identify an integer with a positive index";
+    v = L.readStack<LuaInteger>(2);
+    ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch an integer value with a positive index";
+    EXPECT_EQ(*v, 123) << "readStack<>() did not fetch the correct integer with a positive index";
+    v = L.readStack<LuaNumber>(2);
+    ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a number value from an integer with a positive index";
+    EXPECT_EQ(*v, 123) << "readStack<>() did not fetch the correct number with a positive index";
 
-    EXPECT_TRUE(L.has<LuaNil>(3)) << "has<>() did not identify a nil with a positive index";
-    v = L.get<LuaNil>(3);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a nil value with a positive index";
-    EXPECT_EQ(*v, LuaNil{}) << "get<>() fetched a non-nil value";
+    EXPECT_TRUE(L.checkStack<LuaNil>(3)) << "checkStack<>() did not identify a nil with a positive index";
+    v = L.readStack<LuaNil>(3);
+    ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a nil value with a positive index";
+    EXPECT_EQ(*v, LuaNil{}) << "readStack<>() fetched a non-nil value";
 
-    EXPECT_TRUE(L.has<LuaNumber>(4)) << "has<>() did not identify a number with a positive index";
-    v = L.get<LuaInteger>(4);
-    EXPECT_EQ(v, std::nullopt) << "get<>() fetched an integer from a non-integer number";
-    v = L.get<LuaNumber>(4);
-    ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number with a positive index";
-    EXPECT_EQ(*v, -0.5) << "get<>() fetched the wrong number with a positive index";
+    EXPECT_TRUE(L.checkStack<LuaNumber>(4)) << "checkStack<>() did not identify a number with a positive index";
+    v = L.readStack<LuaInteger>(4);
+    EXPECT_EQ(v, std::nullopt) << "readStack<>() fetched an integer from a non-integer number";
+    v = L.readStack<LuaNumber>(4);
+    ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a number with a positive index";
+    EXPECT_EQ(*v, -0.5) << "readStack<>() fetched the wrong number with a positive index";
 }

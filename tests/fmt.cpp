@@ -8,7 +8,7 @@ TEST(PushFmt, DoesntMangleSimpleStrings) {
     Lua L;
     EXPECT_EQ(L.pushFmt("this is a simple string"), PushFmtError::NONE)
         << "pushFmt() expected arguments even in the absence of placeholders";
-    auto str = L.getTop<LuaString>();
+    auto str = L.getStackTop<LuaString>();
     ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
     EXPECT_EQ(*str, "this is a simple string") << "pushFmt() mangled a simple string with no arguments";
 }
@@ -17,7 +17,7 @@ TEST(PushFmt, DoesntMangleCorrectlyNotatedArguments) {
     Lua L;
     EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%% %p", "interpolated", 123, 0.5, nullptr), arasy::error::PushFmtError::NONE)
         << "pushFmt() incorrectly identified errors in simple interpolation";
-    auto str = L.getTop<LuaString>();
+    auto str = L.getStackTop<LuaString>();
     ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
     EXPECT_EQ(*str, "literal then interpolated (123) -> 0.5% 0000000000000000") << "pushFmt() mangled a simple formatting job";
 }
@@ -25,7 +25,7 @@ TEST(PushFmt, DoesntMangleCorrectlyNotatedArguments) {
 TEST(PushFmt, UnderstandsAllIntegerFormats) {
     Lua L;
     EXPECT_EQ(L.pushFmt("%d %c", 100, 65), arasy::error::PushFmtError::NONE);
-    auto str = L.getTop<LuaString>();
+    auto str = L.getStackTop<LuaString>();
     ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
     EXPECT_EQ(*str, "100 A");
 }
