@@ -3,7 +3,7 @@
 using namespace arasy;
 using namespace arasy::core;
 
-int Lua::size() const {
+int Lua::stackSize() const {
     return lua_gettop(state);
 }
 

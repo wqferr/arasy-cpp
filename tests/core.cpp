@@ -11,7 +11,7 @@ TEST(BasicLua, GetGlobal) {
         auto val = L["x"].value();
         ASSERT_TRUE(std::holds_alternative<LuaInteger>(val)) << "Global variable indexing did not return an integer";
         ASSERT_EQ(std::get<LuaInteger>(val), 3) << "Global had unexpected value";
-        EXPECT_EQ(L.size(), 0) << "Extra values pushed onto the stack";
+        EXPECT_EQ(L.stackSize(), 0) << "Extra values pushed onto the stack";
     }
 }
 
@@ -26,7 +26,7 @@ TEST(BasicLua, SetGlobal) {
         auto result = L["out"].value();
         EXPECT_TRUE(result.isA<LuaNumber>()) << "Global was not the correct type";
         ASSERT_EQ(result, a*b) << "Global was not set properly";
-        EXPECT_EQ(L.size(), 0) << "Extra values pushed onto the stack";
+        EXPECT_EQ(L.stackSize(), 0) << "Extra values pushed onto the stack";
     }
 }
 

@@ -34,14 +34,14 @@ TEST(PushFmt, DetectsTooFewArguments) {
     Lua L;
     EXPECT_EQ(L.pushFmt("%d %d %d", 1, 2), arasy::error::PushFmtError::TOO_FEW_ARGS) << "pushFmt() did not detect lack of arguments for placeholders";
     EXPECT_EQ(L.pushFmt("%f"), arasy::error::PushFmtError::TOO_FEW_ARGS) << "pushFmt() did not detect lack of arguments for placeholders when there are no arguments";
-    EXPECT_EQ(L.size(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
+    EXPECT_EQ(L.stackSize(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
 }
 
 TEST(PushFmt, DetectsTooManyArguments) {
     Lua L;
     EXPECT_EQ(L.pushFmt("%d", 1, 2), arasy::error::PushFmtError::TOO_MANY_ARGS) << "pushFmt() did not detect excess of arguments for placeholders";
     EXPECT_EQ(L.pushFmt("string with no placeholders", "this should not be used"), arasy::error::PushFmtError::TOO_MANY_ARGS) << "pushFmt() did not detect excess of arguments for placeholders when there are no placeholders";
-    EXPECT_EQ(L.size(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
+    EXPECT_EQ(L.stackSize(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
 }
 
 TEST(PushFmt, DetectsInvalidSpecifiers) {
@@ -49,7 +49,7 @@ TEST(PushFmt, DetectsInvalidSpecifiers) {
     EXPECT_EQ(L.pushFmt("%x", 2), arasy::error::PushFmtError::INVALID_SPECIFIER) << "pushFmt() did not detect invalid specifier";
     EXPECT_EQ(L.pushFmt("%"), arasy::error::PushFmtError::INVALID_SPECIFIER) << "pushFmt() did not detect invalid specifier";
     EXPECT_EQ(L.pushFmt("%", 2), arasy::error::PushFmtError::INVALID_SPECIFIER) << "pushFmt() did not detect invalid specifier";
-    EXPECT_EQ(L.size(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
+    EXPECT_EQ(L.stackSize(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
 }
 
 TEST(PushFmt, DetectsIncompatibleArgumentsForSpecifiers) {
@@ -58,5 +58,5 @@ TEST(PushFmt, DetectsIncompatibleArgumentsForSpecifiers) {
     EXPECT_EQ(L.pushFmt("%s", 123), arasy::error::PushFmtError::INCOMPATIBLE_ARG) << "pushFmt() did not detect incompatible argument (%s <- lua_Integer)";
     EXPECT_EQ(L.pushFmt("%d", LuaNumber{5.5}), arasy::error::PushFmtError::INCOMPATIBLE_ARG) << "pushFmt() did not detect incompatible argument (%d <- lua_Number)";
     EXPECT_EQ(L.pushFmt("%f", LuaInteger{5}), arasy::error::PushFmtError::INCOMPATIBLE_ARG) << "pushFmt() did not detect incompatible argument (%f <- lua_Integer)";
-    EXPECT_EQ(L.size(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
+    EXPECT_EQ(L.stackSize(), 0) << "Invalid invocations of pushFmt() still pushed values onto the stack";
 }

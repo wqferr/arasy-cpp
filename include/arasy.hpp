@@ -31,14 +31,27 @@ namespace arasy::core {
         public:
             GlobalVariableProxy(Lua& L_, const std::string& var): L(L_), globalName(var) {}
 
-            template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+            template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
             GlobalVariableProxy& operator=(const T& value) {
                 L.setGlobal<T>(globalName, value);
                 return *this;
             }
 
             GlobalVariableProxy& operator=(const lua_Number& value);
-            GlobalVariableProxy& operator=(const char *str);
+            GlobalVariableProxy& operator=(const char* str);
+
+            template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+            void set(const T& value) {
+                *this = value;
+            }
+
+            void set(const lua_Number& value) {
+                *this = value;
+            }
+
+            void set(const char* value) {
+                *this = value;
+            }
 
             friend class Lua;
         };
@@ -51,9 +64,9 @@ namespace arasy::core {
 
         Lua(): state(luaL_newstate()) {}
         Lua(lua_State* L): state(L), external(true) {}
-        ~Lua() { if (external) { lua_close(state); } }
+        ~Lua() { if (!external) { lua_close(state); } }
 
-        int size() const;
+        int stackSize() const;
 
         void push(const LuaValue& value);
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }
