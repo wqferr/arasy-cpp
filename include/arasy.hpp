@@ -74,9 +74,9 @@ namespace arasy::core {
         void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
 
         template<typename... Args>
-        arasy::error::PushFmtError pushFmt(const char *fmt, Args&&... args) {
+        std::optional<arasy::error::PushFmtErrorCode> pushFmt(const char *fmt, Args&&... args) {
             auto err = arasy::utils::checkPushFmt(std::string_view{fmt}, args...);
-            if (err == arasy::error::PushFmtError::NONE) {
+            if (err == std::nullopt) {
                 lua_pushfstring(state, fmt, args...);
             }
             return err;
@@ -146,6 +146,9 @@ namespace arasy::core {
         void eraseGlobal(const std::string& name) {
             setGlobal<LuaNil>(name, nil);
         }
+
+        std::optional<arasy::error::ExecuteError> executeString(std::string_view code);
+        std::optional<arasy::error::ExecuteError> executeFile(std::string_view fileName);
 
         operator lua_State*() const { return state; }
     };

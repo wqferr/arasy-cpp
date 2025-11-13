@@ -10,7 +10,7 @@ TEST(BasicLua, GetGlobal) {
     {
         auto val = L["x"].value();
         ASSERT_TRUE(std::holds_alternative<LuaInteger>(val)) << "Global variable indexing did not return an integer";
-        ASSERT_EQ(std::readStack<LuaInteger>(val), 3) << "Global had unexpected value";
+        ASSERT_EQ(std::get<LuaInteger>(val), 3) << "Global had unexpected value";
         EXPECT_EQ(L.stackSize(), 0) << "Extra values pushed onto the stack";
     }
 }

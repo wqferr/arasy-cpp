@@ -1,19 +1,17 @@
 #include "arasy.hpp"
 
 namespace arasy::error {
-    std::ostream& operator<<(std::ostream& os, const PushFmtError& err) {
+    std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
         switch (err) {
-            case PushFmtError::NONE:
-                return os << "<No error>";
-            case PushFmtError::TOO_FEW_ARGS:
+            case PushFmtErrorCode::TOO_FEW_ARGS:
                 return os << "<Too few args>";
-            case PushFmtError::TOO_MANY_ARGS:
+            case PushFmtErrorCode::TOO_MANY_ARGS:
                 return os << "<Too many args>";
-            case PushFmtError::INVALID_SPECIFIER:
+            case PushFmtErrorCode::INVALID_SPECIFIER:
                 return os << "<Invalid placeholder>";
-            case PushFmtError::INCOMPATIBLE_ARG:
+            case PushFmtErrorCode::INCOMPATIBLE_ARG:
                 return os << "<Incompatible arg>";
-            case PushFmtError::UNSPECIFIED:
+            case PushFmtErrorCode::UNSPECIFIED:
                 return os << "<Unspecified error>";
             default:
                 return os << "<Unknown error code: please contact an Arasy developer>";
@@ -21,19 +19,18 @@ namespace arasy::error {
     }
 
     std::ostream& operator<<(std::ostream& os, const ExecuteError& err) {
-        switch (err) {
-            case ExecuteError::NONE:
-                return os << "<No error>";
-            case ExecuteError::IO_ERROR:
-                return os << "<I/O error>";
-            case ExecuteError::LOAD_ERROR:
-                return os << "<Load error>";
-            case ExecuteError::RUNTIME_ERROR:
-                return os << "<Runtime error>";
-            case ExecuteError::UNSPECIFIED:
-                return os << "<Unspecified error>";
+        switch (err.code) {
+            case ExecuteErrorCode::IO_ERROR:
+                os << "<I/O error";
+            case ExecuteErrorCode::LOAD_ERROR:
+                os << "<Load error";
+            case ExecuteErrorCode::RUNTIME_ERROR:
+                os << "<Runtime error";
+            case ExecuteErrorCode::UNSPECIFIED:
+                os << "<Unspecified error";
             default:
                 return os << "<Unknown error code: please contact an Arasy developer>";
         }
+        return os << ": " << err.message << ">";
     }
 }
