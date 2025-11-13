@@ -59,7 +59,7 @@ namespace arasy::core {
 
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
-        LuaRegistry registry;
+        arasy::registry::LuaRegistry registry;
 
     public:
         lua_State* const state;
