@@ -15,7 +15,7 @@ namespace arasy::error {
         NONE,
         TOO_FEW_ARGS,
         TOO_MANY_ARGS,
-        INVALID_PLACEHOLDER,
+        INVALID_SPECIFIER,
         INCOMPATIBLE_ARG,
         UNSPECIFIED
     };
@@ -58,13 +58,16 @@ namespace arasy::core {
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
         template<typename... Args>
-        arasy::error::PushFmtError checkPushFmt(const std::string_view fmt) {
+        constexpr arasy::error::PushFmtError checkPushFmt(const std::string_view fmt) {
             auto idx = fmt.find('%');
             if (idx == std::string_view::npos) {
                 return arasy::error::PushFmtError::NONE;
             }
             idx = idx + 1;
-            if (idx < fmt.size() && fmt.at(idx) != '%') {
+            if (idx >= fmt.size()) {
+                return arasy::error::PushFmtError::INVALID_SPECIFIER;
+            }
+            if (fmt.at(idx) != '%') {
                 return arasy::error::PushFmtError::TOO_FEW_ARGS;
             } else {
                 return arasy::error::PushFmtError::NONE;
@@ -72,7 +75,7 @@ namespace arasy::core {
         }
 
         template<typename T1, typename... Args>
-        arasy::error::PushFmtError checkPushFmt(const std::string_view fmt, T1& firstArg, Args&... args) {
+        constexpr arasy::error::PushFmtError checkPushFmt(const std::string_view fmt, T1& firstArg, Args&... args) {
             auto idx = fmt.find('%');
             if (idx == std::string_view::npos) {
                 return arasy::error::PushFmtError::TOO_MANY_ARGS;
@@ -80,7 +83,7 @@ namespace arasy::core {
 
             idx++;
             if (idx >= fmt.size()) {
-                return arasy::error::PushFmtError::INVALID_PLACEHOLDER;
+                return arasy::error::PushFmtError::INVALID_SPECIFIER;
             }
 
             switch (fmt.at(idx)) {
@@ -95,24 +98,19 @@ namespace arasy::core {
                     break;
 
                 case 'f':
-                case 'g':
-                case 'G':
-                case 'e':
-                case 'E':
                     if constexpr (!std::is_convertible_v<T1, LuaNumber>) {
                         return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
                     }
                     break;
 
                 case 's':
-                case 'q':
                     if constexpr (!std::is_convertible_v<T1, LuaString>) {
                         return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
                     }
                     break;
 
                 default:
-                    return arasy::error::PushFmtError::INVALID_PLACEHOLDER;
+                    return arasy::error::PushFmtError::INVALID_SPECIFIER;
             }
 
             return checkPushFmt(fmt.substr(idx+1), args...);

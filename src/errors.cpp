@@ -9,7 +9,7 @@ namespace arasy::error {
                 return os << "<Too few args>";
             case PushFmtError::TOO_MANY_ARGS:
                 return os << "<Too many args>";
-            case PushFmtError::INVALID_PLACEHOLDER:
+            case PushFmtError::INVALID_SPECIFIER:
                 return os << "<Invalid placeholder>";
             case PushFmtError::INCOMPATIBLE_ARG:
                 return os << "<Incompatible arg>";

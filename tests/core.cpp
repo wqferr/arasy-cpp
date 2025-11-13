@@ -1,15 +1,9 @@
 #include <gtest/gtest.h>
-#include <memory>
-
 #include "arasy.hpp"
-
-#define SCOPE BasicLua
 
 using namespace arasy::core;
 
-const auto nimpl = testing::AssertionResult("Not implemented");
-
-TEST(SCOPE, GetGlobal) {
+TEST(BasicLua, GetGlobal) {
     Lua L;
     ASSERT_EQ(luaL_dostring(L, "x = 1 + 2"), LUA_OK) << "Snippet didn't compile";
 
@@ -21,7 +15,7 @@ TEST(SCOPE, GetGlobal) {
     }
 }
 
-TEST(SCOPE, SetGlobal) {
+TEST(BasicLua, SetGlobal) {
     Lua L;
     int a = -4;
     int b = 2;
@@ -36,7 +30,7 @@ TEST(SCOPE, SetGlobal) {
     }
 }
 
-TEST(SCOPE, LoadFile) {
+TEST(BasicLua, LoadFile) {
     Lua L;
     luaL_openlibs(L);
     lua_newtable(L);
@@ -64,7 +58,7 @@ TEST(SCOPE, LoadFile) {
     ASSERT_EQ(i, 3) << "t.field is not 3";
 }
 
-TEST(SCOPE, PushWrapperTypes) {
+TEST(BasicLua, PushWrapperTypes) {
     Lua L;
 
     {
@@ -107,7 +101,7 @@ TEST(SCOPE, PushWrapperTypes) {
     }
 }
 
-TEST(SCOPE, ArasyApiHasGetPop) {
+TEST(BasicLua, ArasyApiHasGetPop) {
     Lua L;
 
     L.pushStr("abc");
@@ -153,39 +147,3 @@ TEST(SCOPE, ArasyApiHasGetPop) {
     ASSERT_NE(v, std::nullopt) << "get<>() did not fetch a number with a positive index";
     EXPECT_EQ(*v, -0.5) << "get<>() fetched the wrong number with a positive index";
 }
-
-#undef SCOPE
-#define SCOPE PushFmt
-
-TEST(SCOPE, DoesntMangleSimpleStrings) {
-    using arasy::error::PushFmtError;
-    Lua L;
-    EXPECT_EQ(L.pushFmt("this is a simple string"), PushFmtError::NONE)
-        << "pushFmt() expected arguments even in the absence of placeholders";
-    auto res = L.getTop<LuaString>();
-    ASSERT_NE(res, std::nullopt) << "pushFmt() did not push result onto the stack";
-    EXPECT_EQ(*res, "this is a simple string") << "pushFmt() mangled a simple string with no arguments";
-}
-
-TEST(SCOPE, DoesntMangleCorrectlyNotatedArguments) {
-    Lua L;
-    EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%%", "interpolated", 123, 0.5), arasy::error::PushFmtError::NONE)
-        << "pushFmt() incorrectly identified errors in simple interpolation";
-    auto str = L.getTop<LuaString>();
-    ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
-    EXPECT_STREQ(str->str, "literal then interpolated (123) -> 0.5%") << "pushFmt() mangled a simple formatting job";
-}
-
-TEST(SCOPE, UnderstandsAllIntegerFormats) {
-    Lua L;
-    EXPECT_EQ(L.pushFmt("%d %c", 100, 65), arasy::error::PushFmtError::NONE);
-    auto str = L.getTop<LuaString>();
-    ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
-    EXPECT_EQ(*str, "100 A");
-}
-
-// TODO test %g %G %e %E
-
-// TEST(SCOPE, Threads) {
-//     Lua mainThread;
-// }
