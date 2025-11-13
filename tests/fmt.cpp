@@ -15,11 +15,11 @@ TEST(PushFmt, DoesntMangleSimpleStrings) {
 
 TEST(PushFmt, DoesntMangleCorrectlyNotatedArguments) {
     Lua L;
-    EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%%", "interpolated", 123, 0.5), arasy::error::PushFmtError::NONE)
+    EXPECT_EQ(L.pushFmt("literal then %s (%d) -> %f%% %p", "interpolated", 123, 0.5, nullptr), arasy::error::PushFmtError::NONE)
         << "pushFmt() incorrectly identified errors in simple interpolation";
     auto str = L.getTop<LuaString>();
     ASSERT_NE(str, std::nullopt) << "pushFmt() did not push result onto the stack";
-    EXPECT_EQ(str, "literal then interpolated (123) -> 0.5%") << "pushFmt() mangled a simple formatting job";
+    EXPECT_EQ(*str, "literal then interpolated (123) -> 0.5% 0000000000000000") << "pushFmt() mangled a simple formatting job";
 }
 
 TEST(PushFmt, UnderstandsAllIntegerFormats) {

@@ -88,6 +88,12 @@ namespace arasy::core {
 
             switch (fmt.at(idx)) {
                 case '%':
+                    return checkPushFmt(fmt.substr(idx+1), firstArg, args...);
+
+                case 'p':
+                    if constexpr (!std::is_convertible_v<T1, void *>) {
+                        return arasy::error::PushFmtError::INCOMPATIBLE_ARG;
+                    }
                     break;
 
                 case 'd':
