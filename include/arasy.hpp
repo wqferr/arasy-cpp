@@ -11,6 +11,7 @@
 #include "arasy/types/all.hpp"
 #include "arasy/errors.hpp"
 #include "arasy/pushfmt.hpp"
+#include "arasy/registry.hpp"
 
 namespace arasy::core {
     class Lua {
@@ -58,12 +59,14 @@ namespace arasy::core {
 
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
+        LuaRegistry registry;
+
     public:
         lua_State* const state;
         const bool external = false;
 
-        Lua(): state(luaL_newstate()) {}
-        Lua(lua_State* L): state(L), external(true) {}
+        Lua(): state(luaL_newstate()), registry(*this) {}
+        Lua(lua_State* L): state(L), external(true), registry(*this) {}
         ~Lua() { if (!external) { lua_close(state); } }
 
         int stackSize() const;

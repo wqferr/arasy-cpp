@@ -8,10 +8,26 @@ find_package(GTest CONFIG REQUIRED)
 
 add_library(
     core
+    "include/arasy.hpp"
     src/arasy.cpp
+    "include/arasy/types/all.hpp"
+    "include/arasy/types/base.hpp"
+    "include/arasy/types/boolean.hpp"
+    "include/arasy/types/cfunction.hpp"
+    "include/arasy/types/integer.hpp"
+    "include/arasy/types/nil.hpp"
+    "include/arasy/types/number.hpp"
+    "include/arasy/types/string.hpp"
+    "include/arasy/types/thread.hpp"
     src/types.cpp
     src/thread.cpp
+    "include/arasy/lua.hpp"
+    "include/arasy/pushfmt.hpp"
+    "include/arasy/utils.hpp"
+    "include/arasy/errors.hpp"
     src/errors.cpp
+    "include/arasy/registry.hpp"
+    src/registry.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
