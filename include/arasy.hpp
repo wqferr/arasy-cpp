@@ -118,7 +118,7 @@ namespace arasy::core {
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        std::optional<T> getStackTop() const {
+        std::optional<T> readStackTop() const {
             return readStack<T>(-1);
         }
 
@@ -147,6 +147,7 @@ namespace arasy::core {
             setGlobal<LuaNil>(name, nil);
         }
 
+        std::optional<arasy::error::ScriptError> pcall(int narg=0, int nret=LUA_MULTRET, lua_KContext ctx=0);
         std::optional<arasy::error::ScriptError> loadString(const std::string& code);
         std::optional<arasy::error::ScriptError> executeString(const std::string& code);
         std::optional<arasy::error::ScriptError> loadFile(const std::string& fileName);

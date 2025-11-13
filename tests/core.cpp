@@ -38,26 +38,22 @@ TEST(BasicLua, LoadFile) {
     lua_newtable(L);
     lua_setglobal(L, "t");
 
-    int status = luaL_loadfile(L, "tests/scripts/test_loading.lua");
-    if (status == LUA_OK) {
-        lua_getglobal(L, "t");
-        lua_pushnumber(L, 0.5);
-        status = lua_pcall(L, 2, 2, 0);
-    }
-    if (status != LUA_OK) {
-        ASSERT_TRUE(lua_isstring(L, -1));
-        FAIL() << lua_tostring(L, -1);
-    }
+    ASSERT_EQ(L.loadFile("tests/scripts/test_loading.lua"), arasy::error::none) << "Script failed to load";
+    lua_getglobal(L, "t");
+    L.pushNum(0.5);
+
+    ASSERT_EQ(L.pcall(2, 2), arasy::no_error) << "Error during pcall for loaded script";
+
     int validNumber = true;
-    lua_Number f = lua_tonumberx(L, -1, &validNumber);
-    ASSERT_TRUE(validNumber) << "top of the stack is not a valid number";
-    ASSERT_FLOAT_EQ(f, 5) << "top of the stack is not 5";
+    auto f = L.readStackTop<LuaNumber>();
+    ASSERT_NE(f, std::nullopt) << "Script did not return a number as its first value";
+    ASSERT_FLOAT_EQ(f->value, 5.0) << "Script did not return expected number value";
 
     ASSERT_EQ(lua_type(L, -2), LUA_TTABLE) << "second from the top is not a table";
     lua_getfield(L, -2, "field");
-    lua_Integer i = lua_tointegerx(L, -1, &validNumber);
-    ASSERT_TRUE(validNumber) << "t.field is not an integer";
-    ASSERT_EQ(i, 3) << "t.field is not 3";
+    auto i = L.readStackTop<LuaInteger>();
+    ASSERT_NE(i, std::nullopt) << "Script did not set t.field to an integer value";
+    ASSERT_EQ(*i, 3) << "t.field is not 3";
 }
 
 TEST(BasicLua, PushWrapperTypes) {

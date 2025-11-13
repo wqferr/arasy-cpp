@@ -1,8 +1,11 @@
 #pragma once
 
 #include <ostream>
+#include <optional>
 
 namespace arasy::error {
+    constexpr const std::nullopt_t none = std::nullopt;
+
     enum class PushFmtErrorCode {
         TOO_FEW_ARGS,
         TOO_MANY_ARGS,
@@ -22,4 +25,8 @@ namespace arasy::error {
         std::string message;
     };
     std::ostream& operator<<(std::ostream& os, const ScriptError& err);
+}
+
+namespace arasy {
+    constexpr const auto no_error = error::none;
 }

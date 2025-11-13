@@ -18,40 +18,40 @@ LuaValue Lua::getGlobal(const std::string& name) {
     return popStack().value_or(nil);
 }
 
-namespace {
-    std::optional<ScriptError> tryExecuteChunk(Lua& L) {
-        int runError = lua_pcall(L, 0, LUA_MULTRET, 0);
-        if (runError == LUA_ERRRUN) {
-            std::string errMsg;
-            if (auto luaStr = L.popStack<LuaString>()) {
-                errMsg = luaStr->str();
-            } else {
-                errMsg = "No error message";
-            }
-            return ScriptError{
-                ScriptErrorCode::RUNTIME_ERROR,
-                std::move(errMsg)
-            };
-        } else if (runError == LUA_ERRMEM) {
-            return ScriptError{
-                ScriptErrorCode::MEMORY_ERROR,
-                "Runtime memory allocation error"
-            };
-        } else if (runError == LUA_ERRERR) {
-            return ScriptError{
-                ScriptErrorCode::RUNTIME_ERROR,
-                "Memory allocation error"
-            };
-        } else if (runError != LUA_OK) {
-            return ScriptError{
-                ScriptErrorCode::RUNTIME_ERROR,
-                "Unknown runtime error"
-            };
+std::optional<ScriptError> Lua::pcall(int narg, int nret, lua_KContext ctx) {
+    int runError = lua_pcall(state, narg, nret, ctx);
+    if (runError == LUA_ERRRUN) {
+        std::string errMsg;
+        if (auto luaStr = popStack<LuaString>()) {
+            errMsg = luaStr->str();
+        } else {
+            errMsg = "No error message";
         }
-
-        return std::nullopt;
+        return ScriptError{
+            ScriptErrorCode::RUNTIME_ERROR,
+            std::move(errMsg)
+        };
+    } else if (runError == LUA_ERRMEM) {
+        return ScriptError{
+            ScriptErrorCode::MEMORY_ERROR,
+            "Runtime memory allocation error"
+        };
+    } else if (runError == LUA_ERRERR) {
+        return ScriptError{
+            ScriptErrorCode::RUNTIME_ERROR,
+            "Memory allocation error"
+        };
+    } else if (runError != LUA_OK) {
+        return ScriptError{
+            ScriptErrorCode::RUNTIME_ERROR,
+            "Unknown runtime error"
+        };
     }
 
+    return std::nullopt;
+}
+
+namespace {
     std::optional<ScriptError> checkLoadChunk(Lua& L, int loadError) {
         if (loadError == LUA_ERRSYNTAX) {
             return ScriptError{
@@ -97,7 +97,7 @@ std::optional<ScriptError> Lua::executeString(const std::string& code) {
     if (auto err = loadString(code.c_str())) {
         return err;
     } else {
-        return tryExecuteChunk(*this);
+        return pcall();
     }
 }
 
@@ -105,7 +105,7 @@ std::optional<ScriptError> Lua::executeFile(const std::string& fileName) {
     if (auto err = loadFile(fileName.c_str())) {
         return err;
     } else {
-        return tryExecuteChunk(*this);
+        return pcall();
     }
 }
 

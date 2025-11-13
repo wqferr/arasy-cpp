@@ -13,6 +13,10 @@ namespace arasy::core {
         constexpr bool operator==(const LuaNumber& other) const {
             return value == other.value;
         }
+
+        constexpr std::enable_if_t<!std::is_same_v<lua_Number, float>, bool> operator==(const float& other) const {
+            return value == other;
+        }
     };
 
     constexpr bool operator==(const lua_Number& a, const LuaNumber& b) {
