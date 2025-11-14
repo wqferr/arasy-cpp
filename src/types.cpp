@@ -36,6 +36,9 @@ namespace arasy::core {
                 },
                 [&os](const LuaThread& thr) {
                     os << "thread: " << std::hex << thr.thread().state;
+                },
+                [&os](const LuaTable& tbl) {
+                    os << "table: id #" << tbl.id();
                 }
             },
             lv
@@ -53,6 +56,10 @@ namespace arasy::core {
                 return LuaStackReader<LuaNumber>::readAt(L, idx);
             } else if (LuaStackReader<LuaString>::checkAt(L, idx)) {
                 return LuaStackReader<LuaString>::readAt(L, idx);
+            } else if (LuaStackReader<LuaTable>::checkAt(L, idx)) {
+                return LuaStackReader<LuaTable>::readAt(L, idx);
+            } else if (LuaStackReader<LuaThread>::checkAt(L, idx)) {
+                return LuaStackReader<LuaThread>::readAt(L, idx);
             } else if (LuaStackReader<LuaCFunction>::checkAt(L, idx)) {
                 return LuaStackReader<LuaCFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {

@@ -13,6 +13,15 @@ namespace arasy::core {
         };
     }
 
+    template<typename T1, typename T2, typename = std::enable_if_t<
+        !std::is_same_v<T1, T2>
+        && std::is_base_of_v<internal::LuaBaseType, T1>
+        && std::is_base_of_v<internal::LuaBaseType, T2>>>
+    bool operator==(const T1& a, const T2& b) {
+        return false;
+    }
+
+
     template<typename T>
     constexpr const inline bool is_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 

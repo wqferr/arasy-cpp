@@ -12,19 +12,16 @@ namespace arasy::registry {
         void pushSelf();
 
     private:
-        std::shared_ptr<char> refCount;
-        const int id;
-
-        int findOrRegisterId(lua_State* L, int idx);
+        int makeId(int idx);
+        int refCount();
+        int id_;
 
     public:
         LuaReference(lua_State* L, int idx);
         virtual ~LuaReference();
         void pushOnto(lua_State* L) const override;
+        bool operator==(const LuaReference& other) const { return id_ == other.id_; }
 
-        // LuaReference& operator=(const LuaReference& other);
-        // LuaReference& operator=(LuaReference&& other);
-        // LuaReference(const LuaReference& other);
-        // LuaReference(LuaReference&& other);
+        int id() const { return id_; }
     };
 }

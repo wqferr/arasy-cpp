@@ -5,4 +5,5 @@ using namespace arasy::core;
 
 std::optional<arasy::error::TableIndexingError> LuaTable::setStackKV() {
     // pushSelf();
+    return std::nullopt;
 }

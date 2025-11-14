@@ -4,34 +4,7 @@
 using namespace arasy::registry;
 using namespace arasy::core;
 
-LuaRegistry::LuaRegistry(lua_State* L_): L(L_) {
-    retrieveRefIndex();
-    if (lua_isnil(L, -1)) {
-        createRefIndex();
-    }
-    lua_pop(L, 1);
-}
-
-void LuaRegistry::retrieveRefIndex() {
-    lua_getfield(L, LUA_REGISTRYINDEX, arasyRefIndexKey);
-}
-
-void LuaRegistry::createRefIndex() {
-    int top = lua_gettop(L);
-
-    // RefIndex
-    lua_newtable(L);
-
-    // RefIndex metatable
-    lua_newtable(L);
-    lua_pushliteral(L, "k");
-    lua_setfield(L, -2, "__mode");
-
-    lua_setmetatable(L, -2);
-    lua_setfield(L, LUA_REGISTRYINDEX, arasyRefIndexKey);
-
-    lua_settop(L, top);
-}
+LuaRegistry::LuaRegistry(lua_State* L_): L(L_) {}
 
 void LuaRegistry::retrieveField(const char* fieldName) const {
     lua_getfield(L, LUA_REGISTRYINDEX, fieldName);
@@ -60,13 +33,16 @@ void LuaRegistry::storeField(const char* fieldName) {
 }
 
 void LuaRegistry::writeKey(const LuaValue& key, const LuaValue& value) {
+    if (key.isA<LuaInteger>()) {
+        return;
+    }
     key.pushOnto(L);
     value.pushOnto(L);
     lua_settable(L, LUA_REGISTRYINDEX);
 }
 
 void LuaRegistry::storeKey(const LuaValue& key) {
-    if (lua_gettop(L) < 1) {
+    if (key.isA<LuaInteger>() || lua_gettop(L) < 1) {
         return;
     }
 

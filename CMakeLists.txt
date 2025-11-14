@@ -19,7 +19,9 @@ add_library(
     "include/arasy/types/number.hpp"
     "include/arasy/types/string.hpp"
     "include/arasy/types/thread.hpp"
+    "include/arasy/types/table.hpp"
     src/types.cpp
+    src/table.cpp
     src/thread.cpp
     "include/arasy/lua.hpp"
     "include/arasy/pushfmt.hpp"
@@ -28,6 +30,8 @@ add_library(
     src/errors.cpp
     "include/arasy/registry.hpp"
     src/registry.cpp
+    "include/arasy/reference.hpp"
+    src/reference.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})

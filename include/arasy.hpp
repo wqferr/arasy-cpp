@@ -73,6 +73,7 @@ namespace arasy::core {
         }
 
         int stackSize() const;
+        std::optional<int> type(int idx) const;
 
         void push(const LuaValue& value);
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }

@@ -5,6 +5,8 @@
 #include "arasy/errors.hpp"
 
 namespace arasy::core {
+    class LuaValue;
+
     class LuaTable : public arasy::registry::LuaReference {
     public:
         LuaTable(lua_State* L, int index): LuaReference(L, index) {}

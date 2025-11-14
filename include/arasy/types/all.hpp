@@ -5,6 +5,7 @@
 #include "arasy/types/number.hpp"
 #include "arasy/types/integer.hpp"
 #include "arasy/types/string.hpp"
+#include "arasy/types/table.hpp"
 #include "arasy/types/cfunction.hpp"
 #include "arasy/types/thread.hpp"
 
@@ -15,7 +16,7 @@
 
 namespace arasy::core {
 
-#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaCFunction, LuaThread
+#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaCFunction, LuaThread
     namespace internal {
         using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
     }

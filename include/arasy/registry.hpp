@@ -2,15 +2,15 @@
 
 #include <optional>
 
-#include "arasy/types/all.hpp"
 #include "lua.hpp"
+
+namespace arasy::core {
+    class LuaValue;
+}
 
 namespace arasy::registry {
     class LuaRegistry {
-        const char* arasyRefIndexKey = "arasy_Ref";
-
-        void retrieveRefIndex();
-        void createRefIndex();
+        friend class LuaReference;
     public:
         lua_State* const L;
         LuaRegistry(lua_State* L_);
@@ -18,7 +18,7 @@ namespace arasy::registry {
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
         void retrieveField(const char* fieldName) const;
 
-        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<arasy::core::is_lua_wrapper_type_v<T>>>
         std::optional<T> readField(const char* fieldName) const {
             using SR = arasy::core::internal::LuaStackReader<T>;
 
@@ -28,7 +28,7 @@ namespace arasy::registry {
             return value;
         }
 
-        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<arasy::core::is_lua_wrapper_type_v<T>>>
         std::optional<T> readKey(const T& key) const {
             using SR = arasy::core::internal::LuaStackReader<T>;
 
