@@ -22,6 +22,7 @@ TEST(LuaRegistry, CanWriteAndRead) {
     L.registry().storeField("mytable");
     EXPECT_EQ(L.stackSize(), 0) << "Registry did not pop the value it just stored";
     L.registry().retrieveField("mytable");
+    lua_gc(L, LUA_GCCOLLECT);
     const void *tablePtr2 = lua_topointer(L, -1);
     EXPECT_EQ(tablePtr1, tablePtr2) << "Retrieved table is not the same";
 }
