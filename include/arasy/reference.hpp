@@ -12,6 +12,6 @@ namespace arasy::registry {
         LuaRegistry& registry;
 
     public:
-
+        void pushOnto(lua_State* L) const override;
     };
 }

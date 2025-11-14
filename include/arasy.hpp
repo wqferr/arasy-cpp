@@ -62,19 +62,15 @@ namespace arasy::core {
     public:
         lua_State* const state;
         const bool external = false;
-        std::optional<arasy::registry::LuaRegistry> registry_;
+        arasy::registry::LuaRegistry registry;
 
-        Lua(): state(luaL_newstate()), registry_(*this) {}
-        Lua(lua_State* L): state(L), external(true), registry_(*this) {}
+        Lua(): state(luaL_newstate()), registry(*this) {}
+        Lua(lua_State* L): state(L), external(true), registry(*this) {}
         ~Lua() {
-            registry_.reset();
             if (!external) {
                 lua_close(state);
             }
         }
-
-        arasy::registry::LuaRegistry& registry() { return *registry_; }
-        const arasy::registry::LuaRegistry& registry() const { return *registry_; }
 
         int stackSize() const;
 
