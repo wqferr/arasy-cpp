@@ -3,6 +3,6 @@
 
 using namespace arasy::core;
 
-void LuaTable::setStackKV() {
-    pushSelf();
+std::optional<arasy::error::TableIndexingError> LuaTable::setStackKV() {
+    // pushSelf();
 }

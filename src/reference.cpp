@@ -10,7 +10,7 @@ void LuaReference::pushSelf() {
 LuaReference::LuaReference(lua_State* L, int idx):
     registry(L),
     refCount(std::make_shared<char>(0)),
-    id(registerId(L, idx))
+    id(findOrRegisterId(L, idx))
 {}
 
 LuaReference::~LuaReference() {
@@ -19,9 +19,18 @@ LuaReference::~LuaReference() {
     }
 }
 
-int LuaReference::registerId(lua_State* L, int idx) {
+int LuaReference::findOrRegisterId(lua_State* L, int idx) {
     lua_pushvalue(L, idx);
-    return luaL_ref(L, LUA_REGISTRYINDEX);
+    registry.retrieveStack();
+    if (lua_isnil(L, -1)) {
+        lua_pop(L, 1);
+        lua_pushvalue(L, idx);
+        return luaL_ref(L, LUA_REGISTRYINDEX);
+    } else {
+        int ref = lua_tointeger(L, -1);
+        lua_pop(L, 1);
+        return ref;
+    }
 }
 
 void LuaReference::pushOnto(lua_State* L) const {

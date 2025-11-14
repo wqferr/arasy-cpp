@@ -7,37 +7,39 @@
 
 namespace arasy::registry {
     class LuaRegistry {
+        const char* arasyRefIndexKey = "arasy_Ref";
+
+        void retrieveRefIndex();
+        void createRefIndex();
     public:
         lua_State* const L;
         LuaRegistry(lua_State* L_);
 
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
-        arasy::core::LuaValue readField(const char* fieldName) const;
         void retrieveField(const char* fieldName) const;
 
-        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> readField(const char* fieldName) const {
-            LuaValue value = readField(fieldName);
-            if (value.isA<T>()) {
-                return value.asA<T>();
-            } else {
-                return std::nullopt;
-            }
+            using SR = arasy::core::internal::LuaStackReader<T>;
+
+            retrieveField(fieldName);
+            auto value = SR::readAt(L, -1);
+            lua_pop(L, 1);
+            return value;
         }
 
-        arasy::core::LuaValue readKey(const arasy::core::LuaValue& key) const;
-
-        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> readKey(const T& key) const {
-            LuaValue value = readKey(key);
-            if (value.isA<T>()) {
-                return value.asA<T>();
-            } else {
-                return std::nullopt;
-            }
+            using SR = arasy::core::internal::LuaStackReader<T>;
+
+            retrieveKey(fieldName);
+            auto value = SR::readAt(L, -1);
+            lua_pop(L, 1);
+            return value;
         }
 
-        void retrieve(const arasy::core::LuaValue& key) const;
+        void retrieveKey(const arasy::core::LuaValue& key) const;
+        void retrieveStack() const;
 
         void writeField(const char* fieldName, const arasy::core::LuaValue& value);
         void storeField(const char* fieldName);

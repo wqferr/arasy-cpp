@@ -13,9 +13,9 @@ namespace arasy::registry {
 
     private:
         std::shared_ptr<char> refCount;
-        int id;
+        const int id;
 
-        int registerId(lua_State* L, int idx);
+        int findOrRegisterId(lua_State* L, int idx);
 
     public:
         LuaReference(lua_State* L, int idx);

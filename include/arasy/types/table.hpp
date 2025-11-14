@@ -8,9 +8,9 @@ namespace arasy::core {
     class LuaTable : public arasy::registry::LuaReference {
     public:
         LuaTable(lua_State* L, int index): LuaReference(L, index) {}
-        std::optional<arasy::error::TableIndexingErrorCode> setStackKV();
-        std::optional<arasy::error::TableIndexingErrorCode> set(const LuaValue& key, const LuaValue& value);
-        std::optional<arasy::error::TableIndexingErrorCode> setField(const char* fieldName, const LuaValue& value);
+        std::optional<arasy::error::TableIndexingError> setStackKV();
+        std::optional<arasy::error::TableIndexingError> set(const LuaValue& key, const LuaValue& value);
+        std::optional<arasy::error::TableIndexingError> setField(const char* fieldName, const LuaValue& value);
         void seti(const lua_Integer& i, const lua_Integer& value);
 
         void setRawStackKV();

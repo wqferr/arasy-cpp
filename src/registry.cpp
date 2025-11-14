@@ -4,29 +4,46 @@
 using namespace arasy::registry;
 using namespace arasy::core;
 
-LuaRegistry::LuaRegistry(lua_State* L_): L(L_) {}
+LuaRegistry::LuaRegistry(lua_State* L_): L(L_) {
+    retrieveRefIndex();
+    if (lua_isnil(L, -1)) {
+        createRefIndex();
+    }
+    lua_pop(L, 1);
+}
+
+void LuaRegistry::retrieveRefIndex() {
+    lua_getfield(L, LUA_REGISTRYINDEX, arasyRefIndexKey);
+}
+
+void LuaRegistry::createRefIndex() {
+    int top = lua_gettop(L);
+
+    // RefIndex
+    lua_newtable(L);
+
+    // RefIndex metatable
+    lua_newtable(L);
+    lua_pushliteral(L, "k");
+    lua_setfield(L, -2, "__mode");
+
+    lua_setmetatable(L, -2);
+    lua_setfield(L, LUA_REGISTRYINDEX, arasyRefIndexKey);
+
+    lua_settop(L, top);
+}
 
 void LuaRegistry::retrieveField(const char* fieldName) const {
     lua_getfield(L, LUA_REGISTRYINDEX, fieldName);
 }
 
-LuaValue LuaRegistry::readField(const char* fieldName) const {
-    retrieveField(fieldName);
-    auto value = *arasy::core::internal::LuaStackReader<LuaValue>::readAt(L, -1);
-    lua_pop(L, 1);
-    return value;
-}
-
-void LuaRegistry::retrieve(const LuaValue& key) const {
+void LuaRegistry::retrieveKey(const LuaValue& key) const {
     key.pushOnto(L);
     lua_gettable(L, LUA_REGISTRYINDEX);
 }
 
-LuaValue LuaRegistry::readKey(const LuaValue& key) const {
-    retrieve(key);
-    auto value = *arasy::core::internal::LuaStackReader<LuaValue>::readAt(L, -1);
-    lua_pop(L, 1);
-    return value;
+void LuaRegistry::retrieveStack() const {
+    lua_gettable(L, LUA_REGISTRYINDEX);
 }
 
 void LuaRegistry::writeField(const char *fieldName, const LuaValue& value) {
