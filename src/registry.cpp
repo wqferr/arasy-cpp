@@ -67,7 +67,7 @@ void LuaRegistry::storeField(const char* fieldName) {
     pushSelf();
     lua_pushvalue(L, -2);
     lua_setfield(L, -2, fieldName);
-    lua_pop(L, 1);
+    lua_pop(L, 2);
 }
 
 void LuaRegistry::writeKey(const LuaValue& key, const LuaValue& value) {
@@ -87,5 +87,5 @@ void LuaRegistry::storeKey(const LuaValue& key) {
     key.pushOnto(L);
     lua_pushvalue(L, -3);
     lua_settable(L, -3);
-    lua_pop(L, 1);
+    lua_pop(L, 2);
 }
