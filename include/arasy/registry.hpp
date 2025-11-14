@@ -6,16 +6,9 @@
 namespace arasy::registry {
     class LuaRegistry {
         lua_State* const L;
-        void* const mainKey = new char;
 
     public:
         LuaRegistry(lua_State* L_);
-        LuaRegistry(const LuaRegistry&) = delete;
-        LuaRegistry& operator=(const LuaRegistry&) = delete;
-
-        ~LuaRegistry();
-
-        void pushSelf();
 
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
         arasy::core::LuaValue readField(const char* fieldName);
@@ -27,5 +20,7 @@ namespace arasy::registry {
         void storeField(const char* fieldName);
         void writeKey(const arasy::core::LuaValue& key, const arasy::core::LuaValue& value);
         void storeKey(const arasy::core::LuaValue& key);
+
+        void retrieveRef(int ref);
     };
 }
