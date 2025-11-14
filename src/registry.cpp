@@ -4,33 +4,88 @@
 using namespace arasy::registry;
 using namespace arasy::core;
 
+LuaRegistry::LuaRegistry(lua_State* L_): L(L_) {
+    lua_pushlightuserdata(L, mainKey);
+    lua_newtable(L);
+    lua_settable(L, LUA_REGISTRYINDEX);
+}
+
+LuaRegistry::~LuaRegistry() {
+    lua_pushlightuserdata(L, mainKey);
+    lua_pushnil(L);
+    lua_settable(L, LUA_REGISTRYINDEX);
+    delete mainKey;
+}
+
 void LuaRegistry::pushSelf() {
     lua_pushlightuserdata(L, mainKey);
     lua_gettable(L, LUA_REGISTRYINDEX);
 }
 
-LuaValue LuaRegistry::getField(const char *fieldName) {
+void LuaRegistry::retrieveField(const char* fieldName) {
     pushSelf();
     lua_getfield(L, -1, fieldName);
-    return *L.readStackTop();
+    lua_remove(L, -2);
 }
 
-LuaValue LuaRegistry::getIndex(const LuaValue& key) {
+LuaValue LuaRegistry::readField(const char* fieldName) {
+    retrieveField(fieldName);
+    auto value = *arasy::core::internal::LuaStackReader<LuaValue>::readAt(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+void LuaRegistry::retrieve(const LuaValue& key) {
     pushSelf();
-    L.push(key);
+    key.pushOnto(L);
     lua_gettable(L, -2);
-    return *L.readStackTop();
+
+    // Yes, twice
+    lua_remove(L, -2);
+    lua_remove(L, -2);
 }
 
-void LuaRegistry::setField(const char *fieldName, const LuaValue& value) {
+LuaValue LuaRegistry::readKey(const LuaValue& key) {
+    retrieve(key);
+    auto value = *arasy::core::internal::LuaStackReader<LuaValue>::readAt(L, -1);
+    lua_pop(L, 1);
+    return value;
+}
+
+void LuaRegistry::writeField(const char *fieldName, const LuaValue& value) {
     pushSelf();
-    L.push(value);
+    value.pushOnto(L);
     lua_setfield(L, -2, fieldName);
+    lua_pop(L, 1);
 }
 
-void LuaRegistry::setIndex(const LuaValue& key, const LuaValue& value) {
+void LuaRegistry::storeField(const char* fieldName) {
+    if (lua_gettop(L) < 1) {
+        return;
+    }
+
     pushSelf();
-    L.push(key);
-    L.push(value);
+    lua_pushvalue(L, -2);
+    lua_setfield(L, -2, fieldName);
+    lua_pop(L, 1);
+}
+
+void LuaRegistry::writeKey(const LuaValue& key, const LuaValue& value) {
+    pushSelf();
+    key.pushOnto(L);
+    value.pushOnto(L);
     lua_settable(L, -3);
+    lua_pop(L, 1);
+}
+
+void LuaRegistry::storeKey(const LuaValue& key) {
+    if (lua_gettop(L) < 1) {
+        return;
+    }
+
+    pushSelf();
+    key.pushOnto(L);
+    lua_pushvalue(L, -3);
+    lua_settable(L, -3);
+    lua_pop(L, 1);
 }

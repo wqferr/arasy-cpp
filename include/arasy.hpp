@@ -59,15 +59,19 @@ namespace arasy::core {
 
         std::optional<GlobalVariableProxy> latestVariableAccessed;
 
-        arasy::registry::LuaRegistry registry;
-
     public:
         lua_State* const state;
         const bool external = false;
+        std::optional<arasy::registry::LuaRegistry> registry;
 
         Lua(): state(luaL_newstate()), registry(*this) {}
         Lua(lua_State* L): state(L), external(true), registry(*this) {}
-        ~Lua() { if (!external) { lua_close(state); } }
+        ~Lua() {
+            registry.reset();
+            if (!external) {
+                lua_close(state);
+            }
+        }
 
         int stackSize() const;
 
@@ -75,6 +79,8 @@ namespace arasy::core {
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }
         void pushNum(lua_Number x) { push(LuaNumber{x}); }
         void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
+        void pushTable() { lua_newtable(state); }
+        // TODO: pushTable(std::unordered_map<LuaValue, LuaValue>)
 
         template<typename... Args>
         std::optional<arasy::error::PushFmtErrorCode> pushFmt(const char *fmt, Args&&... args) {

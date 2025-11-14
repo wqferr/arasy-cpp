@@ -1,25 +1,31 @@
 #pragma once
 
 #include "arasy/types/all.hpp"
+#include "lua.hpp"
 
-namespace arasy::core {
-    class Lua;
-}
 namespace arasy::registry {
     class LuaRegistry {
-        arasy::core::Lua& L;
-    public:
-        void *const mainKey = new char;
+        lua_State* const L;
+        void* const mainKey = new char;
 
-        LuaRegistry(arasy::core::Lua& L_):  L(L_) {}
-        ~LuaRegistry() { delete mainKey; }
+    public:
+        LuaRegistry(lua_State* L_);
+        LuaRegistry(const LuaRegistry&) = delete;
+        LuaRegistry& operator=(const LuaRegistry&) = delete;
+
+        ~LuaRegistry();
 
         void pushSelf();
 
-        // DO NOT IMPLEMENT getField(int), this is reserved for luaL_ref
-        arasy::core::LuaValue getField(const char *fieldName);
-        arasy::core::LuaValue getIndex(const arasy::core::LuaValue& key);
-        void setField(const char *fieldName, const arasy::core::LuaValue& value);
-        void setIndex(const arasy::core::LuaValue& key, const arasy::core::LuaValue& value);
+        // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
+        arasy::core::LuaValue readField(const char* fieldName);
+        void retrieveField(const char* fieldName);
+        arasy::core::LuaValue readKey(const arasy::core::LuaValue& key);
+        void retrieve(const arasy::core::LuaValue& key);
+
+        void writeField(const char* fieldName, const arasy::core::LuaValue& value);
+        void storeField(const char* fieldName);
+        void writeKey(const arasy::core::LuaValue& key, const arasy::core::LuaValue& value);
+        void storeKey(const arasy::core::LuaValue& key);
     };
 }

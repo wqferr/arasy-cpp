@@ -33,6 +33,16 @@ namespace arasy::core {
             return std::holds_alternative<T>(*this);
         }
 
+        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        constexpr T& asA() {
+            return std::get<T>(*this);
+        }
+
+        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        constexpr const T& asA() const {
+            return std::get<T>(*this);
+        }
+
         constexpr int luaTypeId() const {
             return index();
         }
