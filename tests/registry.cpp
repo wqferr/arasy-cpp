@@ -41,5 +41,5 @@ TEST(LuaRegistry, CanWriteAndRead) {
     ASSERT_NE(maybeOtherRef, std::nullopt);
     const void* tablePtr3 = lua_topointer(L, -1);
     EXPECT_EQ(tablePtr1, tablePtr3);
-    EXPECT_EQ(maybeOtherRef->id(), maybeTable->id());
+    EXPECT_NE(maybeOtherRef->id(), maybeTable->id());
 }

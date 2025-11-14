@@ -13,7 +13,7 @@ namespace arasy::registry {
 
     private:
         int makeId(int idx);
-        int refCount();
+        std::shared_ptr<char> refCounter;
         int id_;
 
     public:

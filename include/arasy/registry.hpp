@@ -11,6 +11,7 @@ namespace arasy::core {
 namespace arasy::registry {
     class LuaRegistry {
         friend class LuaReference;
+
     public:
         lua_State* const L;
         LuaRegistry(lua_State* L_);
@@ -46,7 +47,7 @@ namespace arasy::registry {
         void writeKey(const arasy::core::LuaValue& key, const arasy::core::LuaValue& value);
         void storeKey(const arasy::core::LuaValue& key);
 
-        int newRef();
+        int createRef(int idx);
         void retrieveRef(int ref) const;
         void releaseRef(int ref);
     };

@@ -52,10 +52,11 @@ void LuaRegistry::storeKey(const LuaValue& key) {
     lua_pop(L, 2);
 }
 
-int LuaRegistry::newRef() {
-    if (lua_gettop(L) < 1) {
+int LuaRegistry::createRef(int idx) {
+    if (lua_isnone(L, idx)) {
         return LUA_NOREF;
     }
+    lua_pushvalue(L, idx);
     return luaL_ref(L, LUA_REGISTRYINDEX);
 }
 

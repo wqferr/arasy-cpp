@@ -9,23 +9,18 @@ void LuaReference::pushSelf() {
 
 LuaReference::LuaReference(lua_State* L, int idx):
     registry(L),
+    refCounter(std::make_shared<char>('\0')),
     id_(makeId(idx))
 {}
 
 int LuaReference::makeId(int idx) {
-    lua_pushvalue(registry.L, idx);
-    return registry.newRef();
+    return registry.createRef(idx);
 }
 
 LuaReference::~LuaReference() {
-    if (refCount() == 1) {
+    if (refCounter.use_count() == 1) {
         registry.releaseRef(id_);
     }
-}
-
-int LuaReference::refCount() {
-    // TODO
-    return 10;
 }
 
 void LuaReference::pushOnto(lua_State* L) const {
