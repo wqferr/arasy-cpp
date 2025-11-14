@@ -7,17 +7,16 @@
 
 namespace arasy::registry {
     class LuaRegistry {
-        lua_State* const L;
-
     public:
+        lua_State* const L;
         LuaRegistry(lua_State* L_);
 
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
-        arasy::core::LuaValue readField(const char* fieldName);
-        void retrieveField(const char* fieldName);
+        arasy::core::LuaValue readField(const char* fieldName) const;
+        void retrieveField(const char* fieldName) const;
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-        std::optional<T> readField(const char* fieldName) {
+        std::optional<T> readField(const char* fieldName) const {
             LuaValue value = readField(fieldName);
             if (value.isA<T>()) {
                 return value.asA<T>();
@@ -26,10 +25,10 @@ namespace arasy::registry {
             }
         }
 
-        arasy::core::LuaValue readKey(const arasy::core::LuaValue& key);
+        arasy::core::LuaValue readKey(const arasy::core::LuaValue& key) const;
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-        std::optional<T> readKey(const T& key) {
+        std::optional<T> readKey(const T& key) const {
             LuaValue value = readKey(key);
             if (value.isA<T>()) {
                 return value.asA<T>();
@@ -38,13 +37,15 @@ namespace arasy::registry {
             }
         }
 
-        void retrieve(const arasy::core::LuaValue& key);
+        void retrieve(const arasy::core::LuaValue& key) const;
 
         void writeField(const char* fieldName, const arasy::core::LuaValue& value);
         void storeField(const char* fieldName);
         void writeKey(const arasy::core::LuaValue& key, const arasy::core::LuaValue& value);
         void storeKey(const arasy::core::LuaValue& key);
 
-        void retrieveRef(int ref);
+        int newRef();
+        void retrieveRef(int ref) const;
+        void releaseRef(int ref);
     };
 }

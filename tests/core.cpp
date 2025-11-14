@@ -33,6 +33,7 @@ TEST(BasicLua, SetGlobal) {
 }
 
 TEST(BasicLua, LoadFile) {
+    // TODO test loading nonexistent file
     Lua L;
     luaL_openlibs(L);
     lua_newtable(L);

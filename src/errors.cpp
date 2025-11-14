@@ -1,7 +1,11 @@
 #include "arasy.hpp"
 
+namespace {
+    const char* unknownErrorMsg = "<Unknown error code: please contact an Arasy developer>";
+}
+
 namespace arasy::error {
-    std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
+std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
         switch (err) {
             case PushFmtErrorCode::TOO_FEW_ARGS:
                 return os << "<Too few args>";
@@ -12,21 +16,31 @@ namespace arasy::error {
             case PushFmtErrorCode::INCOMPATIBLE_ARG:
                 return os << "<Incompatible arg>";
             default:
-                return os << "<Unknown error code: please contact an Arasy developer>";
+                return os << unknownErrorMsg;
         }
     }
 
-    std::ostream& operator<<(std::ostream& os, const ScriptError& err) {
-        switch (err.code) {
+    std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err) {
+        switch (err) {
             case ScriptErrorCode::IO_ERROR:
-                os << "<I/O error";
+                os << "<I/O error>";
             case ScriptErrorCode::LOAD_ERROR:
-                os << "<Load error";
+                os << "<Load error>";
             case ScriptErrorCode::RUNTIME_ERROR:
-                os << "<Runtime error";
+                os << "<Runtime error>";
             default:
-                return os << "<Unknown error code: please contact an Arasy developer>";
+                return os << unknownErrorMsg;
         }
-        return os << ": " << err.message << ">";
+    }
+
+    std::ostream& operator<<(std::ostream& os, const TableIndexingErrorCode& err) {
+        switch (err) {
+            case TableIndexingErrorCode::NIL_KEY:
+                os << "<Nil key>";
+            case TableIndexingErrorCode::NOT_ENOUGH_VALUES:
+                os << "<Not enough values on the stack>";
+            default:
+                return os << unknownErrorMsg;
+        }
     }
 }
