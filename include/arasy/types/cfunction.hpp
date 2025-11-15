@@ -9,12 +9,12 @@ namespace arasy::core {
 
         LuaCFunction(lua_CFunction cfunc_): cfunc(cfunc_) {}
 
-        bool operator==(const LuaCFunction& other) const { return cfunc == other.cfunc; }
-
         void pushOnto(lua_State* L) const override {
             lua_pushcfunction(L, cfunc);
         }
     };
+
+    inline bool operator==(const LuaCFunction& a, const LuaCFunction& b) { return a.cfunc == b.cfunc; }
 
     template<>
     constexpr const bool is_potentially_callable_v<LuaCFunction> = true;

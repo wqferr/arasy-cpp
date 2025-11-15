@@ -8,10 +8,11 @@ namespace arasy::core {
     public:
         LuaString(const char *str_): str_(str_) {}
         const char *str() const { return str_.c_str(); }
+        const std::string& fullStr() const { return str_; }
         void pushOnto(lua_State* L) const override { lua_pushstring(L, str_.c_str()); }
-
-        bool operator==(const LuaString& other) const { return str_ == other.str_; }
     };
+
+    inline bool operator==(const LuaString& a, const LuaString& b) { return a.fullStr() == b.fullStr(); }
 
     namespace internal {
         template<>

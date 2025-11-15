@@ -13,11 +13,13 @@ namespace arasy::core {
     public:
         LuaThread(lua_State* L): thread_(std::make_unique<Lua>(L)) {}
         void pushOnto(lua_State* L) const override;
+
         Lua& thread() { return *thread_; }
         const Lua& thread() const { return *thread_; }
 
         operator Lua&() { return *thread_; }
     };
+    bool operator==(const LuaThread& a, const LuaThread& b);
 
     namespace internal {
         template<>

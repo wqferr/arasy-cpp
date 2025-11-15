@@ -30,6 +30,14 @@ namespace arasy::core {
 
         void setMetatableStack();
         void setMetatable(const LuaTable& metatable);
+
+        // TODO
+        struct OperationChain {};
+        OperationChain chain();
+
+        // bool operator==(const LuaTable& other) {
+        //     return LuaReference::operator==(other);
+        // }
     };
 
     namespace internal {

@@ -7,3 +7,7 @@ void LuaThread::pushOnto(lua_State* L) const {
     (void) L;
     lua_pushthread(thread_->state);
 }
+
+bool arasy::core::operator==(const LuaThread& a, const LuaThread& b) {
+    return a.thread().state == b.thread().state;
+}

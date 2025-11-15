@@ -21,7 +21,6 @@ namespace arasy::core {
         return false;
     }
 
-
     template<typename T>
     constexpr const inline bool is_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 

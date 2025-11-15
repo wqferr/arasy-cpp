@@ -9,6 +9,21 @@ using namespace arasy::core;
 using namespace arasy::core::internal;
 
 namespace arasy::core {
+
+    std::optional<lua_Number> LuaValue::toNumber() const {
+        if (isA<LuaInteger>()) {
+            return asA<LuaInteger>().value;
+        } else if (isA<LuaNumber>()) {
+            return asA<LuaNumber>().value;
+        } else {
+            return std::nullopt;
+        }
+    }
+
+    bool LuaValue::isNumeric() const {
+        return isA<LuaInteger>() || isA<LuaNumber>();
+    }
+
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv) {
         struct visitor {
             std::ostream& os;

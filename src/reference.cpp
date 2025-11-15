@@ -26,3 +26,16 @@ LuaReference::~LuaReference() {
 void LuaReference::pushOnto(lua_State* L) const {
     registry.retrieveRef(id_);
 }
+
+bool LuaReference::operator==(const LuaReference& other) const {
+    if (registry.L != other.registry.L) {
+        return false;
+    }
+
+    pushOnto(registry.L);
+    const void* ptrA = lua_topointer(registry.L, -1);
+    other.pushOnto(registry.L);
+    const void* ptrB = lua_topointer(registry.L, -1);
+    lua_pop(registry.L, 2);
+    return ptrA == ptrB;
+}

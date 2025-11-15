@@ -44,6 +44,7 @@ namespace arasy::core {
             return std::get<T>(*this);
         }
 
+        // NOT to be compared against LUA_TNIL and the like.
         constexpr int luaTypeId() const {
             return index();
         }
@@ -67,6 +68,10 @@ namespace arasy::core {
                 static_cast<const internal::LuaValueVariant&>(*this)
             );
         }
+
+        std::optional<lua_Number> toNumber() const;
+        bool isNumeric() const;
+        inline bool isNil() const { return isA<LuaNil>(); }
     };
 
     struct LuaValueVarIndex {
@@ -89,20 +94,20 @@ namespace arasy::core {
 
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv);
 
-    template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-    bool operator==(const LuaValue& a, const T& b) {
-        return std::holds_alternative<T>(a) && std::get<T>(a) == b;
-    }
+    // template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+    // bool operator==(const LuaValue& a, const T& b) {
+    //     return a.isA<T>() && T::operator==(std::get<T>(a), b);
+    // }
 
-    template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-    bool operator==(const T& a, const LuaValue& b) {
-        return std::holds_alternative<T>(b) && a == std::get<T>(b);
-    }
+    // template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+    // bool operator==(const T& a, const LuaValue& b) {
+    //     return b.isA<T>() && T::operator==(a, std::get<T>(b));
+    // }
 
     constexpr bool operator==(const LuaValue& a, const lua_Number& b) {
         return
             std::holds_alternative<LuaNumber>(a) && std::get<LuaNumber>(a).value == b
-            || std::holds_alternative<LuaInteger>(a) && std::get<LuaInteger>(a).value == b;;
+            || std::holds_alternative<LuaInteger>(a) && std::get<LuaInteger>(a).value == b;
     }
 
     constexpr bool operator==(const lua_Number& a, const LuaValue& b) {

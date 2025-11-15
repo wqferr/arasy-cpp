@@ -9,19 +9,29 @@ namespace arasy::core {
 
         constexpr LuaNumber(lua_Number value_): value(value_) {}
         void pushOnto(lua_State* L) const override { lua_pushnumber(L, value); }
-
-        constexpr bool operator==(const LuaNumber& other) const {
-            return value == other.value;
-        }
-
-        constexpr std::enable_if_t<!std::is_same_v<lua_Number, float>, bool> operator==(const float& other) const {
-            return value == other;
-        }
     };
 
-    constexpr bool operator==(const lua_Number& a, const LuaNumber& b) {
+    constexpr bool operator==(const LuaNumber& a, const LuaNumber& b) {
+        return a.value == b.value;
+    }
+
+    constexpr inline bool operator==(const lua_Number& a, const LuaNumber& b) {
         return a == b.value;
     }
+
+    constexpr inline bool operator==(const LuaNumber& a, const lua_Number& b) {
+        return a.value == b;
+    }
+
+    // template <std::enable_if_t<!std::is_same_v<lua_Number, double>, int> = 0>
+    // constexpr bool operator==(const LuaNumber& a, const double& b) {
+    //     return a.value == b;
+    // }
+
+    // template <std::enable_if_t<!std::is_same_v<lua_Number, double>, int> = 0>
+    // constexpr bool operator==(const double& a, const LuaNumber& b) {
+    //     return a == b.value;
+    // }
 
     namespace internal {
         template<>

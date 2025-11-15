@@ -115,7 +115,7 @@ TEST(BasicLua, ArasyApiHasGetPop) {
     EXPECT_TRUE(L.checkStack<LuaNil>(-2)) << "checkStack<>() did not identify nil with a negative index";
     std::optional<LuaValue> v = L.readStack<LuaNil>(-2);
     ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a nil value with a negative index";
-    EXPECT_EQ(*v, LuaNil{}) << "readStack<>() fetched a non-nil value with a negative index";
+    EXPECT_TRUE(v->isA<LuaNil>()) << "readStack<>() fetched a non-nil value with a negative index";
     EXPECT_TRUE(L.checkStack<LuaNumber>(-3)) << "checkStack<>() did not identify an integer as a number with a negative index";
     EXPECT_TRUE(L.checkStack<LuaInteger>(-3)) << "checkStack<>() did not identify an integer with a negative index";
     EXPECT_TRUE(L.checkStack<LuaString>(-4)) << "checkStack<>() did not identify a string with a negative index";
@@ -137,12 +137,13 @@ TEST(BasicLua, ArasyApiHasGetPop) {
     EXPECT_TRUE(L.checkStack<LuaNil>(3)) << "checkStack<>() did not identify a nil with a positive index";
     v = L.readStack<LuaNil>(3);
     ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a nil value with a positive index";
-    EXPECT_EQ(*v, LuaNil{}) << "readStack<>() fetched a non-nil value";
+    EXPECT_TRUE(v->isA<LuaNil>()) << "readStack<>() fetched a non-nil value";
 
     EXPECT_TRUE(L.checkStack<LuaNumber>(4)) << "checkStack<>() did not identify a number with a positive index";
     v = L.readStack<LuaInteger>(4);
     EXPECT_EQ(v, std::nullopt) << "readStack<>() fetched an integer from a non-integer number";
     v = L.readStack<LuaNumber>(4);
     ASSERT_NE(v, std::nullopt) << "readStack<>() did not fetch a number with a positive index";
-    EXPECT_EQ(*v, -0.5) << "readStack<>() fetched the wrong number with a positive index";
+    ASSERT_TRUE(v->isA<LuaNumber>());
+    EXPECT_EQ(v->asA<LuaNumber>(), -0.5) << "readStack<>() fetched the wrong number with a positive index";
 }

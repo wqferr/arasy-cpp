@@ -20,7 +20,7 @@ namespace arasy::registry {
         LuaReference(lua_State* L, int idx);
         virtual ~LuaReference();
         void pushOnto(lua_State* L) const override;
-        bool operator==(const LuaReference& other) const { return id_ == other.id_; }
+        bool operator==(const LuaReference& other) const;
 
         int id() const { return id_; }
     };
