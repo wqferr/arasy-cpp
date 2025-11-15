@@ -19,16 +19,18 @@ namespace arasy::core {
         void setRawField(const char* fieldName, const LuaValue& value);
         void setRawi(const lua_Integer& i, const LuaValue& value);
 
-        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key) {
             lua_State* L = registry.lua;
-            index(key);
+            if (auto err = index(key)) {
+                return std::nullopt;
+            }
             auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
             lua_pop(L, 1);
             return ret;
         }
 
-        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> getField(const char* fieldName) {
             lua_State* L = registry.lua;
             indexField(fieldName);
@@ -37,7 +39,7 @@ namespace arasy::core {
             return ret;
         }
 
-        void index(const LuaValue& key);
+        std::optional<arasy::error::TableIndexingError> index(const LuaValue& key);
         void indexField(const char* fieldName);
 
         void setMetatableStack();

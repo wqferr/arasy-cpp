@@ -35,12 +35,16 @@ std::optional<arasy::error::TableIndexingError> LuaTable::setField(
     return std::nullopt;
 }
 
-void LuaTable::index(const LuaValue& key) {
+std::optional<arasy::error::TableIndexingError> LuaTable::index(const LuaValue& key) {
+    if (key.isNil()) {
+        return {arasy::error::TableIndexingErrorCode::NIL_KEY};
+    }
     lua_State* L = registry.lua;
     pushSelf();
     key.pushOnto(L);
     lua_gettable(L, -2);
     lua_remove(L, -2);
+    return std::nullopt;
 }
 
 void LuaTable::indexField(const char* fieldName) {
