@@ -4,11 +4,11 @@ using namespace arasy::core;
 using namespace arasy::registry;
 
 void LuaReference::pushSelf() const {
-    pushOnto(registry.L);
+    pushOnto(registry.lua);
 }
 
 int LuaReference::clone(const LuaReference& ref) {
-    if (registry.L != ref.registry.L) {
+    if (registry.lua != ref.registry.lua) {
         return LUA_NOREF;
     }
     ref.pushSelf();
@@ -33,13 +33,13 @@ LuaReference::LuaReference(LuaReference&& other):
 }
 
 LuaReference& LuaReference::operator=(const LuaReference& other) {
-    new (&registry) LuaRegistry {other.registry.L};
+    new (&registry) LuaRegistry {other.registry.lua};
     id_ = clone(other);
     return *this;
 }
 
 LuaReference& LuaReference::operator=(LuaReference&& other) {
-    new (&registry) LuaRegistry {other.registry.L};
+    new (&registry) LuaRegistry {other.registry.lua};
     id_ = std::move(other.id_);
     other.id_ = LUA_REFNIL;
     return *this;
@@ -58,14 +58,14 @@ void LuaReference::pushOnto(lua_State* L) const {
 }
 
 bool LuaReference::operator==(const LuaReference& other) const {
-    if (registry.L != other.registry.L) {
+    if (registry.lua != other.registry.lua) {
         return false;
     }
 
-    pushOnto(registry.L);
-    const void* ptrA = lua_topointer(registry.L, -1);
-    other.pushOnto(registry.L);
-    const void* ptrB = lua_topointer(registry.L, -1);
-    lua_pop(registry.L, 2);
+    pushOnto(registry.lua);
+    const void* ptrA = lua_topointer(registry.lua, -1);
+    other.pushOnto(registry.lua);
+    const void* ptrB = lua_topointer(registry.lua, -1);
+    lua_pop(registry.lua, 2);
     return ptrA == ptrB;
 }

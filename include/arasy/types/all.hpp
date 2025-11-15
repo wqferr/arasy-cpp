@@ -15,7 +15,6 @@
 #include <variant>
 
 namespace arasy::core {
-
 #define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaCFunction, LuaThread
     namespace internal {
         using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
@@ -32,7 +31,7 @@ namespace arasy::core {
         using internal::LuaValueVariant::LuaValueVariant;
         using internal::LuaValueVariant::operator=;
 
-        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         LuaValue(const T& val): internal::LuaValueVariant(val) {}
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>

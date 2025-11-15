@@ -9,7 +9,10 @@ namespace arasy::error {
     template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
     struct Error {
         E code;
-        std::optional<std::string> message;
+        std::optional<std::string> message = std::nullopt;
+
+        Error(E code_): code(code_) {}
+        Error(E code_, const std::string& message_): code(code_), message(message_) {}
     };
 
     template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>

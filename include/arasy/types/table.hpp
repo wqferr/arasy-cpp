@@ -13,20 +13,32 @@ namespace arasy::core {
         std::optional<arasy::error::TableIndexingError> setStackKV();
         std::optional<arasy::error::TableIndexingError> set(const LuaValue& key, const LuaValue& value);
         std::optional<arasy::error::TableIndexingError> setField(const char* fieldName, const LuaValue& value);
-        void seti(const lua_Integer& i, const lua_Integer& value);
 
         void setRawStackKV();
         void setRaw(const LuaValue& key, const LuaValue& value);
         void setRawField(const char* fieldName, const LuaValue& value);
-        void setRawi(const lua_Integer& i, const lua_Integer& value);
+        void setRawi(const lua_Integer& i, const LuaValue& value);
 
-        LuaValue get(const LuaValue& key);
-        LuaValue getField(const char* fieldName);
-        LuaValue geti(const lua_Integer& i);
+        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        std::optional<T> get(const LuaValue& key) {
+            lua_State* L = registry.lua;
+            index(key);
+            auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
 
-        LuaValue index(const LuaValue& key);
-        LuaValue indexField(const char* fieldName);
-        LuaValue indexi(const lua_Integer& i);
+        template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        std::optional<T> getField(const char* fieldName) {
+            lua_State* L = registry.lua;
+            indexField(fieldName);
+            auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
+        void index(const LuaValue& key);
+        void indexField(const char* fieldName);
 
         void setMetatableStack();
         void setMetatable(const LuaTable& metatable);
