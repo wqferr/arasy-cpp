@@ -34,13 +34,12 @@ TEST(LuaRegistry, CanWriteAndRead) {
     lua_pop(L, 1);
 
     auto maybeTable = L.registry.readField<LuaTable>("mytable");
-    ASSERT_NE(maybeTable, std::nullopt);
-    std::cerr << maybeTable->id() << '\n';
+    ASSERT_NE(maybeTable, std::nullopt) << "readField() cast to table returned nullopt";
     L.push(*maybeTable);
     auto maybeOtherRef = L.readStackTop<LuaTable>();
-    ASSERT_NE(maybeOtherRef, std::nullopt);
+    ASSERT_NE(maybeOtherRef, std::nullopt) << "Reading a table back from the stack returned nullopt";
     const void* tablePtr3 = lua_topointer(L, -1);
-    EXPECT_EQ(tablePtr1, tablePtr3);
-    EXPECT_NE(maybeOtherRef->id(), maybeTable->id());
-    // EXPECT_EQ(*maybeTable, *maybeOtherRef);
+    EXPECT_EQ(tablePtr1, tablePtr3) << "Table read off the stack was not the same table as the original";
+    EXPECT_NE(maybeOtherRef->id(), maybeTable->id()) << "registry.ref() returned the same reference to both cases.";
+    EXPECT_EQ(*maybeTable, *maybeOtherRef);
 }

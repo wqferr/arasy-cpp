@@ -12,7 +12,7 @@ namespace arasy::core {
 
     std::optional<lua_Number> LuaValue::toNumber() const {
         if (isA<LuaInteger>()) {
-            return asA<LuaInteger>().value;
+            return static_cast<lua_Number>(asA<LuaInteger>().value);
         } else if (isA<LuaNumber>()) {
             return asA<LuaNumber>().value;
         } else {
@@ -41,7 +41,7 @@ namespace arasy::core {
                     os << x.value;
                 },
                 [&os](const LuaString& s) {
-                    os << '"' << std::quoted(s.str()) << '"';
+                    os << std::quoted(s.str());
                 },
                 [&os](const LuaNil&) {
                     os << "nil";

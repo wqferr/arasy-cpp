@@ -23,16 +23,6 @@ namespace arasy::core {
         return a.value == b;
     }
 
-    // template <std::enable_if_t<!std::is_same_v<lua_Number, double>, int> = 0>
-    // constexpr bool operator==(const LuaNumber& a, const double& b) {
-    //     return a.value == b;
-    // }
-
-    // template <std::enable_if_t<!std::is_same_v<lua_Number, double>, int> = 0>
-    // constexpr bool operator==(const double& a, const LuaNumber& b) {
-    //     return a == b.value;
-    // }
-
     namespace internal {
         template<>
         struct LuaStackReader<LuaNumber> {
