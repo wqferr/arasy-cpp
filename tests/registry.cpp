@@ -12,7 +12,7 @@ TEST(LuaRegistry, CanWriteAndRead) {
      EXPECT_EQ(L.stackSize(), 1) << "Registry modified the stack beyond its encapsulation";
      L.registry.writeField("g", LuaString{"abc"});
      EXPECT_EQ(L.stackSize(), 1) << "Registry modified the stack beyond its encapsulation";
-     L.pushTable();
+     L.newTable();
 
      EXPECT_EQ(L.registry.readField<LuaInteger>("f"), 3) << "Registry did not retrieve integer field";
      EXPECT_EQ(L.stackSize(), 2) << "Registry modified the stack beyond its encapsulation";

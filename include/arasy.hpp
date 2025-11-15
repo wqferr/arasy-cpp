@@ -79,8 +79,8 @@ namespace arasy::core {
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }
         void pushNum(lua_Number x) { push(LuaNumber{x}); }
         void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
-        void pushTable() { lua_newtable(state); }
-        // TODO: pushTable(std::unordered_map<LuaValue, LuaValue>)
+        void newTable() { lua_newtable(state); }
+        // TODO: newTable(std::unordered_map<LuaValue, LuaValue>)
 
         template<typename... Args>
         std::optional<arasy::error::PushFmtErrorCode> pushFmt(const char *fmt, Args&&... args) {

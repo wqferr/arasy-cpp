@@ -33,6 +33,9 @@ namespace arasy::core {
 
         template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         LuaValue(const T& val): internal::LuaValueVariant(val) {}
+        LuaValue(const lua_Number& val): internal::LuaValueVariant(LuaNumber{val}) {}
+        LuaValue(const char* str): internal::LuaValueVariant(LuaString{str}) {}
+        LuaValue(const std::string& str): internal::LuaValueVariant(LuaString{str.c_str()}) {}
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
         constexpr bool isA() const {

@@ -42,6 +42,7 @@ add_executable(
     tests/core.cpp
     tests/fmt.cpp
     tests/registry.cpp
+    tests/table.cpp
 )
 target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
 
