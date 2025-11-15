@@ -42,3 +42,9 @@ namespace arasy::core {
         };
     }
 }
+
+namespace arasy {
+    inline core::LuaNumber operator"" _ln(long double value) {
+        return core::LuaNumber{static_cast<lua_Number>(value)};
+    }
+}

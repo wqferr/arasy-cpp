@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "arasy.hpp"
 
+using namespace arasy;
 using namespace arasy::core;
 
 TEST(Table, CanSet) {
@@ -9,7 +10,7 @@ TEST(Table, CanSet) {
     L.pushNewTable();
     LuaTable table = *L.readStackTop<LuaTable>();
     EXPECT_EQ(L.stackSize(), 1);
-    table.setField("field name", LuaString{"Hello World!"});
+    table.setField("field name", "Hello World!"_ls);
     EXPECT_EQ(L.stackSize(), 1);
 
     L.pushStr("field name");
@@ -25,42 +26,39 @@ TEST(Table, CanGet) {
 
     L.pushNewTable();
     LuaTable table = *L.readStackTop<LuaTable>();
-    table.setField("number", 42);
+    table.setField("number", -42);
     EXPECT_EQ(L.stackSize(), 1);
 
     auto value = table.getField<LuaNumber>("number");
     ASSERT_TRUE(value.has_value());
-    EXPECT_EQ(value, 42);
+    EXPECT_EQ(value, -42);
 
     //test non string types
-    table.set(2, LuaString{"two"});
+    table.set(2, "two"_ls);
     EXPECT_EQ(L.stackSize(), 1);
     auto value2 = table.get<LuaString>(2);
-    EXPECT_EQ(value2, LuaString{"two"});
+    EXPECT_EQ(value2, "two"_ls);
 
-    table.set(LuaBoolean{true}, LuaString{"true"});
+    table.set(True, "true"_ls);
     EXPECT_EQ(L.stackSize(), 1);
-    auto value3 = table.get<LuaString>(LuaBoolean{true});
-    EXPECT_EQ(value3, LuaString{"true"});
+    auto value3 = table.get<LuaString>(True);
+    EXPECT_EQ(value3, "true"_ls);
 
-    table.set(LuaBoolean{false}, LuaString{"false"});
+    table.set(False, "false"_ls);
     EXPECT_EQ(L.stackSize(), 1);
-    auto value4 = table.get<LuaString>(LuaBoolean{false});
-    EXPECT_EQ(value4, LuaString{"false"});
+    auto value4 = table.get<LuaString>(False);
+    EXPECT_EQ(value4, "false"_ls);
 }
 
-
-// indexField and index
 TEST(Table, CanIndex) {
-    // a = t[3]
     Lua L;
 
     L.pushNewTable();
     LuaTable table = *L.popStack<LuaTable>();
     EXPECT_EQ(L.stackSize(), 0);
-    table.setField("nah", LuaBoolean{true});
+    table.setField("nah", True);
     EXPECT_EQ(L.stackSize(), 0);
-    table.setField("yah", LuaBoolean{false});
+    table.setField("yah", False);
     EXPECT_EQ(L.stackSize(), 0);
 
     table.indexField("nah");
@@ -68,11 +66,11 @@ TEST(Table, CanIndex) {
 
     auto value = L.popStack<LuaBoolean>();
     ASSERT_TRUE(value.has_value());
-    EXPECT_EQ(value, LuaBoolean{true});
+    EXPECT_EQ(value, True);
 
     EXPECT_EQ(L.stackSize(), 0);
-    table.set(LuaBoolean{true}, 12);
-    table.index(LuaBoolean{true});
+    table.set(True, 12);
+    table.index(True);
     EXPECT_EQ(L.stackSize(), 1);
     auto value2 = L.popStack<LuaInteger>();
     ASSERT_TRUE(value2.has_value());

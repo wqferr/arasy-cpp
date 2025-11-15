@@ -25,3 +25,8 @@ namespace arasy::core {
         };
     }
 }
+
+namespace arasy {
+    constexpr const inline core::LuaBoolean True {true};
+    constexpr const inline core::LuaBoolean False {false};
+}

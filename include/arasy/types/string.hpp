@@ -27,3 +27,9 @@ namespace arasy::core {
         };
     }
 }
+
+namespace arasy {
+    inline core::LuaString operator"" _ls(const char* str, std::size_t) {
+        return core::LuaString{str};
+    }
+}

@@ -2,15 +2,17 @@
 
 #include "arasy/types/base.hpp"
 
-namespace arasy::core {
-    struct LuaNil : public internal::LuaBaseType {
-        void pushOnto(lua_State* L) const override { lua_pushnil(L); }
-    };
+namespace arasy {
+    namespace core {
+        struct LuaNil : public internal::LuaBaseType {
+            void pushOnto(lua_State* L) const override { lua_pushnil(L); }
+        };
+        constexpr bool operator==(const LuaNil&, const LuaNil&) { return true; }
+    }
 
-    constexpr const LuaNil nil {};
-    constexpr bool operator==(const LuaNil&, const LuaNil&) { return true; }
+    constexpr const core::LuaNil nil {};
 
-    namespace internal {
+    namespace core::internal {
         template<>
         struct LuaStackReader<LuaNil> {
             static bool checkAt(lua_State* L, int idx) {
@@ -22,8 +24,4 @@ namespace arasy::core {
             }
         };
     }
-}
-
-namespace arasy {
-    constexpr const inline core::LuaNil nil = core::nil;
 }
