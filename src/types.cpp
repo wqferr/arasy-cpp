@@ -20,6 +20,30 @@ namespace arasy::core {
         }
     }
 
+    std::ostream& operator<<(std::ostream& os, const LuaValueVarIndex& value) {
+        using V = LuaValueVarIndex;
+        switch (value) {
+            case V::LuaBoolean:
+                return os << "<type:boolean>";
+            case V::LuaInteger:
+                return os << "<type:integer>";
+            case V::LuaNumber:
+                return os << "<type:number>";
+            case V::LuaNil:
+                return os << "<type:nil>";
+            case V::LuaString:
+                return os << "<type:string>";
+            case V::LuaTable:
+                return os << "<type:table>";
+            case V::LuaCFunction:
+                return os << "<type:cfunction>";
+            case V::LuaThread:
+                return os << "<type:thread>";
+        }
+        return os << "<type:INVALID>";
+    }
+
+
     bool LuaValue::isNumeric() const {
         return isA<LuaInteger>() || isA<LuaNumber>();
     }

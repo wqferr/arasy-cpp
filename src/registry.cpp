@@ -52,16 +52,20 @@ void LuaRegistry::storeKey(const LuaValue& key) {
     lua_pop(L, 2);
 }
 
+#include <cassert>
+
 int LuaRegistry::createRef(int idx) {
     if (lua_isnone(L, idx)) {
         return LUA_NOREF;
     }
     lua_pushvalue(L, idx);
+    assert(lua_istable(L, -1));
     return luaL_ref(L, LUA_REGISTRYINDEX);
 }
 
 void LuaRegistry::retrieveRef(int ref) const {
     lua_rawgeti(L, LUA_REGISTRYINDEX, ref);
+    assert(lua_istable(L, -1));
 }
 
 void LuaRegistry::releaseRef(int ref) {

@@ -21,6 +21,12 @@ namespace arasy::core {
         using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
     }
 
+    enum class LuaValueVarIndex {
+        _ARASY_LUA_VARIANT_ORDER
+    };
+
+    std::ostream& operator<<(std::ostream& os, const LuaValueVarIndex& value);
+
     class LuaValue : public internal::LuaValueVariant {
     public:
         using internal::LuaValueVariant::LuaValueVariant;
@@ -45,8 +51,8 @@ namespace arasy::core {
         }
 
         // NOT to be compared against LUA_TNIL and the like.
-        constexpr int luaTypeId() const {
-            return index();
+        constexpr LuaValueVarIndex luaTypeId() const {
+            return static_cast<LuaValueVarIndex>(index());
         }
 
         template<typename R=void, typename C>
@@ -72,12 +78,6 @@ namespace arasy::core {
         std::optional<lua_Number> toNumber() const;
         bool isNumeric() const;
         inline bool isNil() const { return isA<LuaNil>(); }
-    };
-
-    struct LuaValueVarIndex {
-        enum {
-            _ARASY_LUA_VARIANT_ORDER
-        };
     };
 #undef _ARASY_LUA_VARIANT_ORDER
 

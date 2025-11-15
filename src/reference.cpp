@@ -3,24 +3,54 @@
 using namespace arasy::core;
 using namespace arasy::registry;
 
-void LuaReference::pushSelf() {
+void LuaReference::pushSelf() const {
     pushOnto(registry.L);
+}
+
+int LuaReference::clone(const LuaReference& ref) {
+    if (registry.L != ref.registry.L) {
+        return LUA_NOREF;
+    }
+    ref.pushSelf();
+    return registry.createRef(-1);
 }
 
 LuaReference::LuaReference(lua_State* L, int idx):
     registry(L),
-    refCounter(std::make_shared<char>('\0')),
     id_(makeId(idx))
 {}
+
+LuaReference::LuaReference(const LuaReference& other):
+    registry(other.registry),
+    id_(clone(other))
+{}
+
+LuaReference::LuaReference(LuaReference&& other):
+    registry(std::move(other.registry)),
+    id_(std::move(other.id_))
+{
+    other.id_ = LUA_REFNIL;
+}
+
+LuaReference& LuaReference::operator=(const LuaReference& other) {
+    new (&registry) LuaRegistry {other.registry.L};
+    id_ = clone(other);
+    return *this;
+}
+
+LuaReference& LuaReference::operator=(LuaReference&& other) {
+    new (&registry) LuaRegistry {other.registry.L};
+    id_ = std::move(other.id_);
+    other.id_ = LUA_REFNIL;
+    return *this;
+}
 
 int LuaReference::makeId(int idx) {
     return registry.createRef(idx);
 }
 
 LuaReference::~LuaReference() {
-    if (refCounter.use_count() == 1) {
-        registry.releaseRef(id_);
-    }
+    registry.releaseRef(id_);
 }
 
 void LuaReference::pushOnto(lua_State* L) const {

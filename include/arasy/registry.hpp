@@ -10,8 +10,6 @@ namespace arasy::core {
 
 namespace arasy::registry {
     class LuaRegistry {
-        friend class LuaReference;
-
     public:
         lua_State* const L;
         LuaRegistry(lua_State* L_);

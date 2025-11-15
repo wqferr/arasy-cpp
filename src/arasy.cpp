@@ -51,7 +51,7 @@ std::optional<ScriptError> Lua::pcall(int narg, int nret, lua_KContext ctx) {
     return std::nullopt;
 }
 
-std::optional<int> Lua::type(int idx) const {
+std::optional<LuaValueVarIndex> Lua::type(int idx) const {
     std::optional<LuaValue> value = readStackTop();
     if (!value) {
         return std::nullopt;
