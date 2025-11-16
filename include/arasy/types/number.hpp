@@ -43,7 +43,7 @@ namespace arasy::core {
     }
 }
 
-namespace arasy {
+namespace arasy::literals {
     inline core::LuaNumber operator"" _ln(long double value) {
         return core::LuaNumber{static_cast<lua_Number>(value)};
     }

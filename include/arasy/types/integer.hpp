@@ -54,7 +54,7 @@ namespace arasy::core {
     }
 }
 
-namespace arasy {
+namespace arasy::literals {
     inline core::LuaInteger operator"" _li (unsigned long long int value) {
         return core::LuaInteger{static_cast<lua_Integer>(value)};
     }

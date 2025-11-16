@@ -3,6 +3,7 @@
 
 using namespace arasy;
 using namespace arasy::core;
+using namespace arasy::literals;
 
 TEST(Table, CanSet) {
     Lua L;
