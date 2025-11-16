@@ -6,6 +6,7 @@
 #include "arasy/types/integer.hpp"
 #include "arasy/types/string.hpp"
 #include "arasy/types/table.hpp"
+#include "arasy/types/nativefunction.hpp"
 #include "arasy/types/cfunction.hpp"
 #include "arasy/types/thread.hpp"
 
@@ -15,7 +16,7 @@
 #include <variant>
 
 namespace arasy::core {
-#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaCFunction, LuaThread
+#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaNativeFunction, LuaCFunction, LuaThread
     namespace internal {
         using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
     }
@@ -94,16 +95,6 @@ namespace arasy::core {
     }
 
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv);
-
-    // template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-    // bool operator==(const LuaValue& a, const T& b) {
-    //     return a.isA<T>() && T::operator==(std::get<T>(a), b);
-    // }
-
-    // template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-    // bool operator==(const T& a, const LuaValue& b) {
-    //     return b.isA<T>() && T::operator==(a, std::get<T>(b));
-    // }
 
     constexpr bool operator==(const LuaValue& a, const lua_Number& b) {
         return

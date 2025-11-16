@@ -65,3 +65,55 @@ TEST(CFunctions, CanTruncateReturnValues) {
     EXPECT_EQ(L.stackSize(), 1);
     EXPECT_EQ(L.popStack<LuaInteger>(), 15);
 }
+
+namespace {
+    void loadNativeAddSub(Lua& L) {
+        ASSERT_FALSE(L.executeString(
+            "function addSub(a, b)\n"
+            "   if not a then error('expected number for argument 1, got no value') end\n"
+            "   if not b then error('expected number for argument 2, got no value') end\n"
+            "   return a+b, a-b\n"
+            "end"
+        ).has_value());
+    }
+}
+
+TEST(NativeFunctions, CanBeCalledThroughTheArasyApi) {
+    Lua L;
+    loadNativeAddSub(L);
+    auto maybeNativeFunc = L.popStack<LuaNativeFunction>();
+    ASSERT_TRUE(maybeNativeFunc.has_value());
+    auto func = *maybeNativeFunc;
+
+    auto err = func.pcall(5_li, 3_li);
+    EXPECT_FALSE(err.has_value());
+    EXPECT_EQ(L.popStack<LuaInteger>(), 2_li);
+    EXPECT_EQ(L.popStack<LuaInteger>(), 8_li);
+}
+
+TEST(NativeFunctions, CanPropagateErrorsThroughPcall) {
+    Lua L;
+    loadNativeAddSub(L);
+    auto maybeNativeFunc = L.popStack<LuaNativeFunction>();
+    ASSERT_TRUE(maybeNativeFunc.has_value());
+    auto func = *maybeNativeFunc;
+
+    ASSERT_EQ(L.stackSize(), 0);
+    auto err = func.pcall(5_li);
+    EXPECT_TRUE(err.has_value());
+    EXPECT_EQ(err, "bad argument #2 to '?' (number expected, got no value)");
+    EXPECT_EQ(L.stackSize(), 0);
+}
+
+TEST(NativeFunctions, CanTruncateReturnValues) {
+    Lua L;
+    loadNativeAddSub(L);
+    auto maybeNativeFunc = L.popStack<LuaNativeFunction>();
+    ASSERT_TRUE(maybeNativeFunc.has_value());
+    auto func = *maybeNativeFunc;
+
+    auto err = func.pcall<1>(10_li, 5_li);
+    EXPECT_FALSE(err.has_value());
+    EXPECT_EQ(L.stackSize(), 1);
+    EXPECT_EQ(L.popStack<LuaInteger>(), 15);
+}

@@ -36,6 +36,8 @@ namespace arasy::core {
                 return os << "<type:string>";
             case V::LuaTable:
                 return os << "<type:table>";
+            case V::LuaNativeFunction:
+                return os << "<type:function>";
             case V::LuaCFunction:
                 return os << "<type:cfunction>";
             case V::LuaThread:
@@ -71,8 +73,11 @@ namespace arasy::core {
                 [&os](const LuaNil&) {
                     os << "nil";
                 },
+                [&os](const LuaNativeFunction& f) {
+                    os << "function: id #" << std::hex << f.id();
+                },
                 [&os](const LuaCFunction& cf) {
-                    os << "function: " << std::hex << cf.cfunc;
+                    os << "cfunction: " << std::hex << cf.cfunc;
                 },
                 [&os](const LuaThread& thr) {
                     os << "thread: " << std::hex << thr.thread().state;
@@ -100,6 +105,8 @@ namespace arasy::core {
                 return LuaStackReader<LuaTable>::readAt(L, idx);
             } else if (LuaStackReader<LuaThread>::checkAt(L, idx)) {
                 return LuaStackReader<LuaThread>::readAt(L, idx);
+            } else if (LuaStackReader<LuaNativeFunction>::checkAt(L, idx)) {
+                return LuaStackReader<LuaNativeFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaCFunction>::checkAt(L, idx)) {
                 return LuaStackReader<LuaCFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {

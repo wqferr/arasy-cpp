@@ -13,6 +13,7 @@ add_library(
     "include/arasy/types/all.hpp"
     "include/arasy/types/base.hpp"
     "include/arasy/types/boolean.hpp"
+    "include/arasy/types/nativefunction.hpp"
     "include/arasy/types/cfunction.hpp"
     "include/arasy/types/integer.hpp"
     "include/arasy/types/nil.hpp"

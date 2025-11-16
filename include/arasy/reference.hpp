@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "arasy/types/base.hpp"
 #include "arasy/registry.hpp"
 
