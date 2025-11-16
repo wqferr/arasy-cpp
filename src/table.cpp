@@ -12,7 +12,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::set(
     if (key.isNil()) {
         return {arasy::error::TableIndexingErrorCode::NIL_KEY};
     }
-    lua_State* L = registry.registryContext;
+    lua_State* L = registry.luaInstance;
     pushSelf();
     key.pushOnto(L);
     value.pushOnto(L);
@@ -25,7 +25,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::setField(
     const char* fieldName,
     const LuaValue& value
 ) {
-    lua_State* L = registry.registryContext;
+    lua_State* L = registry.luaInstance;
 
     pushSelf();
     value.pushOnto(L);
@@ -38,7 +38,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::index(const LuaValue& 
     if (key.isNil()) {
         return {arasy::error::TableIndexingErrorCode::NIL_KEY};
     }
-    lua_State* L = registry.registryContext;
+    lua_State* L = registry.luaInstance;
     pushSelf();
     key.pushOnto(L);
     lua_gettable(L, -2);
@@ -47,7 +47,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::index(const LuaValue& 
 }
 
 void LuaTable::indexField(const char* fieldName) {
-    lua_State* L = registry.registryContext;
+    lua_State* L = registry.luaInstance;
     pushSelf();
     lua_getfield(L, -1, fieldName);
     lua_remove(L, -2);

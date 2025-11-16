@@ -5,6 +5,10 @@ using namespace arasy;
 using namespace arasy::core;
 using namespace arasy::error;
 
+void Lua::multiPop(int n) {
+    lua_pop(state, n);
+}
+
 int Lua::stackSize() const {
     return lua_gettop(state);
 }

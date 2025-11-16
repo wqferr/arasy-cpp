@@ -11,7 +11,7 @@ namespace arasy::core {
 namespace arasy::registry {
     class LuaRegistry {
     public:
-        lua_State* const registryContext;
+        lua_State* const luaInstance;
         LuaRegistry(lua_State* L_);
 
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
@@ -22,8 +22,8 @@ namespace arasy::registry {
             using SR = arasy::core::internal::LuaStackReader<T>;
 
             retrieveField(fieldName);
-            auto value = SR::readAt(registryContext, -1);
-            lua_pop(registryContext, 1);
+            auto value = SR::readAt(luaInstance, -1);
+            lua_pop(luaInstance, 1);
             return value;
         }
 
@@ -32,8 +32,8 @@ namespace arasy::registry {
             using SR = arasy::core::internal::LuaStackReader<T>;
 
             retrieveKey(fieldName);
-            auto value = SR::readAt(registryContext, -1);
-            lua_pop(registryContext, 1);
+            auto value = SR::readAt(luaInstance, -1);
+            lua_pop(luaInstance, 1);
             return value;
         }
 

@@ -21,7 +21,7 @@ namespace arasy::core {
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key) {
-            lua_State* L = registry.registryContext;
+            lua_State* L = registry.luaInstance;
             if (auto err = index(key)) {
                 return std::nullopt;
             }
@@ -32,7 +32,7 @@ namespace arasy::core {
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key, std::optional<arasy::error::TableIndexingError>& err) {
-            lua_State* L = registry.registryContext;
+            lua_State* L = registry.luaInstance;
             if (err = index(key)) {
                 return std::nullopt;
             }
@@ -43,7 +43,7 @@ namespace arasy::core {
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> getField(const char* fieldName) {
-            lua_State* L = registry.registryContext;
+            lua_State* L = registry.luaInstance;
             indexField(fieldName);
             auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
             lua_pop(L, 1);

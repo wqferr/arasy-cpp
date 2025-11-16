@@ -5,15 +5,17 @@ using namespace arasy::core;
 using namespace arasy::registry;
 
 void LuaReference::pushSelf() const {
-    pushOnto(registry.registryContext);
+    pushOnto(registry.luaInstance);
 }
 
 int LuaReference::clone(const LuaReference& ref) {
-    if (registry.registryContext != ref.registry.registryContext) {
+    if (registry.luaInstance != ref.registry.luaInstance) {
         return LUA_NOREF;
     }
     ref.pushSelf();
-    return registry.createRef(-1);
+    int id = registry.createRef(-1);
+    lua_pop(registry.luaInstance, 1);
+    return id;
 }
 
 LuaReference::LuaReference(lua_State* L, int idx):
@@ -34,13 +36,13 @@ LuaReference::LuaReference(LuaReference&& other):
 }
 
 LuaReference& LuaReference::operator=(const LuaReference& other) {
-    new (&registry) LuaRegistry {other.registry.registryContext};
+    new (&registry) LuaRegistry {other.registry.luaInstance};
     id_ = clone(other);
     return *this;
 }
 
 LuaReference& LuaReference::operator=(LuaReference&& other) {
-    new (&registry) LuaRegistry {other.registry.registryContext};
+    new (&registry) LuaRegistry {std::move(other.registry.luaInstance)};
     id_ = std::move(other.id_);
     other.id_ = LUA_REFNIL;
     return *this;
@@ -55,21 +57,21 @@ LuaReference::~LuaReference() {
 }
 
 void LuaReference::pushOnto(lua_State* L) const {
-    if (L != registry.registryContext) {
+    if (L != registry.luaInstance) {
         throw std::runtime_error("Mixed registry references from different Lua instances");
     }
     registry.retrieveRef(id_);
 }
 
 bool LuaReference::operator==(const LuaReference& other) const {
-    if (registry.registryContext != other.registry.registryContext) {
+    if (registry.luaInstance != other.registry.luaInstance) {
         return false;
     }
 
-    pushOnto(registry.registryContext);
-    const void* ptrA = lua_topointer(registry.registryContext, -1);
-    other.pushOnto(registry.registryContext);
-    const void* ptrB = lua_topointer(registry.registryContext, -1);
-    lua_pop(registry.registryContext, 2);
+    pushOnto(registry.luaInstance);
+    const void* ptrA = lua_topointer(registry.luaInstance, -1);
+    other.pushOnto(registry.luaInstance);
+    const void* ptrB = lua_topointer(registry.luaInstance, -1);
+    lua_pop(registry.luaInstance, 2);
     return ptrA == ptrB;
 }

@@ -103,6 +103,8 @@ namespace arasy::core {
             return val;
         }
 
+        void multiPop(int n);
+
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> readStack(int idx) const {
             if (checkIndexExists(idx)) {
