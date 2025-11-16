@@ -40,6 +40,7 @@ public:
     Lua L;
 
     void SetUp() override {
+        luaL_openlibs(L);
         lua_atpanic(L, &atPanic);
     }
 };
@@ -179,7 +180,12 @@ namespace {
 }
 
 TEST_F(GeneralFunctions, CanBeCalledThroughTheArasyApi) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     loadNativeAddSub(L);
+    L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";
     auto func = *maybeNativeFunc;
@@ -192,7 +198,12 @@ TEST_F(GeneralFunctions, CanBeCalledThroughTheArasyApi) {
 }
 
 TEST_F(GeneralFunctions, CanPropagateErrorsThroughPcall) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     loadNativeAddSub(L);
+    L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";
     auto func = *maybeNativeFunc;
@@ -200,12 +211,17 @@ TEST_F(GeneralFunctions, CanPropagateErrorsThroughPcall) {
     ASSERT_EQ(L.stackSize(), 0);
     auto err = func.pcall(5_li);
     EXPECT_TRUE(err.has_value()) << "Function did not error as expected";
-    EXPECT_EQ(*err, "expected number for argument 2, got no value");
+    EXPECT_EQ(*err, "[string \"function addSub(a, b)...\"]:3: expected number for argument 2, got no value");
     EXPECT_EQ(L.stackSize(), 0) << "Function pushed values unexpectedly";
 }
 
 TEST_F(GeneralFunctions, CanTruncateReturnValues) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     loadNativeAddSub(L);
+    L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";
     auto func = *maybeNativeFunc;

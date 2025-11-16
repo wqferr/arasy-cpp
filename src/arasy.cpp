@@ -18,8 +18,12 @@ void Lua::push(const LuaValue& value) {
 }
 
 LuaValue Lua::getGlobal(const std::string& name) {
-    lua_pushstring(state, name.c_str());
+    lua_getglobal(state, name.c_str());
     return popStack().value_or(nil);
+}
+
+void Lua::retrieveGlobal(const std::string& name) {
+    lua_getglobal(state, name.c_str());
 }
 
 std::optional<ScriptError> Lua::pcall(int narg, int nret, lua_KContext ctx) {

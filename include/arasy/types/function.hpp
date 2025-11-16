@@ -10,10 +10,10 @@ namespace arasy::core {
         void pushOnto(lua_State* L) const override { LuaReference::pushOnto(L); }
     };
 
-    inline bool operator==(const LuaFunction& a, const LuaFunction& b) {
-        using LR = arasy::registry::LuaReference;
-        return static_cast<const LR&>(a) == static_cast<const LR&>(b);
-    }
+    // inline bool operator==(const LuaFunction& a, const LuaFunction& b) {
+    //     using LR = arasy::registry::LuaReference;
+    //     return static_cast<const LR&>(a) == static_cast<const LR&>(b);
+    // }
 
     namespace internal {
         template<>

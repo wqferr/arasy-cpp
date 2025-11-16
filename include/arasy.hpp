@@ -64,8 +64,8 @@ namespace arasy::core {
         const bool external = false;
         arasy::registry::LuaRegistry registry;
 
-        Lua(): state(luaL_newstate()), registry(*this) {}
-        Lua(lua_State* L): state(L), external(true), registry(*this) {}
+        Lua(): state(luaL_newstate()), registry(state) {}
+        Lua(lua_State* L): state(L), external(true), registry(state) {}
         ~Lua() {
             if (!external) {
                 lua_close(state);
@@ -150,6 +150,7 @@ namespace arasy::core {
         }
 
         LuaValue getGlobal(const std::string& name);
+        void retrieveGlobal(const std::string& name);
 
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
