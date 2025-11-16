@@ -52,3 +52,16 @@ TEST(CFunctions, CanPropagateErrorsThroughPcall) {
     EXPECT_EQ(err, "bad argument #2 to '?' (number expected, got no value)");
     EXPECT_EQ(L.stackSize(), 0);
 }
+
+TEST(CFunctions, CanTruncateReturnValues) {
+    Lua L;
+    lua_pushcfunction(L, addSub);
+    auto maybeCfunc = L.popStack<LuaCFunction>();
+    ASSERT_TRUE(maybeCfunc.has_value());
+    auto cfunc = *maybeCfunc;
+
+    auto err = cfunc.pcall<1>(10_li, 5_li);
+    EXPECT_FALSE(err.has_value());
+    EXPECT_EQ(L.stackSize(), 1);
+    EXPECT_EQ(L.popStack<LuaInteger>(), 15);
+}
