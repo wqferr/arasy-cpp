@@ -13,9 +13,7 @@ int LuaReference::clone(const LuaReference& ref) {
         return LUA_NOREF;
     }
     ref.pushSelf();
-    int id = registry.createRef(-1);
-    lua_pop(registry.luaInstance, 1);
-    return id;
+    return luaL_ref(registry.luaInstance, LUA_REGISTRYINDEX);
 }
 
 LuaReference::LuaReference(lua_State* L, int idx):
