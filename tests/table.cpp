@@ -94,6 +94,30 @@ TEST(Table, DetectsNilKeys) {
     ASSERT_TRUE(err.has_value());
     EXPECT_EQ(err->code, arasy::error::IndexingErrorCode::NIL_KEY);
 
-    auto value = table.get(nil);
+    err.reset();
+    auto value = table.get(nil, err);
+    ASSERT_TRUE(err.has_value());
     EXPECT_FALSE(value.has_value());
+}
+
+TEST(Table, CanSetFromStackValues) {
+    Lua L;
+
+    LuaTable table = L.createNewTable();
+    L.pushStr("name");
+    L.pushStr("William");
+    table.setStackKV();
+
+    EXPECT_EQ(*table.get<LuaString>("name"_ls), "William");
+}
+
+TEST(Table, CanGetFromStackKey) {
+    Lua L;
+
+    LuaTable table = L.createNewTable();
+    table.setField("lastName", "Ferreira"_ls);
+
+    L.pushStr("lastName");
+    table.retrieveStackK();
+    EXPECT_EQ(*L.popStack<LuaString>(), "Ferreira");
 }

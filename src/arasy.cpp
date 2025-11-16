@@ -5,6 +5,10 @@ using namespace arasy;
 using namespace arasy::core;
 using namespace arasy::error;
 
+void Lua::ensureStack(int n) {
+    lua_checkstack(state, n);
+}
+
 void Lua::multiPop(int n) {
     lua_pop(state, n);
 }
@@ -13,7 +17,7 @@ int Lua::stackSize() const {
     return lua_gettop(state);
 }
 
-LuaTable Lua::readGlobalsTable() {
+LuaTable Lua::getGlobalsTable() {
     retrieveGlobalsTable();
     return *popStack<LuaTable>();
 }

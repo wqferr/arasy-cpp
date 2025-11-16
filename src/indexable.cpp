@@ -90,6 +90,32 @@ std::optional<arasy::error::IndexingError> LuaIndexable::retrieve(const LuaValue
     return std::nullopt;
 }
 
+std::optional<arasy::error::IndexingError> LuaIndexable::retrieveStackK() {
+    Lua L {registry.luaInstance};
+    L.ensureStack(1);
+    auto key = *L.popStack();
+    return retrieve(key);
+}
+
+std::optional<arasy::error::IndexingError> LuaIndexable::retrieveRaw(const LuaValue& key) {
+    if (key.isNil()) {
+        return {arasy::error::IndexingErrorCode::NIL_KEY};
+    }
+    lua_State* L = registry.luaInstance;
+    pushSelf();
+    key.pushOnto(L);
+    lua_rawget(L, -2);
+    lua_remove(L, -2);
+    return std::nullopt;
+}
+
+std::optional<arasy::error::IndexingError> LuaIndexable::retrieveRawStackK() {
+    Lua L {registry.luaInstance};
+    L.ensureStack(1);
+    auto key = *L.popStack();
+    return retrieveRaw(key);
+}
+
 void LuaIndexable::retrieveField(const char* fieldName) {
     lua_State* L = registry.luaInstance;
     pushSelf();

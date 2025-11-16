@@ -54,7 +54,10 @@ namespace arasy::core::internal {
         }
 
         std::optional<arasy::error::IndexingError> retrieve(const LuaValue& key);
+        std::optional<arasy::error::IndexingError> retrieveStackK();
         void retrieveField(const char* fieldName);
+        std::optional<arasy::error::IndexingError> retrieveRaw(const LuaValue& key);
+        std::optional<arasy::error::IndexingError> retrieveRawStackK();
 
         void setMetatableStack();
         void setMetatable(const LuaTable& metatable);

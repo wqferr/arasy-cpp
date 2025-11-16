@@ -72,6 +72,7 @@ namespace arasy::core {
             }
         }
 
+        void ensureStack(int i);
         int stackSize() const;
         std::optional<LuaValueVarIndex> type(int idx) const;
 
@@ -150,14 +151,14 @@ namespace arasy::core {
         }
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
-        std::optional<T> readGlobal(const std::string& name) {
+        std::optional<T> getGlobal(const std::string& name) {
             retrieveGlobal(name);
             return popStack<T>();
         }
 
         void retrieveGlobal(const std::string& name);
 
-        LuaTable readGlobalsTable();
+        LuaTable getGlobalsTable();
         void retrieveGlobalsTable();
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
