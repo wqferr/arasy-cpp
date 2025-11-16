@@ -97,10 +97,19 @@ TEST(CFunctions, CanUseUpvaluesNatively) {
     ASSERT_EQ(L.stackSize(), 0) << "Unexpected values on top of stack";
     auto err = cf.pcall(callValue);
     ASSERT_FALSE(err.has_value()) << "Function errored unexpectedly";
-    ASSERT_EQ(L.stackSize(), 1) << "Function did not push expected number of return values";
+    ASSERT_EQ(L.stackSize(), 1);
     auto maybeNum = L.popStack<LuaNumber>();
     ASSERT_TRUE(maybeNum.has_value()) << "Function did not return a number";
     EXPECT_EQ(*maybeNum, upvalue + callValue);
+
+    auto copyOfCf = cf;
+    int copyCallValue = -1;
+    err = copyOfCf.pcall(copyCallValue);
+    ASSERT_FALSE(err.has_value()) << "Fuction errored unexpectedly";
+    ASSERT_EQ(L.stackSize(), 1) << "Function did not push expected number of return values";
+    maybeNum = L.popStack<LuaNumber>();
+    ASSERT_TRUE(maybeNum.has_value()) << "Function did not return a number";
+    EXPECT_EQ(*maybeNum, upvalue + copyCallValue);
 }
 
 namespace {
