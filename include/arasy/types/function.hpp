@@ -1,6 +1,6 @@
 #pragma once
 #include "arasy/types/callable.hpp"
-#include "arasy/reference.hpp"
+#include "arasy/registry/reference.hpp"
 
 namespace arasy::core {
     class LuaFunction : public internal::LuaCallable {

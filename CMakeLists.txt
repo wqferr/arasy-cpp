@@ -13,7 +13,7 @@ add_library(
     "include/arasy/types/all.hpp"
     "include/arasy/types/base.hpp"
     "include/arasy/types/boolean.hpp"
-    "include/arasy/types/nativefunction.hpp"
+    "include/arasy/types/function.hpp"
     "include/arasy/types/cfunction.hpp"
     "include/arasy/types/integer.hpp"
     "include/arasy/types/nil.hpp"
@@ -31,7 +31,7 @@ add_library(
     src/errors.cpp
     "include/arasy/registry.hpp"
     src/registry.cpp
-    "include/arasy/reference.hpp"
+    "include/arasy/registry/reference.hpp"
     src/reference.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})

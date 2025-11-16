@@ -21,6 +21,10 @@ namespace arasy::core {
             (LuaValue(args).pushOnto(L), ...);
             return LuaCFunction(L, cfunc, std::in_place, sizeof...(args));
         }
+
+        lua_CFunction toFunctionPointer() const {
+            return cfunc;
+        }
     };
 
     namespace internal {

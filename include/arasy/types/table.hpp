@@ -1,7 +1,7 @@
 #pragma once
 
 #include "arasy/types/base.hpp"
-#include "arasy/reference.hpp"
+#include "arasy/registry/reference.hpp"
 #include "arasy/errors.hpp"
 
 namespace arasy::core {
