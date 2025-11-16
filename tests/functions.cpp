@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <csetjmp>
 #include "arasy.hpp"
 
 using namespace arasy;
@@ -27,8 +28,29 @@ extern "C" {
 
 }
 
-TEST(CFunctions, CanBeCalledNatively) {
+namespace {
+    std::jmp_buf escapeLuaError;
+    int atPanic(lua_State* L) {
+        longjmp(escapeLuaError, 1);
+    }
+}
+
+class CFunctions : public ::testing::Test {
+public:
     Lua L;
+
+    void SetUp() override {
+        lua_atpanic(L, &atPanic);
+    }
+};
+
+using GeneralFunctions = CFunctions;
+
+TEST_F(CFunctions, CanBeCalledNatively) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     lua_pushcfunction(L, addSub);
     L.push(5_li);
     L.push(3_li);
@@ -37,8 +59,11 @@ TEST(CFunctions, CanBeCalledNatively) {
     EXPECT_EQ(L.popStack<LuaInteger>(), 8_li);
 }
 
-TEST(CFunctions, CanBeCalledThroughTheArasyApi) {
-    Lua L;
+TEST_F(CFunctions, CanBeCalledThroughTheArasyApi) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     lua_pushcfunction(L, addSub);
     auto maybeCfunc = L.popStack<LuaCFunction>();
     ASSERT_TRUE(maybeCfunc.has_value());
@@ -49,8 +74,11 @@ TEST(CFunctions, CanBeCalledThroughTheArasyApi) {
     EXPECT_EQ(L.popStack<LuaInteger>(), 8_li);
 }
 
-TEST(CFunctions, CanPropagateErrorsThroughPcall) {
-    Lua L;
+TEST_F(CFunctions, CanPropagateErrorsThroughPcall) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     lua_pushcfunction(L, addSub);
     ASSERT_EQ(L.stackSize(), 1);
     auto maybeCfunc = L.popStack<LuaCFunction>();
@@ -65,8 +93,11 @@ TEST(CFunctions, CanPropagateErrorsThroughPcall) {
     EXPECT_EQ(L.stackSize(), 0);
 }
 
-TEST(CFunctions, CanTruncateReturnValues) {
-    Lua L;
+TEST_F(CFunctions, CanTruncateReturnValues) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     lua_pushcfunction(L, addSub);
     auto maybeCfunc = L.popStack<LuaCFunction>();
     ASSERT_TRUE(maybeCfunc.has_value());
@@ -78,8 +109,11 @@ TEST(CFunctions, CanTruncateReturnValues) {
     EXPECT_EQ(L.popStack<LuaInteger>(), 15);
 }
 
-TEST(CFunctions, CanUseUpvaluesNatively) {
-    Lua L;
+TEST_F(CFunctions, CanUseUpvaluesNatively) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
     lua_pushcfunction(L, testUpvalues);
 
     int upvalue = 3;
@@ -112,9 +146,12 @@ TEST(CFunctions, CanUseUpvaluesNatively) {
     EXPECT_EQ(*maybeNum, upvalue + copyCallValue);
 }
 
-TEST(CFunctions, CanBeCreatedFromUpValuesInline) {
-    Lua L;
-    LuaInteger upvalue = 10;
+TEST_F(CFunctions, CanBeCreatedFromUpValuesInline) {
+    if (setjmp(escapeLuaError)) {
+        FAIL() << "Unexpected Lua error panic";
+    }
+
+    int upvalue = 10;
     int callValue = 5;
     L.pushNum(0); // Sentinel
 
@@ -126,7 +163,7 @@ TEST(CFunctions, CanBeCreatedFromUpValuesInline) {
     ASSERT_EQ(L.stackSize(), 2) << "Function did not push expected number of return values";
     auto maybeNum = L.popStack<LuaNumber>();
     ASSERT_TRUE(maybeNum.has_value()) << "Function did not return a number";
-    EXPECT_EQ(*maybeNum, upvalue.value + callValue);
+    EXPECT_EQ(*maybeNum, upvalue + callValue);
 }
 
 namespace {
@@ -141,8 +178,7 @@ namespace {
     }
 }
 
-TEST(NativeFunctions, CanBeCalledThroughTheArasyApi) {
-    Lua L;
+TEST_F(GeneralFunctions, CanBeCalledThroughTheArasyApi) {
     loadNativeAddSub(L);
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";
@@ -155,8 +191,7 @@ TEST(NativeFunctions, CanBeCalledThroughTheArasyApi) {
     EXPECT_EQ(L.stackSize(), 0) << "addSub() pushed more values than expected";
 }
 
-TEST(NativeFunctions, CanPropagateErrorsThroughPcall) {
-    Lua L;
+TEST_F(GeneralFunctions, CanPropagateErrorsThroughPcall) {
     loadNativeAddSub(L);
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";
@@ -169,8 +204,7 @@ TEST(NativeFunctions, CanPropagateErrorsThroughPcall) {
     EXPECT_EQ(L.stackSize(), 0) << "Function pushed values unexpectedly";
 }
 
-TEST(NativeFunctions, CanTruncateReturnValues) {
-    Lua L;
+TEST_F(GeneralFunctions, CanTruncateReturnValues) {
     loadNativeAddSub(L);
     auto maybeNativeFunc = L.popStack<LuaFunction>();
     ASSERT_TRUE(maybeNativeFunc.has_value()) << "Failed to pop native function from the stack";

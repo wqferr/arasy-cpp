@@ -93,7 +93,7 @@ namespace arasy::core {
             return *popStack<LuaCFunction>();
         }
 
-        template<typename... Args, typename = std::enable_if_t<all_are_lua_wrapper_type_v<Args...>>>
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         LuaCFunction createCClosureInlineUpvalues(lua_CFunction cf, const Args&... args) {
             return LuaCFunction::withUpvalues(state, cf, args...);
         }

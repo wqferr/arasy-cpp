@@ -4,6 +4,10 @@
 #include "lua.hpp"
 #include <string>
 
+namespace arasy::core {
+    class LuaValue;
+}
+
 namespace arasy::core::internal {
     class LuaCallable : public arasy::registry::LuaReference {
     protected:
@@ -43,8 +47,9 @@ namespace arasy::core::internal {
                 lua_pushnumber(registry.luaInstance, arg1);
             } else if constexpr (std::is_same_v<Arg1, const char*>) {
                 lua_pushstring(registry.luaInstance, arg1);
-            } else {
-                static_assert(is_lua_wrapper_type_v<Arg1>);
+            } else if constexpr (std::is_same_v<LuaValue, Arg1>) {
+                arg1.pushOnto(registry.luaInstance);
+            } else if constexpr (std::is_base_of_v<LuaBaseType, Arg1>) {
                 LuaValue value {arg1};
                 value.pushOnto(registry.luaInstance);
             }
@@ -54,13 +59,13 @@ namespace arasy::core::internal {
     public:
         LuaCallable(lua_State* L, int idx): LuaReference(L, idx) {}
 
-        template<int nret=LUA_MULTRET, typename... Args>
+        template<int nret=LUA_MULTRET, typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         std::optional<std::string> pcall(const Args&... args) {
             pushOnto(registry.luaInstance);
             return invokeHelper<nret, Args...>(PCALL, sizeof...(args), args...);
         }
 
-        template<int  nret=LUA_MULTRET, typename... Args>
+        template<int  nret=LUA_MULTRET, typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         void call(const Args&... args) {
             pushOnto(registry.luaInstance);
             invokeHelper<nret, Args...>(RAWCALL, sizeof...(args), args...);
