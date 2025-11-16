@@ -18,15 +18,17 @@ namespace arasy::core::internal {
         std::optional<std::string> invokeHelper(CallMode mode, int nargs) {
             switch (mode) {
                 case RAWCALL:
+                    lua_call(callableContext, nargs, nret);
+
+                case PCALL:
                     if (lua_pcall(callableContext, nargs, nret, 0) == LUA_OK) {
                         return std::nullopt;
                     } else {
                         // TODO check for LUA_ERRMEM
-                        return lua_tostring(callableContext, -1);
+                        std::string errMsg = lua_tostring(callableContext, -1);
+                        lua_pop(callableContext, 1);
+                        return errMsg;
                     }
-
-                case PCALL:
-                    lua_call(callableContext, nargs, nret);
                     return std::nullopt;
             }
             return "internal arasy error";
@@ -45,7 +47,7 @@ namespace arasy::core::internal {
                 LuaValue value {arg1};
                 value.pushOnto(callableContext);
             }
-            invokeHelper<nret, Args...>(nargs, args...);
+            return invokeHelper<nret, Args...>(mode, nargs, args...);
         }
 
     public:
@@ -54,13 +56,13 @@ namespace arasy::core::internal {
         template<int nret=LUA_MULTRET, typename... Args>
         std::optional<std::string> pcall(const Args&... args) {
             pushOnto(callableContext);
-            invokeHelper<Args...>(PCALL, sizeof...(args), nret, args);
+            return invokeHelper<nret, Args...>(PCALL, sizeof...(args), args...);
         }
 
         template<int  nret=LUA_MULTRET, typename... Args>
         void call(const Args&... args) {
             pushOnto(callableContext);
-            invokeHelper<Args...>(RAWCALL, sizeof...(args), nret, nargs);
+            invokeHelper<nret, Args...>(RAWCALL, sizeof...(args), args...);
         }
     };
 }
