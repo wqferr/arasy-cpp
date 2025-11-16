@@ -4,6 +4,11 @@
 using namespace arasy::core;
 using namespace arasy::registry;
 
+void LuaReference::doRegister() {
+    id_ = makeId(-1);
+    lua_pop(registry.luaInstance, 1);
+}
+
 void LuaReference::pushSelf() const {
     pushOnto(registry.luaInstance);
 }
@@ -15,6 +20,11 @@ int LuaReference::clone(const LuaReference& ref) {
     ref.pushSelf();
     return luaL_ref(registry.luaInstance, LUA_REGISTRYINDEX);
 }
+
+LuaReference::LuaReference(lua_State* L):
+    registry(L),
+    id_(LUA_NOREF)
+{}
 
 LuaReference::LuaReference(lua_State* L, int idx):
     registry(L),

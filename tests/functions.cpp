@@ -112,6 +112,23 @@ TEST(CFunctions, CanUseUpvaluesNatively) {
     EXPECT_EQ(*maybeNum, upvalue + copyCallValue);
 }
 
+TEST(CFunctions, CanBeCreatedFromUpValuesInline) {
+    Lua L;
+    LuaInteger upvalue = 10;
+    int callValue = 5;
+    L.pushNum(0); // Sentinel
+
+    LuaCFunction cf = L.createCClosureInlineUpvalues(&testUpvalues, upvalue);
+    EXPECT_EQ(L.stackSize(), 1) << "Extra values were pushed or popped when creating the closure";
+    auto err = cf.pcall(callValue);
+
+    ASSERT_FALSE(err.has_value()) << "Fuction errored unexpectedly: " << *err;
+    ASSERT_EQ(L.stackSize(), 2) << "Function did not push expected number of return values";
+    auto maybeNum = L.popStack<LuaNumber>();
+    ASSERT_TRUE(maybeNum.has_value()) << "Function did not return a number";
+    EXPECT_EQ(*maybeNum, upvalue.value + callValue);
+}
+
 namespace {
     void loadNativeAddSub(Lua& L) {
         ASSERT_FALSE(L.executeString(

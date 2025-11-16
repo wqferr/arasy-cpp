@@ -9,6 +9,9 @@ namespace arasy::registry {
         LuaRegistry registry;
         void pushSelf() const;
 
+        LuaReference(lua_State* L);
+        void doRegister();
+
     private:
         int id_;
         int makeId(int idx);

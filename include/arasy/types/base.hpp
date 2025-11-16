@@ -22,10 +22,37 @@ namespace arasy::core {
     }
 
     template<typename T>
-    constexpr const inline bool is_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
+    constexpr bool is_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 
     template<typename T>
-    constexpr const bool is_nonvariant_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
+    constexpr bool is_nonvariant_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
+
+    template<typename... Ts>
+    constexpr bool all_are_lua_wrapper_type_v = (is_lua_wrapper_type_v<Ts> && ...);
+
+    // template<typename... Ts>
+    // struct all_are_lua_wrapper_type {
+    //     static constexpr bool value = false;
+    // };
+
+    // template<typename T>
+    // struct all_are_lua_wrapper_type<std::enable_if_t<is_lua_wrapper_type_v<T>>, T> {
+    //     static constexpr bool value = true;
+    // };
+
+    // template<typename T, typename... Ts>
+    // struct all_are_lua_wrapper_type<std::enable_if_t<is_lua_wrapper_type_v<T>, T>, Ts...> {
+    //     static constexpr bool value = all_are_lua_wrapper_type<Ts...>::value;
+    // };
+
+    // template<typename... Ts>
+    // constexpr bool all_are_lua_wrapper_type_v = all_are_lua_wrapper_type<Ts...>::value;
+
+    // template<typename Arg1>
+    // constexpr bool all_are_lua_wrapper_type_v = is_lua_wrapper_type_v<Arg1>;
+
+    // template<typename Arg1, typename Arg2, typename... Args>
+    // constexpr bool all_are_lua_wrapper_type_v = is_lua_wrapper_type_v<Arg1> && is_lua_wrapper_type_v<Arg2, Args...>;
 
     namespace internal {
         template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>

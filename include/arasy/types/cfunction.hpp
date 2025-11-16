@@ -6,10 +6,21 @@
 
 namespace arasy::core {
     class LuaCFunction : public internal::LuaCallable {
+        LuaCFunction(lua_State* L, lua_CFunction cfunc, std::in_place_t, int nUpvalues): LuaCallable(L) {
+            lua_pushcclosure(registry.luaInstance, cfunc, nUpvalues);
+            doRegister();
+        }
+
     public:
         lua_CFunction cfunc;
 
         LuaCFunction(lua_State* L, int index): LuaCallable(L, index) {}
+
+        template<typename... Args, typename = std::enable_if_t<all_are_lua_wrapper_type_v<Args...>>>
+        static LuaCFunction withUpvalues(lua_State* L, lua_CFunction cfunc, const Args&... args) {
+            (args.pushOnto(L), ...);
+            return LuaCFunction(L, cfunc, std::in_place, sizeof...(args));
+        }
     };
 
     namespace internal {

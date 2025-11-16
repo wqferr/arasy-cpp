@@ -79,8 +79,24 @@ namespace arasy::core {
         void pushInt(lua_Integer i) { push(LuaInteger{i}); }
         void pushNum(lua_Number x) { push(LuaNumber{x}); }
         void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
+
         void pushNewTable() { lua_newtable(state); }
+        LuaTable createNewTable() { pushNewTable(); return *popStack<LuaTable>(); }
         // TODO: newTable(std::unordered_map<LuaValue, LuaValue>)
+
+        void pushCFunction(lua_CFunction cf) { lua_pushcfunction(state, cf); }
+        LuaCFunction createCFunction(lua_CFunction cf) { pushCFunction(cf); return *popStack<LuaCFunction>(); }
+
+        void pushCClosure(lua_CFunction cf, int nUpvalues) { lua_pushcclosure(state, cf, nUpvalues); }
+        LuaCFunction createCClosureStackUpvalues(lua_CFunction cf, int nUpvalues) {
+            pushCClosure(cf, nUpvalues);
+            return *popStack<LuaCFunction>();
+        }
+
+        template<typename... Args, typename = std::enable_if_t<all_are_lua_wrapper_type_v<Args...>>>
+        LuaCFunction createCClosureInlineUpvalues(lua_CFunction cf, const Args&... args) {
+            return LuaCFunction::withUpvalues(state, cf, args...);
+        }
 
         template<typename... Args>
         std::optional<arasy::error::PushFmtErrorCode> pushFmt(const char *fmt, Args&&... args) {

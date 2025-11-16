@@ -6,6 +6,10 @@
 
 namespace arasy::core::internal {
     class LuaCallable : public arasy::registry::LuaReference {
+    protected:
+        LuaCallable(lua_State* L): LuaReference(L) {}
+
+    private:
         enum CallMode {
             RAWCALL,
             PCALL,
