@@ -84,7 +84,7 @@ TEST(Table, DetectsNilKeys) {
 
     auto err = table.set(nil, 123);
     ASSERT_TRUE(err.has_value());
-    EXPECT_EQ(err->code, arasy::error::TableIndexingErrorCode::NIL_KEY);
+    EXPECT_EQ(err->code, arasy::error::IndexingErrorCode::NIL_KEY);
 
     EXPECT_EQ(L.stackSize(), 0);
     err.reset();
@@ -92,7 +92,7 @@ TEST(Table, DetectsNilKeys) {
     EXPECT_EQ(L.stackSize(), 0);
 
     ASSERT_TRUE(err.has_value());
-    EXPECT_EQ(err->code, arasy::error::TableIndexingErrorCode::NIL_KEY);
+    EXPECT_EQ(err->code, arasy::error::IndexingErrorCode::NIL_KEY);
 
     auto value = table.get(nil);
     EXPECT_FALSE(value.has_value());

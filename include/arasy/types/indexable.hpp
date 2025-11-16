@@ -2,6 +2,7 @@
 
 #include "arasy/errors.hpp"
 #include "arasy/types/callable.hpp"
+#include "arasy/types/integer.hpp"
 
 namespace arasy::core {
     class LuaValue;
@@ -17,10 +18,9 @@ namespace arasy::core::internal {
         std::optional<arasy::error::IndexingError> set(const LuaValue& key, const LuaValue& value);
         std::optional<arasy::error::IndexingError> setField(const char* fieldName, const LuaValue& value);
 
-        void setRawStackKV();
-        void setRaw(const LuaValue& key, const LuaValue& value);
-        void setRawField(const char* fieldName, const LuaValue& value);
-        void setRawi(const lua_Integer& i, const LuaValue& value);
+        std::optional<arasy::error::IndexingError> setRawStackKV();
+        std::optional<arasy::error::IndexingError> setRaw(const LuaValue& key, const LuaValue& value);
+        std::optional<arasy::error::IndexingError> setRawi(const LuaInteger& i, const LuaValue& value);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key) {

@@ -42,15 +42,15 @@ namespace arasy::error {
     using ScriptError = Error<ScriptErrorCode>;
     std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err);
 
-    enum class TableIndexingErrorCode {
+    enum class IndexingErrorCode {
         // If not enough values were present on the stack for the operation
         NOT_ENOUGH_VALUES,
 
         // If the given key was nil
         NIL_KEY
     };
-    using IndexingError = Error<TableIndexingErrorCode>;
-    std::ostream& operator<<(std::ostream& os, const TableIndexingErrorCode& err);
+    using IndexingError = Error<IndexingErrorCode>;
+    std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
 }
 
 namespace arasy {

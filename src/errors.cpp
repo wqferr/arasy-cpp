@@ -33,11 +33,11 @@ std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
         }
     }
 
-    std::ostream& operator<<(std::ostream& os, const TableIndexingErrorCode& err) {
+    std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err) {
         switch (err) {
-            case TableIndexingErrorCode::NIL_KEY:
+            case IndexingErrorCode::NIL_KEY:
                 os << "<Nil key>";
-            case TableIndexingErrorCode::NOT_ENOUGH_VALUES:
+            case IndexingErrorCode::NOT_ENOUGH_VALUES:
                 os << "<Not enough values on the stack>";
             default:
                 return os << unknownErrorMsg;
