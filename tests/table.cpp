@@ -61,7 +61,7 @@ TEST(Table, CanIndex) {
     table.setField("yah", False);
     EXPECT_EQ(L.stackSize(), 0);
 
-    table.indexField("nah");
+    table.retrieveField("nah");
     EXPECT_EQ(L.stackSize(), 1);
 
     auto value = L.popStack<LuaBoolean>();
@@ -70,7 +70,7 @@ TEST(Table, CanIndex) {
 
     EXPECT_EQ(L.stackSize(), 0);
     table.set(True, 12);
-    table.index(True);
+    table.retrieve(True);
     EXPECT_EQ(L.stackSize(), 1);
     auto value2 = L.popStack<LuaInteger>();
     ASSERT_TRUE(value2.has_value());
@@ -88,7 +88,7 @@ TEST(Table, DetectsNilKeys) {
 
     EXPECT_EQ(L.stackSize(), 0);
     err.reset();
-    err = table.index(nil);
+    err = table.retrieve(nil);
     EXPECT_EQ(L.stackSize(), 0);
 
     ASSERT_TRUE(err.has_value());

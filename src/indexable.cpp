@@ -1,11 +1,10 @@
-#include "arasy/types/table.hpp"
-#include "arasy/types/all.hpp"
+#include "arasy/types/indexable.hpp"
 #include "arasy.hpp"
 #include "lua.hpp"
 
-using namespace arasy::core;
+using namespace arasy::core::internal;
 
-std::optional<arasy::error::TableIndexingError> LuaTable::set(
+std::optional<arasy::error::IndexingError> LuaIndexable::set(
     const LuaValue& key,
     const LuaValue& value
 ) {
@@ -21,7 +20,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::set(
     return std::nullopt;
 }
 
-std::optional<arasy::error::TableIndexingError> LuaTable::setField(
+std::optional<arasy::error::IndexingError> LuaIndexable::setField(
     const char* fieldName,
     const LuaValue& value
 ) {
@@ -34,7 +33,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::setField(
     return std::nullopt;
 }
 
-std::optional<arasy::error::TableIndexingError> LuaTable::index(const LuaValue& key) {
+std::optional<arasy::error::IndexingError> LuaIndexable::retrieve(const LuaValue& key) {
     if (key.isNil()) {
         return {arasy::error::TableIndexingErrorCode::NIL_KEY};
     }
@@ -46,7 +45,7 @@ std::optional<arasy::error::TableIndexingError> LuaTable::index(const LuaValue& 
     return std::nullopt;
 }
 
-void LuaTable::indexField(const char* fieldName) {
+void LuaIndexable::retrieveField(const char* fieldName) {
     lua_State* L = registry.luaInstance;
     pushSelf();
     lua_getfield(L, -1, fieldName);

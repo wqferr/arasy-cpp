@@ -22,7 +22,7 @@ add_library(
     "include/arasy/types/thread.hpp"
     "include/arasy/types/table.hpp"
     src/types.cpp
-    src/table.cpp
+    src/indexable.cpp
     src/thread.cpp
     "include/arasy/lua.hpp"
     "include/arasy/pushfmt.hpp"

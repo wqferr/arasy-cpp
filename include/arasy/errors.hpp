@@ -49,7 +49,7 @@ namespace arasy::error {
         // If the given key was nil
         NIL_KEY
     };
-    using TableIndexingError = Error<TableIndexingErrorCode>;
+    using IndexingError = Error<TableIndexingErrorCode>;
     std::ostream& operator<<(std::ostream& os, const TableIndexingErrorCode& err);
 }
 
