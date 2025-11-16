@@ -147,3 +147,10 @@ TEST(BasicLua, ArasyApiHasGetPop) {
     ASSERT_TRUE(v->isA<LuaNumber>());
     EXPECT_EQ(v->asA<LuaNumber>(), -0.5) << "readStack<>() fetched the wrong number with a positive index";
 }
+
+TEST(NullChecks, StringThrowsIfNullptr) {
+    try {
+        auto x = LuaString{nullptr};
+        FAIL();
+    } catch (std::runtime_error& e) {}
+}

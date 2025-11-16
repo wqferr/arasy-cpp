@@ -1,14 +1,15 @@
 #include "arasy/reference.hpp"
+#include <stdexcept>
 
 using namespace arasy::core;
 using namespace arasy::registry;
 
 void LuaReference::pushSelf() const {
-    pushOnto(registry.lua);
+    pushOnto(registry.registryContext);
 }
 
 int LuaReference::clone(const LuaReference& ref) {
-    if (registry.lua != ref.registry.lua) {
+    if (registry.registryContext != ref.registry.registryContext) {
         return LUA_NOREF;
     }
     ref.pushSelf();
@@ -33,13 +34,13 @@ LuaReference::LuaReference(LuaReference&& other):
 }
 
 LuaReference& LuaReference::operator=(const LuaReference& other) {
-    new (&registry) LuaRegistry {other.registry.lua};
+    new (&registry) LuaRegistry {other.registry.registryContext};
     id_ = clone(other);
     return *this;
 }
 
 LuaReference& LuaReference::operator=(LuaReference&& other) {
-    new (&registry) LuaRegistry {other.registry.lua};
+    new (&registry) LuaRegistry {other.registry.registryContext};
     id_ = std::move(other.id_);
     other.id_ = LUA_REFNIL;
     return *this;
@@ -54,18 +55,21 @@ LuaReference::~LuaReference() {
 }
 
 void LuaReference::pushOnto(lua_State* L) const {
+    if (L != registry.registryContext) {
+        throw std::runtime_error("Mixed registry references from different Lua instances");
+    }
     registry.retrieveRef(id_);
 }
 
 bool LuaReference::operator==(const LuaReference& other) const {
-    if (registry.lua != other.registry.lua) {
+    if (registry.registryContext != other.registry.registryContext) {
         return false;
     }
 
-    pushOnto(registry.lua);
-    const void* ptrA = lua_topointer(registry.lua, -1);
-    other.pushOnto(registry.lua);
-    const void* ptrB = lua_topointer(registry.lua, -1);
-    lua_pop(registry.lua, 2);
+    pushOnto(registry.registryContext);
+    const void* ptrA = lua_topointer(registry.registryContext, -1);
+    other.pushOnto(registry.registryContext);
+    const void* ptrB = lua_topointer(registry.registryContext, -1);
+    lua_pop(registry.registryContext, 2);
     return ptrA == ptrB;
 }

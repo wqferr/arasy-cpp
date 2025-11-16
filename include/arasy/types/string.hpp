@@ -1,12 +1,20 @@
 #pragma once
 
 #include <string>
+#include <stdexcept>
 
 namespace arasy::core {
     class LuaString : public internal::LuaBaseType {
         std::string str_;
+
+        const char* checkNullptr(const char* str) {
+            if (str == nullptr) {
+                throw std::runtime_error("LuaString was given nullptr");
+            }
+            return str;
+        }
     public:
-        LuaString(const char *str_): str_(str_) {}
+        LuaString(const char *str__): str_(checkNullptr(str__)) {}
         const char *str() const { return str_.c_str(); }
         const std::string& fullStr() const { return str_; }
         void pushOnto(lua_State* L) const override { lua_pushstring(L, str_.c_str()); }
