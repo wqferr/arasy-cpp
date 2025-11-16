@@ -13,13 +13,17 @@ int Lua::stackSize() const {
     return lua_gettop(state);
 }
 
-void Lua::push(const LuaValue& value) {
-    value.pushOnto(state);
+LuaTable Lua::readGlobalsTable() {
+    retrieveGlobalsTable();
+    return *popStack<LuaTable>();
 }
 
-LuaValue Lua::getGlobal(const std::string& name) {
-    lua_getglobal(state, name.c_str());
-    return popStack().value_or(nil);
+void Lua::retrieveGlobalsTable() {
+    lua_pushglobaltable(state);
+}
+
+void Lua::push(const LuaValue& value) {
+    value.pushOnto(state);
 }
 
 void Lua::retrieveGlobal(const std::string& name) {

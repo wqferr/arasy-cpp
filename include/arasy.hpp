@@ -149,9 +149,16 @@ namespace arasy::core {
             return readStack<T>(-1);
         }
 
-        LuaValue getGlobal(const std::string& name);
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        std::optional<T> readGlobal(const std::string& name) {
+            retrieveGlobal(name);
+            return popStack<T>();
+        }
+
         void retrieveGlobal(const std::string& name);
 
+        LuaTable readGlobalsTable();
+        void retrieveGlobalsTable();
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
         void setGlobal(const std::string& name, const T& value) {
