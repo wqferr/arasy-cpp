@@ -143,8 +143,6 @@ std::optional<ScriptError> Lua::executeFile(const std::string& fileName) {
 // GlobalVarProxy
 
 Lua::GlobalVariableProxy Lua::operator[](const std::string& name) {
-    // latestVariableAccessed.emplace(*this, name);
-    // return *latestVariableAccessed;
     return {*this, name};
 }
 

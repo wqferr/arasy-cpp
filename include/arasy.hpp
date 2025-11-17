@@ -57,8 +57,6 @@ namespace arasy::core {
             friend class Lua;
         };
 
-        std::optional<GlobalVariableProxy> latestVariableAccessed;
-
     public:
         lua_State* const state;
         const bool external = false;
@@ -113,7 +111,6 @@ namespace arasy::core {
         // Transpose a LuaValue from a different Lua state.
         void receive(LuaValue copyOfAlien);
 
-        // WARNING! NOT THREAD SAFE!!
         GlobalVariableProxy operator[](const std::string& name);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
@@ -208,7 +205,7 @@ namespace arasy::core {
                     }
                     return thread::Ok({ true, nret });
                 default:
-                    return thread::Error({popStack<LuaString>()->fullStr()});
+                    return thread::Error({ popStack<LuaString>()->fullStr() });
             }
         }
 
