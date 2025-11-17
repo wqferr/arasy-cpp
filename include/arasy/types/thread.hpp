@@ -45,7 +45,7 @@ namespace arasy::core {
 
         operator Lua&() { return *thread_; }
     };
-    inline bool operator==(const LuaThread& a, const LuaThread& b);
+    bool operator==(const LuaThread& a, const LuaThread& b);
 
     namespace internal {
         template<>

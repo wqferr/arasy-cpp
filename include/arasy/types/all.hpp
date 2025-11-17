@@ -86,7 +86,15 @@ namespace arasy::core {
         std::optional<lua_Number> toNumber() const;
         bool isNumeric() const;
         constexpr bool isNil() const { return isA<LuaNil>(); }
+
+        // bool operator==(const LuaValue& other) const;
     };
+
+    // template<typename T, typename = std::enable_if_t<utils::internal::is_any_of_v<T, _ARASY_LUA_VARIANT_ORDER>>>
+    // bool operator==(const LuaValue& a, const T& b) {
+    //     return a == LuaValue{b};
+    // }
+
 #undef _ARASY_LUA_VARIANT_ORDER
 
     template<>

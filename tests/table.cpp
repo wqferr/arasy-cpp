@@ -152,4 +152,6 @@ TEST(Table, CanUseOperatorSqBrackets) {
     ASSERT_TRUE(w->isNumeric());
     L.push(w);
     EXPECT_TRUE(L.checkStackTop<LuaNumber>());
+    auto x = L.popStack();
+    ASSERT_EQ(x, LuaValue{1_ln});
 }
