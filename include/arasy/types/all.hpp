@@ -10,6 +10,7 @@
 #include "arasy/types/cfunction.hpp"
 #include "arasy/types/thread.hpp"
 #include "arasy/types/lightuserdata.hpp"
+#include "arasy/types/fulluserdata.hpp"
 
 #include "arasy/utils.hpp"
 
@@ -17,7 +18,7 @@
 #include <variant>
 
 namespace arasy::core {
-#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaFunction, LuaCFunction, LuaThread, LuaLightUserData
+#define _ARASY_LUA_VARIANT_ORDER LuaNil, LuaBoolean, LuaInteger, LuaNumber, LuaString, LuaTable, LuaFunction, LuaCFunction, LuaThread, LuaLightUserData, LuaFullUserData
     namespace internal {
         using LuaValueVariant = std::variant<_ARASY_LUA_VARIANT_ORDER>;
     }

@@ -26,10 +26,10 @@ namespace arasy::core::internal {
                     lua_call(registry.luaInstance, nargs, nret);
 
                 case PCALL:
-                    if (lua_pcall(registry.luaInstance, nargs, nret, 0) == LUA_OK) {
+                    auto status = lua_pcall(registry.luaInstance, nargs, nret, 0);
+                    if (status == LUA_OK) {
                         return std::nullopt;
                     } else {
-                        // TODO check for LUA_ERRMEM
                         std::string errMsg = lua_tostring(registry.luaInstance, -1);
                         lua_pop(registry.luaInstance, 1);
                         return errMsg;

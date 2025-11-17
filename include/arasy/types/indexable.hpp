@@ -119,19 +119,5 @@ namespace arasy::core::internal {
         IndexedValue operator[](const T& k) {
             return (*this)[LuaValue{k}];
         }
-
-        // TODO
-        struct OperationChain {};
-        OperationChain chain();
     };
-
-    // template<typename T, typename = std::enable_if_t<is_convertible_to_lua_type_v<T>>>
-    // bool operator==(const LuaIndexable::IndexedValue& indexed, const T& other) {
-    //     return indexed.value() == other;
-    // }
-
-    // template<typename T, typename = std::enable_if_t<is_convertible_to_lua_type_v<T>>>
-    // bool operator==(const T& other, const LuaIndexable::IndexedValue& indexed) {
-    //     return other == indexed.value();
-    // }
 }

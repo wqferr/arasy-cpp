@@ -42,6 +42,8 @@ namespace arasy::core {
                 return os << "<type:thread>";
             case V::LuaLightUserData:
                 return os << "<type:lightuserdata>";
+            case V::LuaFullUserData:
+                return os << "<type:fulluserdata>";
         }
         return os << "<type:INVALID>";
     }
@@ -83,6 +85,9 @@ namespace arasy::core {
                 },
                 [&os](const LuaLightUserData& lud) {
                     os << "lightuserdata: " << std::hex << lud.ptr();
+                },
+                [&os](const LuaFullUserData& lud) {
+                    os << "fulluserdata: id #" << lud.id();
                 }
             },
             lv
@@ -100,6 +105,8 @@ namespace arasy::core {
                 return LuaStackReader<LuaNumber>::readAt(L, idx);
             } else if (LuaStackReader<LuaLightUserData>::checkAt(L, idx)) {
                 return LuaStackReader<LuaLightUserData>::readAt(L, idx);
+            } else if (LuaStackReader<LuaFullUserData>::checkAt(L, idx)) {
+                return LuaStackReader<LuaFullUserData>::readAt(L, idx);
             } else if (LuaStackReader<LuaString>::checkAt(L, idx)) {
                 return LuaStackReader<LuaString>::readAt(L, idx);
             } else if (LuaStackReader<LuaTable>::checkAt(L, idx)) {

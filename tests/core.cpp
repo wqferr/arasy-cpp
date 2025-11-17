@@ -32,8 +32,14 @@ TEST(BasicLua, SetGlobal) {
     }
 }
 
+TEST(BasicLua, ErrorsOnLoadNonexistentFile) {
+    Lua L;
+    auto err = L.executeFile("THIS_FILE_SHOULD_NOT_EXIST");
+    ASSERT_TRUE(err.has_value());
+    EXPECT_EQ(err->code, arasy::error::ScriptErrorCode::IO_ERROR);
+}
+
 TEST(BasicLua, LoadFile) {
-    // TODO test loading nonexistent file
     Lua L;
     luaL_openlibs(L);
     lua_newtable(L);
