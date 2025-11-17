@@ -50,10 +50,6 @@ namespace arasy::core {
     }
 
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv) {
-        struct visitor {
-            std::ostream& os;
-        };
-
         std::visit(
             utils::internal::overload{
                 [&os](const LuaBoolean& b) {

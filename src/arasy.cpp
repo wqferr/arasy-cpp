@@ -160,13 +160,10 @@ Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const char *str) {
 }
 
 void Lua::receive(LuaValue copyOfAlien) {
-    std::visit(
-        utils::internal::overload{
-            [this](auto& value) {
-                value.transportTo(this->state);
-            }
-        },
-        copyOfAlien
+    copyOfAlien.visit(
+        [this](internal::LuaBaseType& value) {
+            value.transportTo(this->state);
+        }
     );
     push(copyOfAlien);
 }

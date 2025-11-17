@@ -59,7 +59,11 @@ namespace arasy::core {
 
         template<typename R=void, typename C>
         R visit(C&& callable) {
-            return std::visit<R>(callable, static_cast<LuaValueVariant&>(*this));
+            if constexpr (std::is_same_v<R, void>) {
+                std::visit(callable, *this);
+            } else {
+                return std::visit<R>(callable, *this);
+            }
         }
 
         template<typename R=void, typename C>
