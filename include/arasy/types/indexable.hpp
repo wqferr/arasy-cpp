@@ -27,6 +27,7 @@ namespace arasy::core::internal {
             LuaIndexable& t;
             const std::shared_ptr<LuaValue> key_;
             std::shared_ptr<LuaValue> makeKey(const LuaValue& k);
+            std::shared_ptr<LuaValue> dummyForArrowOp;
 
         public:
             IndexedValue(LuaIndexable& t_, const LuaValue& k);
@@ -50,13 +51,10 @@ namespace arasy::core::internal {
                 *this = value;
             }
 
-            void set(const lua_Number& value) {
-                *this = value;
-            }
+            void set(const lua_Number& value);
+            void set(const char* value);
 
-            void set(const char* value) {
-                *this = value;
-            }
+            std::shared_ptr<const LuaValue> operator->() const;
 
             friend class LuaIndexable;
         };

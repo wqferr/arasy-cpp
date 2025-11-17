@@ -141,7 +141,8 @@ void LuaIndexable::setMetatableStack() {
 
 IndexedValue::IndexedValue(LuaIndexable& t_, const LuaValue& k):
     t(t_),
-    key_(makeKey(k))
+    key_(makeKey(k)),
+    dummyForArrowOp(std::make_shared<LuaValue>(nil))
 {}
 
 std::shared_ptr<LuaValue> IndexedValue::makeKey(const LuaValue& k) {
@@ -177,4 +178,21 @@ IndexedValue& IndexedValue::operator=(const lua_Number& value) {
 
 IndexedValue& IndexedValue::operator=(const char* str) {
     return *this = LuaString{str};
+}
+
+void IndexedValue::set(const lua_Number& value) {
+    *this = value;
+}
+
+void IndexedValue::set(const char* value) {
+    *this = value;
+}
+
+std::shared_ptr<const LuaValue> IndexedValue::operator->() const {
+    get<LuaValue>()->visit(
+        [this](auto&& v) {
+            new (this->dummyForArrowOp.get()) LuaValue {v};
+        }
+    );
+    return dummyForArrowOp;
 }

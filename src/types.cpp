@@ -120,7 +120,10 @@ namespace arasy::core {
             } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
                 return LuaStackReader<LuaBoolean>::readAt(L, idx);
             } else {
-                return nil;
+                throw std::runtime_error(
+                    std::string{"Unknown lua type! Value's tostring() is: "}
+                    + lua_tostring(L, idx)
+                );
             }
         }
     }

@@ -145,5 +145,11 @@ TEST(Table, CanUseOperatorSqBrackets) {
     auto v = t["field"].get<LuaString>();
     ASSERT_TRUE(v.has_value()) << "Table did not retrieve existing key/value pair";
     EXPECT_EQ(v, "exists") << "Table retrieved incorrect value";
-    EXPECT_TRUE(t["lol"].get()->isNil());
+    auto u = t["lol"];
+    EXPECT_TRUE(u->isNil());
+    auto w = t[True];
+    ASSERT_FALSE(w->isNil());
+    ASSERT_TRUE(w->isNumeric());
+    L.push(w);
+    EXPECT_TRUE(L.checkStackTop<LuaNumber>());
 }
