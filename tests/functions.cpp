@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <csetjmp>
 #include "arasy.hpp"
 
 using namespace arasy;
@@ -29,9 +28,8 @@ extern "C" {
 }
 
 namespace {
-    std::jmp_buf escapeLuaError;
     int atPanic(lua_State* L) {
-        longjmp(escapeLuaError, 1);
+        throw std::runtime_error("Unexpected Lua panic");
     }
 }
 
@@ -48,10 +46,6 @@ public:
 using GeneralFunctions = CFunctions;
 
 TEST_F(CFunctions, CanBeCalledNatively) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     lua_pushcfunction(L, addSub);
     L.push(5_li);
     L.push(3_li);
@@ -61,10 +55,6 @@ TEST_F(CFunctions, CanBeCalledNatively) {
 }
 
 TEST_F(CFunctions, CanBeCalledThroughTheArasyApi) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     lua_pushcfunction(L, addSub);
     auto maybeCfunc = L.popStack<LuaCFunction>();
     ASSERT_TRUE(maybeCfunc.has_value());
@@ -76,10 +66,6 @@ TEST_F(CFunctions, CanBeCalledThroughTheArasyApi) {
 }
 
 TEST_F(CFunctions, CanPropagateErrorsThroughPcall) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     lua_pushcfunction(L, addSub);
     ASSERT_EQ(L.stackSize(), 1);
     auto maybeCfunc = L.popStack<LuaCFunction>();
@@ -95,10 +81,6 @@ TEST_F(CFunctions, CanPropagateErrorsThroughPcall) {
 }
 
 TEST_F(CFunctions, CanTruncateReturnValues) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     lua_pushcfunction(L, addSub);
     auto maybeCfunc = L.popStack<LuaCFunction>();
     ASSERT_TRUE(maybeCfunc.has_value());
@@ -111,10 +93,6 @@ TEST_F(CFunctions, CanTruncateReturnValues) {
 }
 
 TEST_F(CFunctions, CanUseUpvaluesNatively) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     lua_pushcfunction(L, testUpvalues);
 
     int upvalue = 3;
@@ -148,10 +126,6 @@ TEST_F(CFunctions, CanUseUpvaluesNatively) {
 }
 
 TEST_F(CFunctions, CanBeCreatedFromUpValuesInline) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     int upvalue = 10;
     int callValue = 5;
     L.pushNum(0); // Sentinel
@@ -180,10 +154,6 @@ namespace {
 }
 
 TEST_F(GeneralFunctions, CanBeCalledThroughTheArasyApi) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     loadNativeAddSub(L);
     L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();
@@ -198,10 +168,6 @@ TEST_F(GeneralFunctions, CanBeCalledThroughTheArasyApi) {
 }
 
 TEST_F(GeneralFunctions, CanPropagateErrorsThroughPcall) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     loadNativeAddSub(L);
     L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();
@@ -216,10 +182,6 @@ TEST_F(GeneralFunctions, CanPropagateErrorsThroughPcall) {
 }
 
 TEST_F(GeneralFunctions, CanTruncateReturnValues) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     loadNativeAddSub(L);
     L.retrieveGlobal("addSub");
     auto maybeNativeFunc = L.popStack<LuaFunction>();

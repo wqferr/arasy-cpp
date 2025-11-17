@@ -1,21 +1,15 @@
 #include <gtest/gtest.h>
-#include <csetjmp>
 #include "arasy.hpp"
 
 using namespace arasy;
 
 namespace {
-    std::jmp_buf escapeLuaError;
     int atPanic(lua_State* L) {
-        longjmp(escapeLuaError, 1);
+        throw std::runtime_error("Unexpected Lua panic");
     }
 }
 
 TEST(Thread, CanYieldUsingTheArasyApi) {
-    if (setjmp(escapeLuaError)) {
-        FAIL() << "Unexpected Lua error panic";
-    }
-
     Lua L;
     lua_atpanic(L, atPanic);
     luaL_openlibs(L);
