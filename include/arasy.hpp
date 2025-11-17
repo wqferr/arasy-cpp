@@ -111,17 +111,7 @@ namespace arasy::core {
         void pushNil() { push(nil); }
 
         // Transpose a LuaValue from a different Lua state.
-        void receive(LuaValue copyOfAlien) {
-            std::visit(
-                utils::internal::overload{
-                    [this](auto& value) {
-                        value.transportTo(this->state);
-                    }
-                },
-                copyOfAlien
-            );
-            push(copyOfAlien);
-        }
+        void receive(LuaValue copyOfAlien);
 
         // WARNING! NOT THREAD SAFE!!
         GlobalVariableProxy& operator[](const std::string& name);

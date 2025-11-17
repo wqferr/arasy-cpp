@@ -18,8 +18,21 @@ void LuaReference::pushSelf() const {
     pushOnto(registry.luaInstance);
 }
 
+bool LuaReference::fromSameThreadTreeAs(lua_State* otherLua) const {
+    lua_State* thisLua = registry.luaInstance;
+    lua_rawgeti(thisLua, LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD);
+    const void* mainThreadOfThis = lua_topointer(thisLua, -1);
+    lua_pop(thisLua, 1);
+
+    lua_rawgeti(otherLua, LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD);
+    const void* mainThreadOfOther = lua_topointer(otherLua, -1);
+    lua_pop(otherLua, 1);
+
+    return mainThreadOfThis == mainThreadOfOther;
+}
+
 int LuaReference::clone(const LuaReference& ref) {
-    if (registry.luaInstance != ref.registry.luaInstance) {
+    if (!fromSameThreadTreeAs(ref.registry.luaInstance)) {
         return LUA_NOREF;
     }
     ref.pushSelf();
@@ -70,14 +83,14 @@ LuaReference::~LuaReference() {
 }
 
 void LuaReference::pushOnto(lua_State* L) const {
-    if (L != registry.luaInstance) {
+    if (!fromSameThreadTreeAs(L)) {
         throw std::runtime_error("Mixed registry references from different Lua instances");
     }
     registry.retrieveRef(id_);
 }
 
 bool LuaReference::operator==(const LuaReference& other) const {
-    if (registry.luaInstance != other.registry.luaInstance) {
+    if (!fromSameThreadTreeAs(other.registry.luaInstance)) {
         return false;
     }
 

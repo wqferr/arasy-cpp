@@ -12,6 +12,8 @@ namespace arasy::registry {
         LuaReference(lua_State* L);
         void doRegister();
 
+        bool fromSameThreadTreeAs(lua_State* otherLua) const;
+
     private:
         int id_;
         int makeId(int idx);
