@@ -30,6 +30,13 @@ namespace arasy::core {
     template<typename T>
     constexpr bool is_nonvariant_lua_wrapper_type_v = std::is_base_of_v<internal::LuaBaseType, T>;
 
+    // template<typename T>
+    // constexpr bool is_convertible_to_lua_type_v =
+    //     is_lua_wrapper_type_v<T>
+    //     || std::is_integral_v<T>
+    //     || std::is_floating_point_v<T>
+    //     || std::is_same_v<T, const char*>;
+
     template<typename... Ts>
     constexpr bool all_are_convertible_to_lua_value_v = (std::is_convertible_v<Ts, arasy::core::LuaValue> && ...);
 

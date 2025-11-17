@@ -84,7 +84,7 @@ namespace arasy::core {
 
         std::optional<lua_Number> toNumber() const;
         bool isNumeric() const;
-        inline bool isNil() const { return isA<LuaNil>(); }
+        constexpr bool isNil() const { return isA<LuaNil>(); }
     };
 #undef _ARASY_LUA_VARIANT_ORDER
 

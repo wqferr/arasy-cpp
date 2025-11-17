@@ -5,6 +5,8 @@
 using namespace arasy::core;
 using namespace arasy::core::internal;
 
+using IndexedValue = LuaIndexable::IndexedValue;
+
 std::optional<arasy::error::IndexingError> LuaIndexable::setStackKV() {
     Lua L {registry.luaInstance};
     lua_checkstack(L, 2);
@@ -135,4 +137,44 @@ void LuaIndexable::setMetatableStack() {
     lua_rotate(registry.luaInstance, -2, 1);
     lua_setmetatable(registry.luaInstance, -2);
     lua_pop(registry.luaInstance, 2);
+}
+
+IndexedValue::IndexedValue(LuaIndexable& t_, const LuaValue& k):
+    t(t_),
+    key_(makeKey(k))
+{}
+
+std::shared_ptr<LuaValue> IndexedValue::makeKey(const LuaValue& k) {
+    if (k.isNil()) {
+        throw std::runtime_error("Attempted to index a table or userdata with nil");
+    }
+    return std::make_shared<LuaValue>(k);
+}
+
+LuaValue IndexedValue::key() const {
+    return *key_;
+}
+
+IndexedValue LuaIndexable::operator[](const LuaValue& k) {
+    return {*this, k};
+}
+
+IndexedValue LuaIndexable::operator[](const char* k) {
+    return {*this, LuaString{k}};
+}
+
+IndexedValue LuaIndexable::operator[](const lua_Integer& k) {
+    return {*this, LuaInteger{k}};
+}
+
+IndexedValue::operator LuaValue() const {
+    return *get<LuaValue>();
+}
+
+IndexedValue& IndexedValue::operator=(const lua_Number& value) {
+    return *this = LuaNumber{value};
+}
+
+IndexedValue& IndexedValue::operator=(const char* str) {
+    return *this = LuaString{str};
 }

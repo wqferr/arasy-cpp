@@ -37,6 +37,7 @@ namespace arasy::core {
 
     public:
         LuaThread(lua_State* L);
+        LuaThread(const LuaThread& other): thread_(other.thread_) {}
         void pushOnto(lua_State* L) const override;
 
         Lua& thread() { return *thread_; }

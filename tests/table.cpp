@@ -22,6 +22,16 @@ TEST(Table, CanSet) {
     EXPECT_EQ(*L.readStackTop<LuaString>(), "Hello World!");
 }
 
+TEST(Table, CanSetValuesToNil) {
+    Lua L;
+
+    LuaTable t = L.createNewTable();
+    t.setField("test", nil);
+    auto v = t.getField("test");
+    ASSERT_TRUE(v.has_value());
+    EXPECT_TRUE(v->isNil());
+}
+
 TEST(Table, CanGet) {
     Lua L;
 
@@ -109,7 +119,7 @@ TEST(Table, CanSetFromStackValues) {
     L.pushStr("William");
     table.setStackKV();
 
-    EXPECT_EQ(*table.get<LuaString>("name"_ls), "William");
+    EXPECT_EQ(*table.getField<LuaString>("name"), "William");
 }
 
 TEST(Table, CanGetFromStackKey) {
@@ -121,4 +131,19 @@ TEST(Table, CanGetFromStackKey) {
     L.pushStr("lastName");
     table.retrieveStackK();
     EXPECT_EQ(*L.popStack<LuaString>(), "Ferreira");
+}
+
+TEST(Table, CanUseOperatorSqBrackets) {
+    Lua L;
+
+    LuaTable t = L.createNewTable();
+    t[True] = 1;
+    t[False] = 0_li;
+    t["field"] = "exists";
+    t["lol"] = nil;
+    EXPECT_THROW(t[nil] = "lol", std::runtime_error) << "Table did not error when setting a nil key";
+    auto v = t["field"].get<LuaString>();
+    ASSERT_TRUE(v.has_value()) << "Table did not retrieve existing key/value pair";
+    EXPECT_EQ(v, "exists") << "Table retrieved incorrect value";
+    EXPECT_TRUE(t["lol"].get()->isNil());
 }

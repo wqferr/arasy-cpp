@@ -15,6 +15,7 @@ namespace arasy::core {
         }
     public:
         LuaString(const char *str__): str_(checkNullptr(str__)) {}
+        LuaString(const LuaString& s): str_(s.str_) {}
         const char *str() const { return str_.c_str(); }
         const std::string& fullStr() const { return str_; }
         void pushOnto(lua_State* L) const override { lua_pushstring(L, str_.c_str()); }

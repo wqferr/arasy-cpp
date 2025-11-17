@@ -7,6 +7,7 @@ namespace arasy::core {
         void* ptr_;
     public:
         LuaLightUserData(void* ptr__): ptr_(ptr__) {}
+        LuaLightUserData(const LuaLightUserData& other): ptr_(other.ptr_) {}
         void pushOnto(lua_State* L) const override { lua_pushlightuserdata(L, ptr_); }
         void* ptr() const { return ptr_; }
     };

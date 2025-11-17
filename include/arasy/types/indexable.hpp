@@ -12,6 +12,55 @@ namespace arasy::core {
 namespace arasy::core::internal {
     class LuaIndexable : public LuaCallable {
     public:
+        class IndexedValue {
+        public:
+            LuaValue key() const;
+
+            template<typename T=LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+            std::optional<T> get() const {
+                return t.get<T>(*key_);
+            }
+
+            operator LuaValue() const;
+
+        private:
+            LuaIndexable& t;
+            const std::shared_ptr<LuaValue> key_;
+            std::shared_ptr<LuaValue> makeKey(const LuaValue& k);
+
+        public:
+            IndexedValue(LuaIndexable& t_, const LuaValue& k);
+
+            IndexedValue& operator=(const IndexedValue& other) = delete;
+            IndexedValue& operator=(IndexedValue&& other) = default;
+            IndexedValue(const IndexedValue& other) = delete;
+            IndexedValue(IndexedValue&& other) = default;
+
+            template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+            IndexedValue& operator=(const T& value) {
+                t.set(*key_, value);
+                return *this;
+            }
+
+            IndexedValue& operator=(const lua_Number& value);
+            IndexedValue& operator=(const char* str);
+
+            template<typename T, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+            void set(const T& value) {
+                *this = value;
+            }
+
+            void set(const lua_Number& value) {
+                *this = value;
+            }
+
+            void set(const char* value) {
+                *this = value;
+            }
+
+            friend class LuaIndexable;
+        };
+
         LuaIndexable(lua_State* L, int idx): LuaCallable(L, idx) {}
 
         std::optional<arasy::error::IndexingError> setStackKV();
@@ -62,8 +111,27 @@ namespace arasy::core::internal {
         void setMetatableStack();
         void setMetatable(const LuaTable& metatable);
 
+        IndexedValue operator[](const LuaValue& k);
+        IndexedValue operator[](const char* k);
+        IndexedValue operator[](const lua_Integer& i);
+
+        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        IndexedValue operator[](const T& k) {
+            return (*this)[LuaValue{k}];
+        }
+
         // TODO
         struct OperationChain {};
         OperationChain chain();
     };
+
+    // template<typename T, typename = std::enable_if_t<is_convertible_to_lua_type_v<T>>>
+    // bool operator==(const LuaIndexable::IndexedValue& indexed, const T& other) {
+    //     return indexed.value() == other;
+    // }
+
+    // template<typename T, typename = std::enable_if_t<is_convertible_to_lua_type_v<T>>>
+    // bool operator==(const T& other, const LuaIndexable::IndexedValue& indexed) {
+    //     return other == indexed.value();
+    // }
 }

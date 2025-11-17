@@ -5,6 +5,15 @@ using namespace arasy;
 using namespace arasy::core;
 using namespace arasy::error;
 
+Lua::Lua(): state(luaL_newstate()), registry(state) {}
+Lua::Lua(lua_State* L): state(L), external(true), registry(state) {}
+
+Lua::~Lua() {
+    if (!external) {
+        lua_close(state);
+    }
+}
+
 void Lua::ensureStack(int n) {
     lua_checkstack(state, n);
 }
@@ -170,4 +179,43 @@ void Lua::receive(LuaValue copyOfAlien) {
         }
     );
     push(copyOfAlien);
+}
+
+void Lua::pushNewTable() {
+    lua_newtable(state);
+}
+
+LuaTable Lua::createNewTable() {
+    pushNewTable();
+    return *popStack<LuaTable>();
+}
+
+void Lua::pushCFunction(lua_CFunction cf) {
+    lua_pushcfunction(state, cf);
+}
+
+LuaCFunction Lua::createCFunction(lua_CFunction cf) {
+    pushCFunction(cf);
+    return *popStack<LuaCFunction>();
+}
+
+void Lua::pushCClosure(lua_CFunction cf, int nUpvalues) {
+    lua_pushcclosure(state, cf, nUpvalues);
+}
+
+LuaCFunction Lua::createCClosureStackUpvalues(lua_CFunction cf, int nUpvalues) {
+    pushCClosure(cf, nUpvalues);
+    return *popStack<LuaCFunction>();
+}
+
+void Lua::pushInt(lua_Integer i) {
+    push(LuaInteger{i});
+}
+
+void Lua::pushNum(lua_Number x) {
+    push(LuaNumber{x});
+}
+
+void Lua::pushStr(const std::string& str) {
+    push(LuaString{str.c_str()});
 }

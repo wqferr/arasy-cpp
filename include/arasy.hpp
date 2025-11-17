@@ -62,35 +62,28 @@ namespace arasy::core {
         const bool external = false;
         arasy::registry::LuaRegistry registry;
 
-        Lua(): state(luaL_newstate()), registry(state) {}
-        Lua(lua_State* L): state(L), external(true), registry(state) {}
-        ~Lua() {
-            if (!external) {
-                lua_close(state);
-            }
-        }
+        Lua();
+        Lua(lua_State* L);
+        ~Lua();
 
         void ensureStack(int i);
         int stackSize() const;
         std::optional<LuaValueVarIndex> type(int idx) const;
 
         void push(const LuaValue& value);
-        void pushInt(lua_Integer i) { push(LuaInteger{i}); }
-        void pushNum(lua_Number x) { push(LuaNumber{x}); }
-        void pushStr(const std::string& str) { push(LuaString{str.c_str()}); }
+        void pushInt(lua_Integer i);
+        void pushNum(lua_Number x);
+        void pushStr(const std::string& str);
 
-        void pushNewTable() { lua_newtable(state); }
-        LuaTable createNewTable() { pushNewTable(); return *popStack<LuaTable>(); }
+        void pushNewTable();
+        LuaTable createNewTable();
         // TODO: newTable(std::unordered_map<LuaValue, LuaValue>)
 
-        void pushCFunction(lua_CFunction cf) { lua_pushcfunction(state, cf); }
-        LuaCFunction createCFunction(lua_CFunction cf) { pushCFunction(cf); return *popStack<LuaCFunction>(); }
+        void pushCFunction(lua_CFunction cf);
+        LuaCFunction createCFunction(lua_CFunction cf);
 
-        void pushCClosure(lua_CFunction cf, int nUpvalues) { lua_pushcclosure(state, cf, nUpvalues); }
-        LuaCFunction createCClosureStackUpvalues(lua_CFunction cf, int nUpvalues) {
-            pushCClosure(cf, nUpvalues);
-            return *popStack<LuaCFunction>();
-        }
+        void pushCClosure(lua_CFunction cf, int nUpvalues);
+        LuaCFunction createCClosureStackUpvalues(lua_CFunction cf, int nUpvalues);
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         LuaCFunction createCClosureInlineUpvalues(lua_CFunction cf, const Args&... args) {
