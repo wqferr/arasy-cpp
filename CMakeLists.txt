@@ -19,8 +19,9 @@ add_library(
     "include/arasy/types/nil.hpp"
     "include/arasy/types/number.hpp"
     "include/arasy/types/string.hpp"
-    "include/arasy/types/thread.hpp"
     "include/arasy/types/table.hpp"
+    "include/arasy/types/thread.hpp"
+    "include/arasy/types/lightuserdata.hpp"
     src/types.cpp
     src/indexable.cpp
     src/thread.cpp
@@ -38,17 +39,6 @@ target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
-add_executable(
-    arasy_unit_tests
-    tests/core.cpp
-    tests/fmt.cpp
-    tests/registry.cpp
-    tests/table.cpp
-    tests/functions.cpp
-    tests/thread.cpp
-)
-target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
-
 file(GLOB all_test_scripts ${CMAKE_SOURCE_DIR}/tests/scripts/**)
 add_custom_target(
     test_lua_scripts
@@ -61,11 +51,22 @@ add_custom_command(
     ${CMAKE_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
 )
 
+add_executable(
+    arasy_unit_tests
+    tests/core.cpp
+    tests/fmt.cpp
+    tests/registry.cpp
+    tests/table.cpp
+    tests/functions.cpp
+    tests/thread.cpp
+)
+target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
+add_dependencies(arasy_unit_tests test_lua_scripts)
+
 add_custom_target(
     run_unit_tests
     COMMAND $<TARGET_FILE:arasy_unit_tests> | tee tests/report.txt
     DEPENDS arasy_unit_tests
-    DEPENDS test_lua_scripts
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 

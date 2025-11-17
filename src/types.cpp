@@ -40,6 +40,8 @@ namespace arasy::core {
                 return os << "<type:cfunction>";
             case V::LuaThread:
                 return os << "<type:thread>";
+            case V::LuaLightUserData:
+                return os << "<type:lightuserdata>";
         }
         return os << "<type:INVALID>";
     }
@@ -78,6 +80,9 @@ namespace arasy::core {
                 },
                 [&os](const LuaTable& tbl) {
                     os << "table: id #" << tbl.id();
+                },
+                [&os](const LuaLightUserData& lud) {
+                    os << "lightuserdata: " << std::hex << lud.ptr();
                 }
             },
             lv
@@ -93,16 +98,18 @@ namespace arasy::core {
                 return LuaStackReader<LuaInteger>::readAt(L, idx);
             } else if (LuaStackReader<LuaNumber>::checkAt(L, idx)) {
                 return LuaStackReader<LuaNumber>::readAt(L, idx);
+            } else if (LuaStackReader<LuaLightUserData>::checkAt(L, idx)) {
+                return LuaStackReader<LuaLightUserData>::readAt(L, idx);
             } else if (LuaStackReader<LuaString>::checkAt(L, idx)) {
                 return LuaStackReader<LuaString>::readAt(L, idx);
             } else if (LuaStackReader<LuaTable>::checkAt(L, idx)) {
                 return LuaStackReader<LuaTable>::readAt(L, idx);
             } else if (LuaStackReader<LuaThread>::checkAt(L, idx)) {
                 return LuaStackReader<LuaThread>::readAt(L, idx);
-            } else if (LuaStackReader<LuaFunction>::checkAt(L, idx)) {
-                return LuaStackReader<LuaFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaCFunction>::checkAt(L, idx)) {
                 return LuaStackReader<LuaCFunction>::readAt(L, idx);
+            } else if (LuaStackReader<LuaFunction>::checkAt(L, idx)) {
+                return LuaStackReader<LuaFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
                 return LuaStackReader<LuaBoolean>::readAt(L, idx);
             } else {

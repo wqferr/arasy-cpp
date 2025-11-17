@@ -1,5 +1,6 @@
 #include "arasy.hpp"
 
+
 namespace {
     const char* unknownErrorMsg = "<Unknown error code: please contact an Arasy developer>";
 }
@@ -23,11 +24,11 @@ namespace arasy::error {
     std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err) {
         switch (err) {
             case ScriptErrorCode::IO_ERROR:
-                os << "<I/O error>";
+                return os << "<I/O error>";
             case ScriptErrorCode::LOAD_ERROR:
-                os << "<Load error>";
+                return os << "<Load error>";
             case ScriptErrorCode::RUNTIME_ERROR:
-                os << "<Runtime error>";
+                return os << "<Runtime error>";
             default:
                 return os << unknownErrorMsg;
         }
@@ -36,9 +37,9 @@ namespace arasy::error {
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err) {
         switch (err) {
             case IndexingErrorCode::NIL_KEY:
-                os << "<Nil key>";
+                return os << "<Nil key>";
             case IndexingErrorCode::NOT_ENOUGH_VALUES:
-                os << "<Not enough values on the stack>";
+                return os << "<Not enough values on the stack>";
             default:
                 return os << unknownErrorMsg;
         }

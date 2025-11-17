@@ -88,6 +88,11 @@ namespace {
                 ScriptErrorCode::MEMORY_ERROR,
                 "Memory allocation error"
             };
+        } else if (loadError == LUA_ERRFILE) {
+            return ScriptError{
+                ScriptErrorCode::IO_ERROR,
+                "File I/O error"
+            };
         } else if (loadError != LUA_OK) {
             return ScriptError{
                 ScriptErrorCode::LOAD_ERROR,
@@ -137,9 +142,10 @@ std::optional<ScriptError> Lua::executeFile(const std::string& fileName) {
 
 // GlobalVarProxy
 
-Lua::GlobalVariableProxy& Lua::operator[](const std::string& name) {
-    latestVariableAccessed.emplace(*this, name);
-    return *latestVariableAccessed;
+Lua::GlobalVariableProxy Lua::operator[](const std::string& name) {
+    // latestVariableAccessed.emplace(*this, name);
+    // return *latestVariableAccessed;
+    return {*this, name};
 }
 
 Lua::GlobalVariableProxy::operator LuaValue() const {

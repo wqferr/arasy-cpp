@@ -21,20 +21,21 @@ TEST(Thread, CanYieldUsingTheArasyApi) {
     luaL_openlibs(L);
 
     auto err = L.executeFile("tests/scripts/coroutines.lua");
-    ASSERT_FALSE(err.has_value()) << "Error loading script";
+    ASSERT_FALSE(err.has_value()) << "Error loading script: " << err.value();
 
     auto maybeCo1 = L.getGlobal<LuaThread>("Co1");
     ASSERT_TRUE(maybeCo1.has_value()) << "Failed to get threads";
 
-    auto co1 = *std::move(maybeCo1);
+    auto co1 = *maybeCo1;
     for (int expected = 1; expected <= 5; expected++) {
         auto r = L.resume(co1);
         ASSERT_TRUE(r.isOk()) << "Error in co1 yield";
         ASSERT_FALSE(r.value().finished) << "Co1 finished prematurely";
         ASSERT_EQ(r.value().nret, 1);
         ASSERT_EQ(L.stackSize(), 1);
-        auto actual = *L.popStack<LuaInteger>();
-        EXPECT_EQ(actual, expected) << "Co1 did not yield as expected";
+        auto maybeInt = L.popStack<LuaInteger>();
+        ASSERT_TRUE(maybeInt.has_value()) << "Co1 did not yield a value";
+        EXPECT_EQ(*maybeInt, expected) << "Co1 did not yield as expected";
     }
     auto r = L.resume(co1);
     ASSERT_TRUE(r.isOk()) << "Error in co1 yield";

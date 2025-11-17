@@ -114,7 +114,7 @@ namespace arasy::core {
         void receive(LuaValue copyOfAlien);
 
         // WARNING! NOT THREAD SAFE!!
-        GlobalVariableProxy& operator[](const std::string& name);
+        GlobalVariableProxy operator[](const std::string& name);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> popStack() {
@@ -198,12 +198,12 @@ namespace arasy::core {
             int status = lua_resume(thread.thread(), state, sizeof...(args), &nret);
             switch (status) {
                 case LUA_YIELD:
-                    for (int i = nret; i >= 1; i++) {
+                    for (int i = nret; i >= 1; i--) {
                         receive(*thread.thread().readStack(-i));
                     }
                     return thread::Ok({ false, nret });
                 case LUA_OK:
-                    for (int i = nret; i >= 1; i++) {
+                    for (int i = nret; i >= 1; i--) {
                         receive(*thread.thread().readStack(-i));
                     }
                     return thread::Ok({ true, nret });
