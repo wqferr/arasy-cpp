@@ -121,3 +121,17 @@ namespace arasy::core {
             || std::holds_alternative<LuaInteger>(b) && std::get<LuaInteger>(b).value == a;
     }
 }
+
+namespace arasy::literals {
+    inline core::LuaValue operator"" _lv (unsigned long long int value) {
+        return core::LuaValue{core::LuaInteger{static_cast<lua_Integer>(value)}};
+    }
+
+    inline core::LuaValue operator"" _lv(const char* str, std::size_t) {
+        return core::LuaValue{core::LuaString{str}};
+    }
+
+    inline core::LuaValue operator"" _lv(long double value) {
+        return core::LuaValue{core::LuaNumber{static_cast<lua_Number>(value)}};
+    }
+}

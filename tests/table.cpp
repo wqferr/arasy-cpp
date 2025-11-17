@@ -155,3 +155,21 @@ TEST(Table, CanUseOperatorSqBrackets) {
     auto x = L.popStack();
     ASSERT_EQ(x, LuaValue{1_ln});
 }
+
+TEST(Table, CanBeMadeInlineInCpp) {
+    Lua L;
+
+    auto mtable = L.makeTable({
+        {1_li, "a"_ls},
+        {2_li, "b"_ls},
+        {3_li, "c"_ls},
+        {"name"_ls, "William"_ls}
+    });
+
+    ASSERT_TRUE(mtable.has_value());
+    auto table = *mtable;
+    EXPECT_EQ(*table[1], "a"_lv);
+    EXPECT_EQ(*table[2], "b"_lv);
+    EXPECT_EQ(*table[3], "c"_lv);
+    EXPECT_EQ(table.getField("name"), "William"_lv);
+}

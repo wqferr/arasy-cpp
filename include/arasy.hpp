@@ -1,10 +1,9 @@
 #pragma once
 
-#include <variant>
 #include <type_traits>
-#include <memory>
 #include <optional>
-#include <ostream>
+#include <vector>
+#include <utility>
 
 #include "arasy/lua.hpp"
 #include "arasy/types/base.hpp"
@@ -77,6 +76,7 @@ namespace arasy::core {
 
         void pushNewTable();
         LuaTable createNewTable();
+        std::optional<LuaTable> makeTable(const std::vector<std::pair<LuaValue, LuaValue>>& entries);
         // TODO: newTable(std::unordered_map<LuaValue, LuaValue>)
 
         void pushCFunction(lua_CFunction cf);

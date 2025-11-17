@@ -54,6 +54,7 @@ namespace arasy::core::internal {
             void set(const lua_Number& value);
             void set(const char* value);
 
+            const LuaValue& operator*() const;
             std::shared_ptr<const LuaValue> operator->() const;
 
             friend class LuaIndexable;

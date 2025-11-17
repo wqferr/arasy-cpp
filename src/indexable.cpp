@@ -188,6 +188,15 @@ void IndexedValue::set(const char* value) {
     *this = value;
 }
 
+const LuaValue& IndexedValue::operator*() const {
+    get<LuaValue>()->visit(
+        [this](auto&& v) {
+            new (this->dummyForArrowOp.get()) LuaValue {v};
+        }
+    );
+    return *dummyForArrowOp;
+}
+
 std::shared_ptr<const LuaValue> IndexedValue::operator->() const {
     get<LuaValue>()->visit(
         [this](auto&& v) {

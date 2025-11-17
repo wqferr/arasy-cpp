@@ -219,3 +219,20 @@ void Lua::pushNum(lua_Number x) {
 void Lua::pushStr(const std::string& str) {
     push(LuaString{str.c_str()});
 }
+
+
+std::optional<LuaTable> Lua::makeTable(const std::vector<std::pair<LuaValue, LuaValue>>& entries) {
+    lua_newtable(state);
+
+    for (const auto& entry : entries) {
+        if (entry.first.isNil()) {
+            lua_pop(state, 1);
+            return std::nullopt;
+        }
+        push(entry.first);
+        push(entry.second);
+        lua_settable(state, -3);
+    }
+
+    return *popStack<LuaTable>();
+}
