@@ -211,3 +211,24 @@ namespace arasy::core {
         operator lua_State*() const { return state; }
     };
 }
+
+namespace arasy {
+    using LuaNil = core::LuaNil;
+    using LuaBoolean = core::LuaBoolean;
+    using LuaInteger = core::LuaInteger;
+    using LuaNumber = core::LuaNumber;
+    using LuaString = core::LuaString;
+    using LuaTable = core::LuaTable;
+    using LuaFunction = core::LuaFunction;
+    using LuaCFunction = core::LuaCFunction;
+    using LuaThread = core::LuaThread;
+    using LuaLightUserData = core::LuaLightUserData;
+    using LuaFullUserData = core::LuaFullUserData;
+
+    using LuaValue = core::LuaValue;
+
+    constexpr LuaNil nil = core::nil;
+    const LuaValue nil_lv = LuaValue{nil};
+
+    using Lua = core::Lua;
+}

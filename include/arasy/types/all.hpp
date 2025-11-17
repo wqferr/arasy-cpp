@@ -135,3 +135,8 @@ namespace arasy::literals {
         return core::LuaValue{core::LuaNumber{static_cast<lua_Number>(value)}};
     }
 }
+
+namespace arasy::core {
+    inline LuaValue True_lv {True};
+    inline LuaValue False_lv {False};
+}

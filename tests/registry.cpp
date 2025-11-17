@@ -2,7 +2,7 @@
 
 #include "arasy.hpp"
 
-using namespace arasy::core;
+using namespace arasy;
 using namespace arasy::registry;
 
 TEST(LuaRegistry, CanWriteAndRead) {
