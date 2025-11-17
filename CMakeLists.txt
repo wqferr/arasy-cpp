@@ -45,6 +45,7 @@ add_executable(
     tests/registry.cpp
     tests/table.cpp
     tests/functions.cpp
+    tests/thread.cpp
 )
 target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
 
@@ -57,13 +58,14 @@ add_custom_command(
     TARGET test_lua_scripts
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/tests/scripts ./tests/scripts/
+    ${CMAKE_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
 )
 
 add_custom_target(
     run_unit_tests
     COMMAND $<TARGET_FILE:arasy_unit_tests> | tee tests/report.txt
     DEPENDS arasy_unit_tests
+    DEPENDS test_lua_scripts
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 

@@ -5,7 +5,7 @@ namespace {
 }
 
 namespace arasy::error {
-std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
+    std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
         switch (err) {
             case PushFmtErrorCode::TOO_FEW_ARGS:
                 return os << "<Too few args>";
@@ -39,6 +39,15 @@ std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err) {
                 os << "<Nil key>";
             case IndexingErrorCode::NOT_ENOUGH_VALUES:
                 os << "<Not enough values on the stack>";
+            default:
+                return os << unknownErrorMsg;
+        }
+    }
+
+    std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err) {
+        switch (err) {
+            case ThreadErrorCode::UNSPECIFIED:
+                return os << "<Unspecified>";
             default:
                 return os << unknownErrorMsg;
         }

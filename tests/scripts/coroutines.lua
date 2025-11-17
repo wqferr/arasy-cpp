@@ -2,6 +2,7 @@ local function a()
     for i = 1, 5 do
         coroutine.yield(i)
     end
+    return "abc", "def"
 end
 
 local function b()

@@ -4,6 +4,11 @@
 using namespace arasy::core;
 using namespace arasy::registry;
 
+void LuaReference::transportTo(lua_State* L) {
+    new (&registry) LuaRegistry {L};
+    // id stays the same, all threads share a common registry
+}
+
 void LuaReference::doRegister() {
     id_ = makeId(-1);
     lua_pop(registry.luaInstance, 1);

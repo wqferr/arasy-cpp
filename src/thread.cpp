@@ -3,6 +3,8 @@
 
 using namespace arasy::core;
 
+LuaThread::LuaThread(lua_State* L): thread_(std::make_shared<Lua>(L)) {}
+
 void LuaThread::pushOnto(lua_State* L) const {
     (void) L;
     lua_pushthread(thread_->state);

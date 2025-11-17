@@ -9,8 +9,6 @@ using namespace arasy::core;
 using namespace arasy::core::internal;
 
 namespace arasy::core {
-    LuaThread::LuaThread(lua_State* L): thread_(std::make_unique<Lua>(L)) {}
-
     std::optional<lua_Number> LuaValue::toNumber() const {
         if (isA<LuaInteger>()) {
             return static_cast<lua_Number>(asA<LuaInteger>().value);

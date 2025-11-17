@@ -10,6 +10,9 @@ namespace arasy::core {
         class LuaBaseType {
         public:
             virtual void pushOnto(lua_State* L) const = 0;
+
+            // Moves the value into another Lua state
+            virtual void transportTo(lua_State* to) {}
         };
     }
 

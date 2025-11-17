@@ -51,6 +51,12 @@ namespace arasy::error {
     };
     using IndexingError = Error<IndexingErrorCode>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
+
+    enum class ThreadErrorCode {
+        UNSPECIFIED
+    };
+    using ThreadError = Error<ThreadErrorCode>;
+    std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err);
 }
 
 namespace arasy {

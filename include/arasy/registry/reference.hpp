@@ -30,5 +30,6 @@ namespace arasy::registry {
         bool operator==(const LuaReference& other) const;
 
         int id() const { return id_; }
+        void transportTo(lua_State* L) override;
     };
 }

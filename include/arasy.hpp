@@ -110,14 +110,31 @@ namespace arasy::core {
 
         void pushNil() { push(nil); }
 
+        // Transpose a LuaValue from a different Lua state.
+        void receive(LuaValue copyOfAlien) {
+            std::visit(
+                utils::internal::overload{
+                    [this](auto& value) {
+                        value.transportTo(this->state);
+                    }
+                },
+                copyOfAlien
+            );
+            push(copyOfAlien);
+        }
+
         // WARNING! NOT THREAD SAFE!!
         GlobalVariableProxy& operator[](const std::string& name);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> popStack() {
-            auto val = readStack<T>(-1);
-            lua_pop(state, 1);
-            return val;
+            if (checkIndexExists(-1)) {
+                auto val = readStack<T>(-1);
+                lua_pop(state, 1);
+                return val;
+            } else {
+                return std::nullopt;
+            }
         }
 
         void multiPop(int n);
@@ -181,6 +198,28 @@ namespace arasy::core {
 
         void eraseGlobal(const std::string& name) {
             setGlobal<LuaNil>(name, nil);
+        }
+
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resume(LuaThread& thread, const Args&... args) {
+            int nret;
+
+            (thread.thread().push(LuaValue{args}), ...);
+            int status = lua_resume(thread.thread(), state, sizeof...(args), &nret);
+            switch (status) {
+                case LUA_YIELD:
+                    for (int i = nret; i >= 1; i++) {
+                        receive(*thread.thread().readStack(-i));
+                    }
+                    return thread::Ok({ false, nret });
+                case LUA_OK:
+                    for (int i = nret; i >= 1; i++) {
+                        receive(*thread.thread().readStack(-i));
+                    }
+                    return thread::Ok({ true, nret });
+                default:
+                    return thread::Error({popStack<LuaString>()->fullStr()});
+            }
         }
 
         std::optional<arasy::error::ScriptError> pcall(int narg=0, int nret=LUA_MULTRET, lua_KContext ctx=0);

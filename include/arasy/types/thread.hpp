@@ -1,14 +1,39 @@
 #pragma once
 
 #include "arasy/types/base.hpp"
+#include "arasy/errors.hpp"
 
 #include <memory>
+#include <variant>
 
 namespace arasy::core {
     class Lua;
 
+    namespace thread {
+        struct Ok {
+            const bool finished;
+            const int nret;
+        };
+
+        struct Error {
+            const std::string message;
+        };
+
+        class ResumeResult : std::variant<Ok, Error> {
+        public:
+            ResumeResult(const Ok& ok): variant(ok) {}
+            ResumeResult(const Error& error): variant(error) {}
+
+            bool isError() { return std::holds_alternative<Error>(*this); }
+            const Error& error() const { return std::get<Error>(*this); }
+
+            bool isOk() { return std::holds_alternative<Ok>(*this); }
+            const Ok& value() const { return std::get<Ok>(*this); }
+        };
+    }
+
     class LuaThread : public internal::LuaBaseType {
-        std::unique_ptr<Lua> thread_;
+        std::shared_ptr<Lua> thread_;
 
     public:
         LuaThread(lua_State* L);
