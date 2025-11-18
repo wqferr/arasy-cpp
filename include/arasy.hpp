@@ -180,21 +180,26 @@ namespace arasy::core {
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resume(LuaThread& thread, const Args&... args) {
+        thread::ResumeResult resume(bool moveRetOver, LuaThread& thread, const Args&... args) {
             int nret;
 
             (thread.thread().push(LuaValue{args}), ...);
             int status = lua_resume(thread.thread(), state, sizeof...(args), &nret);
+
+            auto doMoveRet = [this, &thread, moveRetOver, nret]() {
+                if (moveRetOver) {
+                    for (int i = nret; i >= 1; i--) {
+                        this->receive(*thread.thread().readStack(-i));
+                    }
+                    lua_pop(thread.thread(), nret);
+                }
+            };
             switch (status) {
                 case LUA_YIELD:
-                    for (int i = nret; i >= 1; i--) {
-                        receive(*thread.thread().readStack(-i));
-                    }
+                    doMoveRet();
                     return thread::Ok({ false, nret });
                 case LUA_OK:
-                    for (int i = nret; i >= 1; i--) {
-                        receive(*thread.thread().readStack(-i));
-                    }
+                    doMoveRet();
                     return thread::Ok({ true, nret });
                 default:
                     return thread::Error({ popStack<LuaString>()->fullStr() });

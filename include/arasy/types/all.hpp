@@ -103,7 +103,7 @@ namespace arasy::core {
     namespace internal {
         template<>
         struct LuaStackReader<LuaValue> {
-            static constexpr bool checkAt(lua_State *L, int idx) { return true; }
+            static constexpr bool checkAt(lua_State *L, int idx);
             static std::optional<LuaValue> readAt(lua_State* L, int idx);
         };
     }

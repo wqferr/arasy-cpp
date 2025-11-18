@@ -22,7 +22,7 @@ TEST(Thread, CanYieldUsingTheArasyApi) {
 
     auto co1 = *maybeCo1;
     for (int expected = 1; expected <= 5; expected++) {
-        auto r = L.resume(co1);
+        auto r = L.resume(true, co1);
         ASSERT_TRUE(r.isOk()) << "Error in co1 yield";
         ASSERT_FALSE(r.value().finished) << "Co1 finished prematurely";
         ASSERT_EQ(r.value().nret, 1);
@@ -31,7 +31,7 @@ TEST(Thread, CanYieldUsingTheArasyApi) {
         ASSERT_TRUE(maybeInt.has_value()) << "Co1 did not yield a value";
         EXPECT_EQ(*maybeInt, expected) << "Co1 did not yield as expected";
     }
-    auto r = L.resume(co1);
+    auto r = L.resume(true, co1);
     ASSERT_TRUE(r.isOk()) << "Error in co1 yield";
     EXPECT_TRUE(r.value().finished) << "Co1 did not finish when expected";
     ASSERT_EQ(r.value().nret, 2);

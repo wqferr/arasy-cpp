@@ -44,7 +44,7 @@ void Lua::retrieveGlobal(const std::string& name) {
 }
 
 error::MScriptError Lua::pcall(int narg, int nret, lua_KContext ctx) {
-    int runError = lua_pcall(state, narg, nret, ctx);
+    int runError = lua_pcallk(state, narg, nret, 0, ctx, nullptr);
     if (runError == LUA_ERRRUN) {
         std::string errMsg;
         if (auto luaStr = popStack<LuaString>()) {
@@ -77,6 +77,7 @@ error::MScriptError Lua::pcall(int narg, int nret, lua_KContext ctx) {
 }
 
 std::optional<LuaValueVarIndex> Lua::type(int idx) const {
+    (void)idx;
     std::optional<LuaValue> value = readStackTop();
     if (!value) {
         return std::nullopt;
@@ -86,7 +87,7 @@ std::optional<LuaValueVarIndex> Lua::type(int idx) const {
 }
 
 namespace {
-    std::optional<ScriptError> checkLoadChunk(Lua& L, int loadError) {
+    std::optional<ScriptError> checkLoadChunk(int loadError) {
         if (loadError == LUA_ERRSYNTAX) {
             return ScriptError{
                 ScriptErrorCode::LOAD_ERROR,
@@ -116,7 +117,7 @@ namespace {
 
 error::MScriptError Lua::loadString(const std::string& code) {
     int loadError = luaL_loadstring(state, code.c_str());
-    if (auto err = checkLoadChunk(*this, loadError)) {
+    if (auto err = checkLoadChunk(loadError)) {
         return err;
     } else {
         return std::nullopt;
@@ -125,7 +126,7 @@ error::MScriptError Lua::loadString(const std::string& code) {
 
 error::MScriptError Lua::loadFile(const std::string& fileName) {
     int loadError = luaL_loadfile(state, fileName.c_str());
-    if (auto err = checkLoadChunk(*this, loadError)) {
+    if (auto err = checkLoadChunk(loadError)) {
         return err;
     } else {
         return std::nullopt;

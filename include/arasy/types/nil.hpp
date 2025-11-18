@@ -18,6 +18,8 @@ namespace arasy::core {
             }
 
             static std::optional<LuaNil> readAt(lua_State* L, int idx) {
+                (void) L;
+                (void) idx;
                 return nil;
             }
         };

@@ -38,7 +38,7 @@ add_library(
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 
 if(MSVC)
-    target_compile_options(core PRIVATE /W3)
+    target_compile_options(core PRIVATE /W4)
 else()
     target_compile_options(core -Wpedantic -Wextra)
 endif()
