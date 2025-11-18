@@ -2,12 +2,12 @@
 #include "arasy.hpp"
 #include "lua.hpp"
 
-using namespace arasy::core;
+using namespace arasy;
 using namespace arasy::core::internal;
 
 using IndexedValue = LuaIndexable::IndexedValue;
 
-std::optional<arasy::error::IndexingError> LuaIndexable::setStackKV() {
+error::MIndexingError LuaIndexable::setStackKV() {
     Lua L {registry.luaInstance};
     lua_checkstack(L, 2);
     LuaValue value = *L.popStack();
@@ -15,7 +15,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::setStackKV() {
     return set(key, value);
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::set(
+error::MIndexingError LuaIndexable::set(
     const LuaValue& key,
     const LuaValue& value
 ) {
@@ -31,7 +31,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::set(
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::setField(
+error::MIndexingError LuaIndexable::setField(
     const char* fieldName,
     const LuaValue& value
 ) {
@@ -44,7 +44,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::setField(
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::setRawStackKV() {
+error::MIndexingError LuaIndexable::setRawStackKV() {
     Lua L {registry.luaInstance};
     lua_checkstack(L, 2);
     LuaValue value = *L.popStack();
@@ -52,7 +52,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::setRawStackKV() {
     return setRaw(key, value);
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::setRaw(
+error::MIndexingError LuaIndexable::setRaw(
     const LuaValue& key,
     const LuaValue& value
 ) {
@@ -68,7 +68,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::setRaw(
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::setRawi(
+error::MIndexingError LuaIndexable::setRawi(
     const LuaInteger& key,
     const LuaValue& value
 ) {
@@ -80,7 +80,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::setRawi(
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::retrieve(const LuaValue& key) {
+error::MIndexingError LuaIndexable::retrieve(const LuaValue& key) {
     if (key.isNil()) {
         return {arasy::error::IndexingErrorCode::NIL_KEY};
     }
@@ -92,14 +92,14 @@ std::optional<arasy::error::IndexingError> LuaIndexable::retrieve(const LuaValue
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::retrieveStackK() {
+error::MIndexingError LuaIndexable::retrieveStackK() {
     Lua L {registry.luaInstance};
     L.ensureStack(1);
     auto key = *L.popStack();
     return retrieve(key);
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::retrieveRaw(const LuaValue& key) {
+error::MIndexingError LuaIndexable::retrieveRaw(const LuaValue& key) {
     if (key.isNil()) {
         return {arasy::error::IndexingErrorCode::NIL_KEY};
     }
@@ -111,7 +111,7 @@ std::optional<arasy::error::IndexingError> LuaIndexable::retrieveRaw(const LuaVa
     return std::nullopt;
 }
 
-std::optional<arasy::error::IndexingError> LuaIndexable::retrieveRawStackK() {
+error::MIndexingError LuaIndexable::retrieveRawStackK() {
     Lua L {registry.luaInstance};
     L.ensureStack(1);
     auto key = *L.popStack();

@@ -77,7 +77,6 @@ namespace arasy::core {
         void pushNewTable();
         LuaTable createNewTable();
         std::optional<LuaTable> makeTable(const std::vector<std::pair<LuaValue, LuaValue>>& entries);
-        // TODO: newTable(std::unordered_map<LuaValue, LuaValue>)
 
         void pushCFunction(lua_CFunction cf);
         LuaCFunction createCFunction(lua_CFunction cf);
@@ -91,7 +90,7 @@ namespace arasy::core {
         }
 
         template<typename... Args>
-        std::optional<arasy::error::PushFmtError> pushFmt(const char *fmt, Args&&... args) {
+        error::MPushFmtError pushFmt(const char *fmt, Args&&... args) {
             auto err = arasy::utils::checkPushFmt(std::string_view{fmt}, args...);
             if (!err.has_value()) {
                 lua_pushfstring(state, fmt, args...);
@@ -202,11 +201,11 @@ namespace arasy::core {
             }
         }
 
-        std::optional<arasy::error::ScriptError> pcall(int narg=0, int nret=LUA_MULTRET, lua_KContext ctx=0);
-        std::optional<arasy::error::ScriptError> loadString(const std::string& code);
-        std::optional<arasy::error::ScriptError> executeString(const std::string& code);
-        std::optional<arasy::error::ScriptError> loadFile(const std::string& fileName);
-        std::optional<arasy::error::ScriptError> executeFile(const std::string& fileName);
+        error::MScriptError pcall(int narg=0, int nret=LUA_MULTRET, lua_KContext ctx=0);
+        error::MScriptError loadString(const std::string& code);
+        error::MScriptError executeString(const std::string& code);
+        error::MScriptError loadFile(const std::string& fileName);
+        error::MScriptError executeFile(const std::string& fileName);
 
         operator lua_State*() const { return state; }
     };

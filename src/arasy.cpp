@@ -43,7 +43,7 @@ void Lua::retrieveGlobal(const std::string& name) {
     lua_getglobal(state, name.c_str());
 }
 
-std::optional<ScriptError> Lua::pcall(int narg, int nret, lua_KContext ctx) {
+error::MScriptError Lua::pcall(int narg, int nret, lua_KContext ctx) {
     int runError = lua_pcall(state, narg, nret, ctx);
     if (runError == LUA_ERRRUN) {
         std::string errMsg;
@@ -52,22 +52,22 @@ std::optional<ScriptError> Lua::pcall(int narg, int nret, lua_KContext ctx) {
         } else {
             errMsg = "No error message";
         }
-        return ScriptError{
+        return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             std::move(errMsg)
         };
     } else if (runError == LUA_ERRMEM) {
-        return ScriptError{
+        return MScriptError{
             ScriptErrorCode::MEMORY_ERROR,
             "Runtime memory allocation error"
         };
     } else if (runError == LUA_ERRERR) {
-        return ScriptError{
+        return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             "Memory allocation error"
         };
     } else if (runError != LUA_OK) {
-        return ScriptError{
+        return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             "Unknown runtime error"
         };
@@ -114,7 +114,7 @@ namespace {
 }
 
 
-std::optional<ScriptError> Lua::loadString(const std::string& code) {
+error::MScriptError Lua::loadString(const std::string& code) {
     int loadError = luaL_loadstring(state, code.c_str());
     if (auto err = checkLoadChunk(*this, loadError)) {
         return err;
@@ -123,7 +123,7 @@ std::optional<ScriptError> Lua::loadString(const std::string& code) {
     }
 }
 
-std::optional<ScriptError> Lua::loadFile(const std::string& fileName) {
+error::MScriptError Lua::loadFile(const std::string& fileName) {
     int loadError = luaL_loadfile(state, fileName.c_str());
     if (auto err = checkLoadChunk(*this, loadError)) {
         return err;
@@ -132,7 +132,7 @@ std::optional<ScriptError> Lua::loadFile(const std::string& fileName) {
     }
 }
 
-std::optional<ScriptError> Lua::executeString(const std::string& code) {
+error::MScriptError Lua::executeString(const std::string& code) {
     if (auto err = loadString(code.c_str())) {
         return err;
     } else {
@@ -140,7 +140,7 @@ std::optional<ScriptError> Lua::executeString(const std::string& code) {
     }
 }
 
-std::optional<ScriptError> Lua::executeFile(const std::string& fileName) {
+error::MScriptError Lua::executeFile(const std::string& fileName) {
     if (auto err = loadFile(fileName.c_str())) {
         return err;
     } else {

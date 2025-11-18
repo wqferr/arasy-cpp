@@ -19,6 +19,7 @@ namespace arasy::core::internal {
             PCALL,
         };
 
+        // TODO proper error type for invoke
         template<int nret>
         std::optional<std::string> invokeHelper(CallMode mode, int nargs) {
             switch (mode) {

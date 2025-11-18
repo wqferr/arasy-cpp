@@ -62,13 +62,13 @@ namespace arasy::core::internal {
 
         LuaIndexable(lua_State* L, int idx): LuaCallable(L, idx) {}
 
-        std::optional<arasy::error::IndexingError> setStackKV();
-        std::optional<arasy::error::IndexingError> set(const LuaValue& key, const LuaValue& value);
-        std::optional<arasy::error::IndexingError> setField(const char* fieldName, const LuaValue& value);
+        error::MIndexingError setStackKV();
+        error::MIndexingError set(const LuaValue& key, const LuaValue& value);
+        error::MIndexingError setField(const char* fieldName, const LuaValue& value);
 
-        std::optional<arasy::error::IndexingError> setRawStackKV();
-        std::optional<arasy::error::IndexingError> setRaw(const LuaValue& key, const LuaValue& value);
-        std::optional<arasy::error::IndexingError> setRawi(const LuaInteger& i, const LuaValue& value);
+        error::MIndexingError setRawStackKV();
+        error::MIndexingError setRaw(const LuaValue& key, const LuaValue& value);
+        error::MIndexingError setRawi(const LuaInteger& i, const LuaValue& value);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key) {
@@ -101,11 +101,11 @@ namespace arasy::core::internal {
             return ret;
         }
 
-        std::optional<arasy::error::IndexingError> retrieve(const LuaValue& key);
-        std::optional<arasy::error::IndexingError> retrieveStackK();
+        error::MIndexingError retrieve(const LuaValue& key);
+        error::MIndexingError retrieveStackK();
         void retrieveField(const char* fieldName);
-        std::optional<arasy::error::IndexingError> retrieveRaw(const LuaValue& key);
-        std::optional<arasy::error::IndexingError> retrieveRawStackK();
+        error::MIndexingError retrieveRaw(const LuaValue& key);
+        error::MIndexingError retrieveRawStackK();
 
         void setMetatableStack();
         void setMetatable(const LuaTable& metatable);

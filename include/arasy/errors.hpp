@@ -16,12 +16,34 @@ namespace arasy::error {
     };
 
     template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
+    struct MaybeError : std::optional<Error<E>> {
+        MaybeError(E code_): optional(Error<E>{code_}) {}
+        MaybeError(E code_, const std::string& message_): optional(Error<E>{code_, message_}) {}
+        MaybeError(const Error<E>& e): optional(e) {}
+        MaybeError(const std::nullopt_t& n): optional(n) {}
+        MaybeError(const std::optional<Error<E>>& opt): optional(opt) {}
+
+        bool matches(const E& e) const {
+            return has_value() && value().code == e;
+        }
+    };
+
+    template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
     std::ostream& operator<<(std::ostream& os, const Error<E>& err) {
         os << err.code;
         if (err.message.has_value()) {
             os << " (" << *err.message << ")";
         }
         return os;
+    }
+
+    template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
+    std::ostream& operator<<(std::ostream& os, const MaybeError<E>& merr) {
+        if (merr.has_value()) {
+            return os << *merr;
+        } else {
+            return os << "<No error>";
+        }
     }
 
     enum class PushFmtErrorCode {
@@ -31,6 +53,7 @@ namespace arasy::error {
         INCOMPATIBLE_ARG
     };
     using PushFmtError = Error<PushFmtErrorCode>;
+    using MPushFmtError = MaybeError<PushFmtErrorCode>;
     std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err);
 
     enum class ScriptErrorCode {
@@ -40,6 +63,7 @@ namespace arasy::error {
         MEMORY_ERROR
     };
     using ScriptError = Error<ScriptErrorCode>;
+    using MScriptError = MaybeError<ScriptErrorCode>;
     std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err);
 
     enum class IndexingErrorCode {
@@ -50,12 +74,14 @@ namespace arasy::error {
         NIL_KEY
     };
     using IndexingError = Error<IndexingErrorCode>;
+    using MIndexingError = MaybeError<IndexingErrorCode>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
 
     enum class ThreadErrorCode {
         UNSPECIFIED
     };
     using ThreadError = Error<ThreadErrorCode>;
+    using MThreadError = MaybeError<ThreadErrorCode>;
     std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err);
 }
 
