@@ -202,7 +202,9 @@ namespace arasy::core {
                     doMoveRet();
                     return thread::Ok({ true, nret });
                 default:
-                    return thread::Error({ popStack<LuaString>()->fullStr() });
+                    auto err = thread::Error({ thread.thread().popStack<LuaString>()->fullStr() });
+                    lua_pop(thread.thread(), 1);
+                    return err;
             }
         }
 

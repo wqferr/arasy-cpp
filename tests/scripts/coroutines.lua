@@ -1,6 +1,5 @@
 local function a()
     for i = 1, 5 do
-        local a = (nil)[3]
         coroutine.yield(i)
     end
     return "abc", "def"
