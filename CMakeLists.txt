@@ -36,6 +36,13 @@ add_library(
     src/reference.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
+
+if(MSVC)
+    target_compile_options(core PRIVATE /W3)
+else()
+    target_compile_options(core -Wpedantic -Wextra)
+endif()
+
 target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
