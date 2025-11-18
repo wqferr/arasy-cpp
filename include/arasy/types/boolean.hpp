@@ -12,6 +12,9 @@ namespace arasy::core {
     };
     inline bool operator==(const LuaBoolean& a, const LuaBoolean& b) { return a.value == b.value; }
 
+    constexpr const inline LuaBoolean True {true};
+    constexpr const inline LuaBoolean False {false};
+
     namespace internal {
         template<>
         struct LuaStackReader<LuaBoolean> {
@@ -24,9 +27,4 @@ namespace arasy::core {
             }
         };
     }
-}
-
-namespace arasy {
-    constexpr const inline core::LuaBoolean True {true};
-    constexpr const inline core::LuaBoolean False {false};
 }

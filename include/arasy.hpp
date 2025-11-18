@@ -234,7 +234,12 @@ namespace arasy {
     using LuaValue = core::LuaValue;
 
     constexpr LuaNil nil = core::nil;
-    const LuaValue nil_lv = LuaValue{nil};
+    constexpr LuaBoolean True = core::True;
+    constexpr LuaBoolean False = core::False;
+
+    const inline LuaValue True_lv = core::True_lv;
+    const inline LuaValue nil_lv = LuaValue{nil};
+    const inline LuaValue False_lv = core::False_lv;
 
     using Lua = core::Lua;
 }

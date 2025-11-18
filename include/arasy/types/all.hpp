@@ -137,6 +137,7 @@ namespace arasy::literals {
 }
 
 namespace arasy::core {
-    inline LuaValue True_lv {True};
-    inline LuaValue False_lv {False};
+    const inline LuaValue nil_lv {nil};
+    const inline LuaValue True_lv {True};
+    const inline LuaValue False_lv {False};
 }
