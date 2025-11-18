@@ -19,7 +19,7 @@ namespace arasy::core {
         template<>
         struct LuaStackReader<LuaBoolean> {
             static bool checkAt(lua_State* L, int idx) {
-                return lua_isstring(L, idx);
+                return lua_isboolean(L, idx);
             }
 
             static std::optional<LuaBoolean> readAt(lua_State* L, int idx) {

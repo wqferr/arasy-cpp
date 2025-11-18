@@ -18,8 +18,15 @@ void Lua::ensureStack(int n) {
     lua_checkstack(state, n);
 }
 
-void Lua::multiPop(int n) {
+std::vector<LuaValue> Lua::multiPop(int n) {
+    std::vector<LuaValue> values;
+    n = std::min(n, stackSize());
+    values.reserve(n);
+    for (int idx = -n; idx <= -1; idx++) {
+        values.push_back(*readStack(idx));
+    }
     lua_pop(state, n);
+    return values;
 }
 
 int Lua::stackSize() const {

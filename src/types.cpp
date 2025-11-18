@@ -97,7 +97,9 @@ namespace arasy::core {
 
     namespace internal {
         std::optional<LuaValue> LuaStackReader<LuaValue>::readAt(lua_State* L, int idx) {
-            if (LuaStackReader<LuaNil>::checkAt(L, idx)) {
+            if (lua_isnone(L, idx)) {
+                return std::nullopt;
+            } else if (LuaStackReader<LuaNil>::checkAt(L, idx)) {
                 return nil;
             } else if (LuaStackReader<LuaInteger>::checkAt(L, idx)) {
                 return LuaStackReader<LuaInteger>::readAt(L, idx);
@@ -120,10 +122,7 @@ namespace arasy::core {
             } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
                 return LuaStackReader<LuaBoolean>::readAt(L, idx);
             } else {
-                throw std::runtime_error(
-                    std::string{"Unknown lua type! Value's tostring() is: "}
-                    + lua_tostring(L, idx)
-                );
+                throw std::runtime_error("Unknown lua type!");
             }
         }
     }

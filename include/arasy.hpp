@@ -15,7 +15,11 @@
 namespace arasy::core {
     class Lua {
         bool checkIndexExists(int idx) const {
-            return !lua_isnone(state, idx);
+            if (idx < 0) {
+                return -idx <= stackSize();
+            } else {
+                return idx <= stackSize();
+            }
         }
 
         class GlobalVariableProxy {
@@ -116,7 +120,7 @@ namespace arasy::core {
             }
         }
 
-        void multiPop(int n);
+        std::vector<LuaValue> multiPop(int n);
 
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> readStack(int idx) const {

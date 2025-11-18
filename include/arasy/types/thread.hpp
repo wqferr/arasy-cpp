@@ -29,6 +29,9 @@ namespace arasy::core {
 
             bool isOk() { return std::holds_alternative<Ok>(*this); }
             const Ok& value() const { return std::get<Ok>(*this); }
+
+            Ok* operator->() { return std::get_if<Ok>(this); }
+            const Ok* operator->() const { return std::get_if<Ok>(this); }
         };
     }
 

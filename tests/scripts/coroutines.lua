@@ -5,11 +5,10 @@ local function a()
     return "abc", "def"
 end
 
-local function b()
-    coroutine.yield "a"
-    Var1 = true
-    coroutine.yield "b"
-    Var2 = true
+local function b(arg)
+    Var1 = arg
+    Var2 = coroutine.yield("a", 1)
+    Var3 = coroutine.yield "b"
     return "c"
 end
 
