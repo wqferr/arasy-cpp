@@ -91,9 +91,9 @@ namespace arasy::core {
         }
 
         template<typename... Args>
-        std::optional<arasy::error::PushFmtErrorCode> pushFmt(const char *fmt, Args&&... args) {
+        std::optional<arasy::error::PushFmtError> pushFmt(const char *fmt, Args&&... args) {
             auto err = arasy::utils::checkPushFmt(std::string_view{fmt}, args...);
-            if (err == std::nullopt) {
+            if (!err.has_value()) {
                 lua_pushfstring(state, fmt, args...);
             }
             return err;

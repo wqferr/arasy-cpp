@@ -2,8 +2,6 @@
 
 #include "arasy/types/callable.hpp"
 
-#include <stdexcept>
-
 namespace arasy::core {
     class LuaCFunction : public internal::LuaCallable {
         LuaCFunction(lua_State* L, lua_CFunction cfunc, std::in_place_t, int nUpvalues): LuaCallable(L) {
