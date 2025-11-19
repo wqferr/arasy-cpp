@@ -206,13 +206,25 @@ namespace arasy::core {
                     doMoveRet();
                     return thread::Ok({ true, nret });
                 default:
-                    auto err = thread::Error({ thread.thread().popStack<LuaString>()->fullStr() });
+                    error::ScriptError err {
+                        static_cast<error::ScriptErrorCode>(status),
+                        thread.thread().popStack<LuaString>()->fullStr(),
+                    };
                     lua_pop(thread.thread(), 1);
                     return err;
             }
         }
 
-        error::MScriptError pcall(int narg=0, int nret=LUA_MULTRET, lua_KContext ctx=0);
+        // WARNING: Cannot be used if function yields
+        void call(int narg=0, int nret=LUA_MULTRET);
+
+        // WARNING: Cannot be used if function yields
+        error::MScriptError pcall(int narg=0, int nret=LUA_MULTRET);
+
+        void callk(int narg, int nret, lua_KContext ctx, lua_KFunction cont);
+        error::MScriptError pcallk(int narg, int nret, lua_KContext ctx, lua_KFunction cont);
+
+        error::MScriptError wrapScriptError(int status);
         error::MScriptError loadString(const std::string& code);
         error::MScriptError executeString(const std::string& code);
         error::MScriptError loadFile(const std::string& fileName);

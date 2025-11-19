@@ -25,8 +25,8 @@ namespace arasy::error {
         switch (err) {
             case ScriptErrorCode::IO_ERROR:
                 return os << "<I/O error>";
-            case ScriptErrorCode::LOAD_ERROR:
-                return os << "<Load error>";
+            case ScriptErrorCode::SYNTAX_ERROR:
+                return os << "<Syntax error>";
             case ScriptErrorCode::RUNTIME_ERROR:
                 return os << "<Runtime error>";
             default:
@@ -45,12 +45,12 @@ namespace arasy::error {
         }
     }
 
-    std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err) {
-        switch (err) {
-            case ThreadErrorCode::UNSPECIFIED:
-                return os << "<Unspecified>";
-            default:
-                return os << unknownErrorMsg;
-        }
-    }
+    // std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err) {
+    //     switch (err) {
+    //         case ThreadErrorCode::UNSPECIFIED:
+    //             return os << "<Unspecified>";
+    //         default:
+    //             return os << unknownErrorMsg;
+    //     }
+    // }
 }

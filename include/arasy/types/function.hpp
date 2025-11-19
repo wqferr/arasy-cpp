@@ -6,7 +6,6 @@ namespace arasy::core {
     class LuaFunction : public internal::LuaCallable {
     public:
         LuaFunction(lua_State* L, int index): LuaCallable(L, index) {}
-
         void pushOnto(lua_State* L) const override { LuaReference::pushOnto(L); }
     };
 

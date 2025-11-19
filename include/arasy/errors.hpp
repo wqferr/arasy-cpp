@@ -1,5 +1,7 @@
 #pragma once
 
+#include "lua.hpp"
+
 #include <ostream>
 #include <optional>
 
@@ -57,10 +59,12 @@ namespace arasy::error {
     std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err);
 
     enum class ScriptErrorCode {
-        IO_ERROR,
-        LOAD_ERROR,
-        RUNTIME_ERROR,
-        MEMORY_ERROR
+        RUNTIME_ERROR = LUA_ERRRUN,
+        SYNTAX_ERROR = LUA_ERRSYNTAX,
+        MEMORY_ERROR = LUA_ERRMEM,
+        ERROR_DURING_ERROR = LUA_ERRERR,
+        IO_ERROR = LUA_ERRFILE,
+        UNKNOWN = 100
     };
     using ScriptError = Error<ScriptErrorCode>;
     using MScriptError = MaybeError<ScriptErrorCode>;
@@ -77,12 +81,12 @@ namespace arasy::error {
     using MIndexingError = MaybeError<IndexingErrorCode>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
 
-    enum class ThreadErrorCode {
-        UNSPECIFIED
-    };
-    using ThreadError = Error<ThreadErrorCode>;
-    using MThreadError = MaybeError<ThreadErrorCode>;
-    std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err);
+    // enum class ThreadErrorCode {
+    //     UNSPECIFIED
+    // };
+    // using ThreadError = Error<ThreadErrorCode>;
+    // using MThreadError = MaybeError<ThreadErrorCode>;
+    // std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err);
 }
 
 namespace arasy {

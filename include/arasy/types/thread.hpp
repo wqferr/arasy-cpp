@@ -15,24 +15,22 @@ namespace arasy::core {
             const int nret;
         };
 
-        struct Error {
-            const std::string message;
-        };
-
-        class ResumeResult : std::variant<Ok, Error> {
+        class ResumeResult : std::variant<Ok, error::ScriptError> {
         public:
             ResumeResult(const Ok& ok): variant(ok) {}
-            ResumeResult(const Error& error): variant(error) {}
+            ResumeResult(const error::ScriptError& error): variant(error) {}
 
-            bool isError() { return std::holds_alternative<Error>(*this); }
-            const Error& error() const { return std::get<Error>(*this); }
+            bool isError() const { return std::holds_alternative<error::ScriptError>(*this); }
+            const error::ScriptError& error() const { return std::get<error::ScriptError>(*this); }
 
-            bool isOk() { return std::holds_alternative<Ok>(*this); }
+            bool isOk() const { return std::holds_alternative<Ok>(*this); }
             const Ok& value() const { return std::get<Ok>(*this); }
 
             Ok* operator->() { return std::get_if<Ok>(this); }
             const Ok* operator->() const { return std::get_if<Ok>(this); }
         };
+
+        std::ostream& operator<<(std::ostream& os, const ResumeResult& r);
     }
 
     class LuaThread : public internal::LuaBaseType {

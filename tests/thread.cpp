@@ -88,11 +88,11 @@ TEST(Thread, CanInfluenceGlobalScope) {
     auto step = [&](int stage) {
         int s = L.stackSize();
         auto result = L.resume(true, co2, vars[stage-1]);
-        ASSERT_TRUE(result.isOk()) << "Error during coroutine execution: " << result.error().message;
+        ASSERT_TRUE(result.isOk()) << "Error during coroutine execution: " << result.error().message.value_or("<No message>");
         int newS = L.stackSize();
-        EXPECT_EQ(result.value().nret, newS - s) << "Number of yielded values does not match difference in stack size";
+        EXPECT_EQ(result->nret, newS - s) << "Number of yielded values does not match difference in stack size";
         checkVars(stage);
-        checkReturns(stage, result.value().nret);
+        checkReturns(stage, result->nret);
     };
 
     checkVars(0);
@@ -103,4 +103,11 @@ TEST(Thread, CanInfluenceGlobalScope) {
 
 TEST(Thread, CannotResumePastEnd) {
     FAIL() << "Not implemented";
+}
+
+TEST(Thread, CanCallFunctionsThatYield) {
+    Lua L;
+    luaL_openlibs(L);
+
+    lua_newthread(L);
 }

@@ -50,9 +50,8 @@ void Lua::retrieveGlobal(const std::string& name) {
     lua_getglobal(state, name.c_str());
 }
 
-error::MScriptError Lua::pcall(int narg, int nret, lua_KContext ctx) {
-    int runError = lua_pcallk(state, narg, nret, 0, ctx, nullptr);
-    if (runError == LUA_ERRRUN) {
+error::MScriptError Lua::wrapScriptError(int status) {
+    if (status == LUA_ERRRUN) {
         std::string errMsg;
         if (auto luaStr = popStack<LuaString>()) {
             errMsg = luaStr->str();
@@ -63,24 +62,46 @@ error::MScriptError Lua::pcall(int narg, int nret, lua_KContext ctx) {
             ScriptErrorCode::RUNTIME_ERROR,
             std::move(errMsg)
         };
-    } else if (runError == LUA_ERRMEM) {
+    } else if (status == LUA_ERRMEM) {
         return MScriptError{
             ScriptErrorCode::MEMORY_ERROR,
             "Runtime memory allocation error"
         };
-    } else if (runError == LUA_ERRERR) {
+    } else if (status == LUA_ERRERR) {
         return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             "Memory allocation error"
         };
-    } else if (runError != LUA_OK) {
+    } else if (status != LUA_OK) {
         return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             "Unknown runtime error"
         };
+    } else {
+        return std::nullopt;
     }
+}
 
-    return std::nullopt;
+void Lua::call(int narg, int nret) {
+    lua_call(state, narg, nret);
+}
+
+error::MScriptError Lua::pcall(int narg, int nret) {
+    return wrapScriptError(lua_pcall(state, narg, nret, 0));
+}
+
+error::MScriptError Lua::pcallk(int narg, int nret, lua_KContext ctx, lua_KFunction cont) {
+    return wrapScriptError(
+        cont(
+            *this,
+            lua_pcallk(*this, narg, nret, 0, 0, cont),
+            ctx
+        )
+    );
+}
+
+void Lua::callk(int narg, int nret, lua_KContext ctx, lua_KFunction cont) {
+    lua_callk(*this, narg, nret, ctx, cont);
 }
 
 std::optional<LuaValueVarIndex> Lua::type(int idx) const {
@@ -97,7 +118,7 @@ namespace {
     std::optional<ScriptError> checkLoadChunk(int loadError) {
         if (loadError == LUA_ERRSYNTAX) {
             return ScriptError{
-                ScriptErrorCode::LOAD_ERROR,
+                ScriptErrorCode::SYNTAX_ERROR,
                 "Syntax error"
             };
         } else if (loadError == LUA_ERRMEM) {
@@ -112,7 +133,7 @@ namespace {
             };
         } else if (loadError != LUA_OK) {
             return ScriptError{
-                ScriptErrorCode::LOAD_ERROR,
+                ScriptErrorCode::UNKNOWN,
                 "Unknown load error"
             };
         } else {

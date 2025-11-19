@@ -1,5 +1,6 @@
 #include "arasy/types/thread.hpp"
 #include "arasy.hpp"
+#include <iomanip>
 
 using namespace arasy::core;
 
@@ -12,4 +13,18 @@ void LuaThread::pushOnto(lua_State* L) const {
 
 bool arasy::core::operator==(const LuaThread& a, const LuaThread& b) {
     return a.thread().state == b.thread().state;
+}
+
+namespace arasy::core::thread {
+    std::ostream& operator<<(std::ostream& os, const ResumeResult& r) {
+        if (r.isOk()) {
+            os << "Ok(finished=" << r->finished << ", nret=" << r->nret << ")";
+        } else {
+            auto& err = r.error();
+            os << "ScriptError(code=" << err.code << ", message=" << std::quoted(
+                err.message.has_value() ? *err.message : std::string{"<No message>"}
+            ) << ")";
+        }
+        return os;
+    }
 }
