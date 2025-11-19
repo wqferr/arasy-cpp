@@ -1,6 +1,7 @@
 #pragma once
 
 #include "arasy/types/base.hpp"
+#include "arasy/types/function.hpp"
 #include "arasy/errors.hpp"
 
 #include <memory>
@@ -41,10 +42,42 @@ namespace arasy::core {
         LuaThread(const LuaThread& other): thread_(other.thread_) {}
         void pushOnto(lua_State* L) const override;
 
-        Lua& thread() { return *thread_; }
-        const Lua& thread() const { return *thread_; }
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resume(bool moveRetOver, Lua& L, const Args&... args) {
+            (lua().push(LuaValue{args}), ...);
 
-        operator Lua&() { return *thread_; }
+            int nret;
+            int status = lua_resume(lua(), L, sizeof...(args), &nret);
+
+            auto doMoveRet = [this, &L, moveRetOver, nret]() {
+                lua().ensureStack(nret);
+                if (moveRetOver) {
+                    for (int i = nret; i >= 1; i--) {
+                        L.changeOwnership(*lua().readStack(-i));
+                    }
+                    lua_xmove(lua(), L, nret);
+                }
+            };
+            switch (status) {
+                case LUA_YIELD:
+                    doMoveRet();
+                    return thread::Ok({ false, nret });
+                case LUA_OK:
+                    doMoveRet();
+                    return thread::Ok({ true, nret });
+                default:
+                    return *lua().wrapScriptError(status);
+            }
+        }
+
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resumeWith(bool moveRetOver, Lua& L, LuaFunction& f, const Args&... args) {
+            push(f);
+            return resumeOther(moveRetOver, L, args...);
+        }
+
+        Lua& lua() { return *thread_; }
+        const Lua& lua() const { return *thread_; }
     };
     bool operator==(const LuaThread& a, const LuaThread& b);
 

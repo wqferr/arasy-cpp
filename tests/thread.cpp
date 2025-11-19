@@ -26,7 +26,7 @@ TEST(Thread, CanYieldUsingTheArasyApi) {
 
     auto co1 = *maybeCo1;
     for (int expected = 1; expected <= 5; expected++) {
-        auto r = L.resume(true, co1);
+        auto r = L.resumeOther(true, co1);
         ASSERT_TRUE(r.isOk()) << "Error in co1 yield";
         ASSERT_FALSE(r.value().finished) << "Co1 finished prematurely";
         ASSERT_EQ(r.value().nret, 1);
@@ -35,7 +35,7 @@ TEST(Thread, CanYieldUsingTheArasyApi) {
         ASSERT_TRUE(maybeInt.has_value()) << "Co1 did not yield a value";
         EXPECT_EQ(*maybeInt, expected) << "Co1 did not yield as expected";
     }
-    auto r = L.resume(true, co1);
+    auto r = L.resumeOther(true, co1);
     ASSERT_TRUE(r.isOk()) << "Error in co1 yield";
     EXPECT_TRUE(r.value().finished) << "Co1 did not finish when expected";
     ASSERT_EQ(r.value().nret, 2);
@@ -87,7 +87,7 @@ TEST(Thread, CanInfluenceGlobalScope) {
 
     auto step = [&](int stage) {
         int s = L.stackSize();
-        auto result = L.resume(true, co2, vars[stage-1]);
+        auto result = L.resumeOther(true, co2, vars[stage-1]);
         ASSERT_TRUE(result.isOk()) << "Error during coroutine execution: " << result.error().message.value_or("<No message>");
         int newS = L.stackSize();
         EXPECT_EQ(result->nret, newS - s) << "Number of yielded values does not match difference in stack size";
@@ -106,23 +106,44 @@ TEST(Thread, CannotResumePastEnd) {
 }
 
 namespace {
-    int yielder2(lua_State* ls, int status, lua_KContext ctx) {
+    int yielder2(lua_State* ls) {
         Lua L {ls};
-        auto err = L.wrapScriptError(status);
-        if (err.has_value()) {
-            return err->forward(L);
-        }
-        L.setGlobal("Part2", "another string"_ls);
+        L.ensureStack(1);
+        L.setGlobal("Part2", *L.popStack());
+        L.push(99_li);
+        L.push(True);
+        return lua_yield(L, 2);
     }
 
     int yielder1(lua_State* ls) {
-
+        Lua L {ls};
+        L.setGlobal("Part1", "a string"_ls);
+        L.push("this is an arg"_ls);
+        return lua_yield(L, 1);
     }
 }
 
 TEST(Thread, CanCallFunctionsThatYield) {
     Lua L;
     luaL_openlibs(L);
+    lua_atpanic(L, &atPanic);
 
-    lua_newthread(L);
+    auto thr = L.createNewThread();
+    thr.lua().pushCFunction(&yielder1);
+    int s = L.stackSize();
+    EXPECT_TRUE(L["Part1"].value().isNil());
+    EXPECT_TRUE(L["Part2"].value().isNil());
+
+    auto result = L.resumeOther(true, thr, 0_ln, 0.5_ln, 0.25_ln);
+    ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
+    EXPECT_EQ(result->nret, 1) << "Unexpected number of returns: " << result->nret;
+    EXPECT_FALSE(result->finished) << "Coroutine finished unexpectedly";
+    int diff = L.stackSize() - s;
+    EXPECT_EQ(diff, result->nret) << "Stack did not grow as expected";
+    EXPECT_EQ(L.popStack<LuaString>(), "this is an arg"_ls);
+    EXPECT_EQ(L["Part1"].value(), "a string"_lv);
+    EXPECT_TRUE(L["Part2"].value().isNil());
+    thr.lua().pushCFunction(&yielder2);
+    thr.lua().push(False);
+
 }

@@ -78,7 +78,7 @@ namespace arasy::core {
                     os << "cfunction: " << std::hex << cf.cfunc;
                 },
                 [&os](const LuaThread& thr) {
-                    os << "thread: " << std::hex << thr.thread().state;
+                    os << "thread: " << std::hex << thr.lua().state;
                 },
                 [&os](const LuaTable& tbl) {
                     os << "table: id #" << tbl.id();

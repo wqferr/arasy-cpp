@@ -41,7 +41,7 @@ namespace arasy::error {
         return os;
     }
 
-    template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
+    template<typename E>
     std::ostream& operator<<(std::ostream& os, const MaybeError<E>& merr) {
         if (merr.has_value()) {
             return os << *merr;

@@ -201,13 +201,12 @@ Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const char *str) {
     return *this = LuaString{str};
 }
 
-void Lua::receive(LuaValue copyOfAlien) {
+void Lua::changeOwnership(LuaValue copyOfAlien) {
     copyOfAlien.visit(
         [this](internal::LuaBaseType& value) {
-            value.transportTo(this->state);
+            value.changeOwnershipTo(this->state);
         }
     );
-    push(copyOfAlien);
 }
 
 void Lua::pushNewTable() {

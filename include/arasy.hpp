@@ -105,7 +105,7 @@ namespace arasy::core {
         void pushNil() { push(nil); }
 
         // Transpose a LuaValue from a different Lua state.
-        void receive(LuaValue copyOfAlien);
+        void changeOwnership(LuaValue copyOfAlien);
 
         GlobalVariableProxy operator[](const std::string& name);
 
@@ -161,7 +161,7 @@ namespace arasy::core {
         LuaTable getGlobalsTable();
         void retrieveGlobalsTable();
 
-        template<typename T = LuaValue, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         void setGlobal(const std::string& name, const T& value) {
             push(value);
             lua_setglobal(state, name.c_str());
@@ -184,35 +184,18 @@ namespace arasy::core {
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resume(bool moveRetOver, LuaThread& thread, const Args&... args) {
-            int nret;
+        thread::ResumeResult resumeOther(bool moveRetOver, LuaThread& thread, const Args&... args) {
+            return thread.resume(moveRetOver, *this, args...);
+        }
 
-            (thread.thread().push(LuaValue{args}), ...);
-            int status = lua_resume(thread.thread(), state, sizeof...(args), &nret);
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resumeOtherWith(bool moveRetOver, LuaThread& thread, LuaFunction& f, const Args&... args) {
+            return thread.resumeWith(moveRetOver, *this, f, args...);
+        }
 
-            auto doMoveRet = [this, &thread, moveRetOver, nret]() {
-                if (moveRetOver) {
-                    for (int i = nret; i >= 1; i--) {
-                        this->receive(*thread.thread().readStack(-i));
-                    }
-                    lua_pop(thread.thread(), nret);
-                }
-            };
-            switch (status) {
-                case LUA_YIELD:
-                    doMoveRet();
-                    return thread::Ok({ false, nret });
-                case LUA_OK:
-                    doMoveRet();
-                    return thread::Ok({ true, nret });
-                default:
-                    error::ScriptError err {
-                        static_cast<error::ScriptErrorCode>(status),
-                        thread.thread().popStack<LuaString>()->fullStr(),
-                    };
-                    lua_pop(thread.thread(), 1);
-                    return err;
-            }
+        LuaThread createNewThread() {
+            lua_newthread(state);
+            return *popStack<LuaThread>();
         }
 
         // WARNING: Cannot be used if function yields

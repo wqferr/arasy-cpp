@@ -4,7 +4,7 @@
 using namespace arasy::core;
 using namespace arasy::registry;
 
-void LuaReference::transportTo(lua_State* L) {
+void LuaReference::changeOwnershipTo(lua_State* L) {
     new (&registry) LuaRegistry {L};
     // id stays the same, all threads share a common registry
 }
