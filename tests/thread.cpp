@@ -105,6 +105,21 @@ TEST(Thread, CannotResumePastEnd) {
     FAIL() << "Not implemented";
 }
 
+namespace {
+    int yielder2(lua_State* ls, int status, lua_KContext ctx) {
+        Lua L {ls};
+        auto err = L.wrapScriptError(status);
+        if (err.has_value()) {
+            return err->forward(L);
+        }
+        L.setGlobal("Part2", "another string"_ls);
+    }
+
+    int yielder1(lua_State* ls) {
+
+    }
+}
+
 TEST(Thread, CanCallFunctionsThatYield) {
     Lua L;
     luaL_openlibs(L);

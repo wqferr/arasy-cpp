@@ -10,6 +10,8 @@ namespace arasy::error {
 
     template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
     struct Error {
+        using CodeType = E;
+
         E code;
         std::optional<std::string> message = std::nullopt;
 
@@ -17,15 +19,15 @@ namespace arasy::error {
         Error(E code_, const std::string& message_): code(code_), message(message_) {}
     };
 
-    template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
-    struct MaybeError : std::optional<Error<E>> {
-        MaybeError(E code_): optional(Error<E>{code_}) {}
-        MaybeError(E code_, const std::string& message_): optional(Error<E>{code_, message_}) {}
-        MaybeError(const Error<E>& e): optional(e) {}
+    template<typename Err, typename = std::enable_if_t<std::is_enum_v<typename Err::CodeType>>>
+    struct MaybeError : std::optional<Err> {
+        MaybeError(typename Err::CodeType code_): optional(Err{code_}) {}
+        MaybeError(typename Err::CodeType code_, const std::string& message_): optional(Err{code_, message_}) {}
+        MaybeError(const Err& e): optional(e) {}
         MaybeError(const std::nullopt_t& n): optional(n) {}
-        MaybeError(const std::optional<Error<E>>& opt): optional(opt) {}
+        MaybeError(const std::optional<Err>& opt): optional(opt) {}
 
-        bool matches(const E& e) const {
+        bool matches(const typename Err::CodeType& e) const {
             return has_value() && value().code == e;
         }
     };
@@ -55,7 +57,7 @@ namespace arasy::error {
         INCOMPATIBLE_ARG
     };
     using PushFmtError = Error<PushFmtErrorCode>;
-    using MPushFmtError = MaybeError<PushFmtErrorCode>;
+    using MPushFmtError = MaybeError<PushFmtError>;
     std::ostream& operator<<(std::ostream& os, const PushFmtErrorCode& err);
 
     enum class ScriptErrorCode {
@@ -66,8 +68,12 @@ namespace arasy::error {
         IO_ERROR = LUA_ERRFILE,
         UNKNOWN = 100
     };
-    using ScriptError = Error<ScriptErrorCode>;
-    using MScriptError = MaybeError<ScriptErrorCode>;
+    struct ScriptError : Error<ScriptErrorCode> {
+        using Error::Error;
+
+        int forward(lua_State* L) const;
+    };
+    using MScriptError = MaybeError<ScriptError>;
     std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err);
 
     enum class IndexingErrorCode {
@@ -78,7 +84,7 @@ namespace arasy::error {
         NIL_KEY
     };
     using IndexingError = Error<IndexingErrorCode>;
-    using MIndexingError = MaybeError<IndexingErrorCode>;
+    using MIndexingError = MaybeError<IndexingError>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
 
     // enum class ThreadErrorCode {

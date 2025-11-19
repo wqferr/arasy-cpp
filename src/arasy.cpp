@@ -72,7 +72,7 @@ error::MScriptError Lua::wrapScriptError(int status) {
             ScriptErrorCode::RUNTIME_ERROR,
             "Memory allocation error"
         };
-    } else if (status != LUA_OK) {
+    } else if (status != LUA_YIELD && status != LUA_OK) {
         return MScriptError{
             ScriptErrorCode::RUNTIME_ERROR,
             "Unknown runtime error"

@@ -34,6 +34,15 @@ namespace arasy::error {
         }
     }
 
+    int ScriptError::forward(lua_State* L) const {
+        if (message.has_value()) {
+            lua_pushstring(L, message->c_str());
+        } else {
+            lua_pushnil(L);
+        }
+        return static_cast<int>(code);
+    }
+
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err) {
         switch (err) {
             case IndexingErrorCode::NIL_KEY:
