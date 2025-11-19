@@ -10,6 +10,10 @@ namespace arasy::core {
 
         constexpr LuaInteger(lua_Integer value_): value(value_) {}
         void pushOnto(lua_State* L) const override { lua_pushinteger(L, value); };
+
+        LuaInteger operator-() const {
+            return -value;
+        }
     };
 
     constexpr bool operator==(const LuaInteger& a, const LuaInteger& b) {

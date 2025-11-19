@@ -12,8 +12,8 @@ namespace arasy::core {
 
     namespace thread {
         struct Ok {
-            const bool finished;
-            const int nret;
+            bool finished;
+            int nret;
         };
 
         class ResumeResult : std::variant<Ok, error::ScriptError> {
@@ -52,9 +52,6 @@ namespace arasy::core {
             auto doMoveRet = [this, &L, moveRetOver, nret]() {
                 lua().ensureStack(nret);
                 if (moveRetOver) {
-                    for (int i = nret; i >= 1; i--) {
-                        L.changeOwnership(*lua().readStack(-i));
-                    }
                     lua_xmove(lua(), L, nret);
                 }
             };
@@ -72,8 +69,14 @@ namespace arasy::core {
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         thread::ResumeResult resumeWith(bool moveRetOver, Lua& L, LuaFunction& f, const Args&... args) {
-            push(f);
-            return resumeOther(moveRetOver, L, args...);
+            lua().push(f);
+            return resume(moveRetOver, L, args...);
+        }
+
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resumeWith(bool moveRetOver, Lua& L, lua_CFunction f, const Args&... args) {
+            lua().pushCFunction(f);
+            return resume(moveRetOver, L, args...);
         }
 
         Lua& lua() { return *thread_; }

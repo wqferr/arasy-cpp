@@ -67,6 +67,10 @@ namespace arasy::core {
 
         Lua();
         Lua(lua_State* L);
+        Lua(Lua&& other);
+        Lua(const Lua& other);
+        Lua& operator=(Lua&& other) = delete;
+        Lua& operator=(const Lua& other) = delete;
         ~Lua();
 
         void ensureStack(int i);
@@ -103,9 +107,6 @@ namespace arasy::core {
         }
 
         void pushNil() { push(nil); }
-
-        // Transpose a LuaValue from a different Lua state.
-        void changeOwnership(LuaValue copyOfAlien);
 
         GlobalVariableProxy operator[](const std::string& name);
 
@@ -190,6 +191,11 @@ namespace arasy::core {
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
         thread::ResumeResult resumeOtherWith(bool moveRetOver, LuaThread& thread, LuaFunction& f, const Args&... args) {
+            return thread.resumeWith(moveRetOver, *this, f, args...);
+        }
+
+        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
+        thread::ResumeResult resumeOtherWith(bool moveRetOver, LuaThread& thread, lua_CFunction f, const Args&... args) {
             return thread.resumeWith(moveRetOver, *this, f, args...);
         }
 

@@ -8,6 +8,10 @@ using namespace arasy::error;
 Lua::Lua(): state(luaL_newstate()), registry(state) {}
 Lua::Lua(lua_State* L): state(L), external(true), registry(state) {}
 
+Lua::Lua(Lua&& other): state(other.state), external(other.external), registry(state) {}
+
+Lua::Lua(const Lua& other): Lua(other.state) {}
+
 Lua::~Lua() {
     if (!external) {
         lua_close(state);
@@ -199,14 +203,6 @@ Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const lua_Number& 
 
 Lua::GlobalVariableProxy& Lua::GlobalVariableProxy::operator=(const char *str) {
     return *this = LuaString{str};
-}
-
-void Lua::changeOwnership(LuaValue copyOfAlien) {
-    copyOfAlien.visit(
-        [this](internal::LuaBaseType& value) {
-            value.changeOwnershipTo(this->state);
-        }
-    );
 }
 
 void Lua::pushNewTable() {

@@ -106,20 +106,20 @@ TEST(Thread, CannotResumePastEnd) {
 }
 
 namespace {
-    int yielder2(lua_State* ls) {
+    int yielder2(lua_State* ls, int status, lua_KContext ctx) {
         Lua L {ls};
         L.ensureStack(1);
         L.setGlobal("Part2", *L.popStack());
         L.push(99_li);
         L.push(True);
-        return lua_yield(L, 2);
+        return 2;
     }
 
     int yielder1(lua_State* ls) {
         Lua L {ls};
         L.setGlobal("Part1", "a string"_ls);
         L.push("this is an arg"_ls);
-        return lua_yield(L, 1);
+        return lua_yieldk(L, 1, 0, &yielder2);
     }
 }
 
@@ -143,7 +143,14 @@ TEST(Thread, CanCallFunctionsThatYield) {
     EXPECT_EQ(L.popStack<LuaString>(), "this is an arg"_ls);
     EXPECT_EQ(L["Part1"].value(), "a string"_lv);
     EXPECT_TRUE(L["Part2"].value().isNil());
-    thr.lua().pushCFunction(&yielder2);
-    thr.lua().push(False);
 
+    result = thr.resume(true, L, "another string"_lv);
+    ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
+    EXPECT_EQ(result->nret, 2) << "Unexpected number of returns: " << result->nret;
+    EXPECT_TRUE(result->finished) << "Coroutine did not finish when expected";
+    L.ensureStack(2);
+    EXPECT_EQ(*L.readStack(1), 99_lv) << "Values returned did not match expected";
+    EXPECT_EQ(*L.readStack(2), True_lv) << "Values returned did not match expected";
+    EXPECT_EQ(L["Part1"].value(), "a string"_lv);
+    EXPECT_EQ(L["Part2"].value(), "another string"_lv);
 }

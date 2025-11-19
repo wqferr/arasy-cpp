@@ -9,6 +9,10 @@ namespace arasy::core {
 
         constexpr LuaNumber(lua_Number value_): value(value_) {}
         void pushOnto(lua_State* L) const override { lua_pushnumber(L, value); }
+
+        LuaNumber operator-() const {
+            return -value;
+        }
     };
 
     constexpr bool operator==(const LuaNumber& a, const LuaNumber& b) {
