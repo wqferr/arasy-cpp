@@ -50,7 +50,13 @@ namespace arasy::core {
      * the std::visit function as for normal variants, or you can use v.visit.
      *
      * int, float, and string iterals can be suffixed with _lv to cast them to LuaValue
-     * after using namespace arasy::literals;
+     * after using namespace arasy::literals. int and float literals can be suffixed with
+     * _ln to cast them to LuaNumber, int literals can be suffixed with _li to cast them
+     * to LuaInteger, and string literals can be suffixed with _ls to cast them to LuaString.
+     *
+     * Due to ambiguity between false <-> 0, the special values True and False are provided
+     * as well, to unambiguously represent LuaBooleans. True_lv and False_lv are the
+     * same as True and False, except cast into a LuaValue.
      */
     class LuaValue : public internal::LuaValueVariant {
     public:
@@ -177,14 +183,7 @@ namespace arasy::core {
             }
             throw std::runtime_error("Tried to unary-minus a non-numerical value");
         }
-
-        // bool operator==(const LuaValue& other) const;
     };
-
-    // template<typename T, typename = std::enable_if_t<utils::internal::is_any_of_v<T, _ARASY_LUA_VARIANT_ORDER>>>
-    // bool operator==(const LuaValue& a, const T& b) {
-    //     return a == LuaValue{b};
-    // }
 
 #undef _ARASY_LUA_VARIANT_ORDER
 
