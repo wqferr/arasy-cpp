@@ -37,7 +37,10 @@ add_library(
     src/reference.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
-doxygen_add_docs(core)
+
+if(Doxygen_FOUND)
+    doxygen_add_docs(core)
+endif()
 
 if(MSVC)
     target_compile_options(core PRIVATE /W4)
