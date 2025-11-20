@@ -97,6 +97,13 @@ namespace arasy::core {
         bool isNumeric() const;
         constexpr bool isNil() const { return isA<LuaNil>(); }
 
+        LuaValue operator-() const noexcept(false) {
+            if (isNumeric()) {
+                return -asA<LuaNumber>();
+            }
+            throw std::runtime_error("Tried to unary-minus a non-numerical value");
+        }
+
         // bool operator==(const LuaValue& other) const;
     };
 

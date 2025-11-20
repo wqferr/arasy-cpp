@@ -187,25 +187,5 @@ TEST(Thread, CanYieldFromInsideNestedThread) {
     EXPECT_EQ(L["Part1"].value(), 123_lv);
     EXPECT_EQ(L["Part2"].value(), "a string"_lv);
     EXPECT_EQ(L["Part3"].value(), 0_lv);
-    EXPECT_EQ(L["Part4"].value().asA<LuaNumber>(), -1_ln);
-
-    // auto result = thr.start(true, L, &setupNestedThread);
-    // ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
-    // EXPECT_EQ(result->nret, 1) << "Unexpected number of returns: " << result->nret;
-    // EXPECT_FALSE(result->finished) << "Coroutine finished unexpectedly";
-    // int diff = L.stackSize() - s;
-    // EXPECT_EQ(diff, result->nret) << "Stack did not grow as expected";
-    // EXPECT_EQ(L.popStack<LuaString>(), "this is an arg"_ls);
-    // EXPECT_EQ(L["Part1"].value(), "a string"_lv);
-    // EXPECT_TRUE(L["Part2"].value().isNil());
-
-    // result = thr.resume(true, L, "another string"_lv);
-    // ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
-    // EXPECT_EQ(result->nret, 2) << "Unexpected number of returns: " << result->nret;
-    // EXPECT_TRUE(result->finished) << "Coroutine did not finish when expected";
-    // L.ensureStack(2);
-    // EXPECT_EQ(*L.readStack(1), 99_lv) << "Values returned did not match expected";
-    // EXPECT_EQ(*L.readStack(2), True_lv) << "Values returned did not match expected";
-    // EXPECT_EQ(L["Part1"].value(), "a string"_lv);
-    // EXPECT_EQ(L["Part2"].value(), "another string"_lv);
+    EXPECT_EQ(L["Part4"].value(), -1_lv);
 }
