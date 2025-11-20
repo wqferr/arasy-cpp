@@ -164,8 +164,8 @@ namespace arasy::core {
          */
         void pushOnto(lua_State* L) const {
             return std::visit(
-                [L](const auto& x) { x.pushOnto(L); },
-                *this
+                [L](const internal::LuaBaseType& x) { x.pushOnto(L); },
+                static_cast<const internal::LuaValueVariant&>(*this)
             );
         }
 

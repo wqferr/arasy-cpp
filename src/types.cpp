@@ -1,4 +1,4 @@
-#include "arasy/types/all.hpp"
+#include "arasy/types.hpp"
 #include "arasy/utils.hpp"
 #include "arasy.hpp"
 
@@ -48,7 +48,7 @@ namespace arasy::core {
 
 
     bool LuaValue::isNumeric() const {
-        return isA<LuaInteger>() || isA<LuaNumber>();
+        return isA<LuaNumber>();
     }
 
     std::ostream& operator<<(std::ostream& os, const LuaValue& lv) {

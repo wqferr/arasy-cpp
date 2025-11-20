@@ -7,7 +7,7 @@
 
 #include "arasy/lua.hpp"
 #include "arasy/types/base.hpp"
-#include "arasy/types/all.hpp"
+#include "arasy/types.hpp"
 #include "arasy/errors.hpp"
 #include "arasy/pushfmt.hpp"
 #include "arasy/registry.hpp"

@@ -11,7 +11,7 @@ add_library(
     core
     "include/arasy.hpp"
     src/arasy.cpp
-    "include/arasy/types/all.hpp"
+    "include/arasy/types.hpp"
     "include/arasy/types/base.hpp"
     "include/arasy/types/boolean.hpp"
     "include/arasy/types/function.hpp"
