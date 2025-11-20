@@ -101,10 +101,6 @@ TEST(Thread, CanInfluenceGlobalScope) {
     }
 }
 
-TEST(Thread, CannotResumePastEnd) {
-    FAIL() << "Not implemented";
-}
-
 namespace {
     int yielder2(lua_State* ls, int status, lua_KContext ctx) {
         Lua L {ls};
@@ -155,6 +151,26 @@ namespace {
         L.push(thr);
         return L.yieldk(2, 0, &continueNestedThread);
     }
+
+    int oneShotYielder(lua_State* ls) {
+        Lua L {ls};
+        return L.yield(0);
+    }
+}
+
+TEST(Thread, ResumingPastEndIsError) {
+    Lua L;
+    LuaThread thr = L.createNewThread();
+    auto result = thr.start(false, L, &oneShotYielder);
+    ASSERT_TRUE(result.isOk());
+    EXPECT_FALSE(result->finished);
+
+    result = thr.resume(false, L);
+    ASSERT_TRUE(result.isOk());
+    EXPECT_TRUE(result->finished);
+
+    result = thr.resume(false, L);
+    ASSERT_TRUE(result.isError());
 }
 
 TEST(Thread, CanYieldFromInsideNestedThread) {
