@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LUA REQUIRED)
 find_package(GTest CONFIG REQUIRED)
+FindDoxygen()
 
 add_library(
     core
@@ -36,6 +37,7 @@ add_library(
     src/reference.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
+doxygen_add_docs(core)
 
 if(MSVC)
     target_compile_options(core PRIVATE /W4)

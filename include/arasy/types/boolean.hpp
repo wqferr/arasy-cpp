@@ -12,7 +12,10 @@ namespace arasy::core {
     };
     inline bool operator==(const LuaBoolean& a, const LuaBoolean& b) { return a.value == b.value; }
 
+    /// @brief "true" wrapped in a LuaBoolean.
     constexpr const inline LuaBoolean True {true};
+
+    /// @brief "false" wrapped in a LuaBoolean.
     constexpr const inline LuaBoolean False {false};
 
     namespace internal {

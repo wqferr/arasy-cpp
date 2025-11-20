@@ -45,6 +45,8 @@
 /out/
 /.vscode/
 /.vs/
+/docs/**
+!/docs/.gitkeep
 /CmakePresets.json
 /CMakeUserPresets.json
 /tests/report.txt

@@ -54,9 +54,9 @@ namespace arasy::core {
      * _ln to cast them to LuaNumber, int literals can be suffixed with _li to cast them
      * to LuaInteger, and string literals can be suffixed with _ls to cast them to LuaString.
      *
-     * Due to ambiguity between false <-> 0, the special values True and False are provided
-     * as well, to unambiguously represent LuaBooleans. True_lv and False_lv are the
-     * same as True and False, except cast into a LuaValue.
+     * Due to ambiguity between false and 0, the special values True and False (upper case
+     * first letters) are provided as well, to unambiguously represent LuaBooleans. True_lv
+     * and False_lv are the same as True and False, except cast into a LuaValue.
      */
     class LuaValue : public internal::LuaValueVariant {
     public:

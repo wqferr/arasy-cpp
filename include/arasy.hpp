@@ -230,30 +230,61 @@ namespace arasy::core {
 }
 
 namespace arasy {
+    /// \typedef arasy::core::LuaNil
     using LuaNil = core::LuaNil;
+
+    /// \typedef arasy::core::LuaBoolean
     using LuaBoolean = core::LuaBoolean;
+
+    /// \typedef arasy::core::LuaInteger
     using LuaInteger = core::LuaInteger;
+
+    /// \typedef arasy::core::LuaNumber
     using LuaNumber = core::LuaNumber;
+
+    /// \typedef arasy::core::LuaString
     using LuaString = core::LuaString;
+
+    /// \typedef arasy::core::LuaTable
     using LuaTable = core::LuaTable;
+
+    /// \typedef arasy::core::LuaFunction
     using LuaFunction = core::LuaFunction;
+
+    /// \typedef arasy::core::LuaCFunction
     using LuaCFunction = core::LuaCFunction;
+
+    /// \typedef arasy::core::LuaThread
     using LuaThread = core::LuaThread;
+
+    /// \typedef arasy::core::LuaLightUserData
     using LuaLightUserData = core::LuaLightUserData;
+
+    /// \typedef arasy::core::LuaFullUserData
     using LuaFullUserData = core::LuaFullUserData;
 
+    /// \typedef arasy::core::LuaValue
     using LuaValue = core::LuaValue;
 
+    /// \typedef arasy::core::nil
     constexpr LuaNil nil = core::nil;
+
+    /// \typedef arasy::core::True
     constexpr LuaBoolean True = core::True;
+
+    /// \typedef arasy::core::False
     constexpr LuaBoolean False = core::False;
 
     const inline LuaValue True_lv = core::True_lv;
     const inline LuaValue nil_lv = LuaValue{nil};
     const inline LuaValue False_lv = core::False_lv;
 
+    /// \typedef arasy::core::thread::ResumeResult
     using ResumeResult = core::thread::ResumeResult;
+
+    /// \typedef arasy::core::LuaValueType
     using LuaValueType = core::LuaValueType;
 
+    /// \typedef arasy::core::Lua
     using Lua = core::Lua;
 }
