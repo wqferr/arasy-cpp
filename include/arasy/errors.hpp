@@ -8,6 +8,11 @@
 namespace arasy::error {
     constexpr const std::nullopt_t none = std::nullopt;
 
+    /**
+     * @brief Base template for all Arasy errors.
+     *
+     * @tparam E Error code enum.
+     */
     template<typename E, typename = std::enable_if_t<std::is_enum_v<E>>>
     struct Error {
         using CodeType = E;
@@ -19,6 +24,11 @@ namespace arasy::error {
         Error(E code_, const std::string& message_): code(code_), message(message_) {}
     };
 
+    /**
+     * @brief std::optional<Error<>> with some utility methods.
+     *
+     * @tparam Err Error type.
+     */
     template<typename Err, typename = std::enable_if_t<std::is_enum_v<typename Err::CodeType>>>
     struct MaybeError : std::optional<Err> {
         MaybeError(typename Err::CodeType code_): optional(Err{code_}) {}
@@ -86,13 +96,6 @@ namespace arasy::error {
     using IndexingError = Error<IndexingErrorCode>;
     using MIndexingError = MaybeError<IndexingError>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
-
-    // enum class ThreadErrorCode {
-    //     UNSPECIFIED
-    // };
-    // using ThreadError = Error<ThreadErrorCode>;
-    // using MThreadError = MaybeError<ThreadErrorCode>;
-    // std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err);
 }
 
 namespace arasy {

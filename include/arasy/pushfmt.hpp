@@ -6,7 +6,7 @@
 #include "arasy/errors.hpp"
 
 
-namespace arasy::utils {
+namespace arasy::utils::internal {
     template<typename... Args>
     constexpr std::optional<arasy::error::PushFmtError> checkPushFmt(const std::string_view fmt) {
         using namespace std::string_literals;

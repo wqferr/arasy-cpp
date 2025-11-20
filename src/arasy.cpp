@@ -116,7 +116,7 @@ void Lua::callk(int narg, int nret, lua_KContext ctx, lua_KFunction cont) {
     lua_callk(*this, narg, nret, ctx, cont);
 }
 
-std::optional<LuaValueVarIndex> Lua::type(int idx) const {
+std::optional<LuaValueType> Lua::type(int idx) const {
     (void)idx;
     std::optional<LuaValue> value = readStackTop();
     if (!value) {

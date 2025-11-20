@@ -193,7 +193,7 @@ TEST(Thread, CanYieldFromInsideNestedThread) {
     EXPECT_TRUE(L["Part4"].value().isNil());
 
     EXPECT_EQ(result->nret, 2);
-    ASSERT_EQ(L.type(-1), LuaValueVarIndex::LuaThread);
+    ASSERT_EQ(L.type(-1), LuaValueType::LuaThread);
     ASSERT_TRUE(L.checkStackTop<LuaThread>());
     ASSERT_TRUE(L.checkStack<LuaString>(-2));
     auto nestedThread = *L.popStack<LuaThread>();

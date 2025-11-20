@@ -75,7 +75,7 @@ namespace arasy::core {
 
         void ensureStack(int i);
         int stackSize() const;
-        std::optional<LuaValueVarIndex> type(int idx) const;
+        std::optional<LuaValueType> type(int idx) const;
 
         void push(const LuaValue& value);
         void pushInt(lua_Integer i);
@@ -99,7 +99,7 @@ namespace arasy::core {
 
         template<typename... Args>
         error::MPushFmtError pushFmt(const char *fmt, Args&&... args) {
-            auto err = arasy::utils::checkPushFmt(std::string_view{fmt}, args...);
+            auto err = utils::internal::checkPushFmt(std::string_view{fmt}, args...);
             if (!err.has_value()) {
                 lua_pushfstring(state, fmt, args...);
             }
@@ -253,7 +253,7 @@ namespace arasy {
     const inline LuaValue False_lv = core::False_lv;
 
     using ResumeResult = core::thread::ResumeResult;
-    using LuaValueVarIndex = core::LuaValueVarIndex;
+    using LuaValueType = core::LuaValueType;
 
     using Lua = core::Lua;
 }

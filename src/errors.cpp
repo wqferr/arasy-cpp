@@ -53,13 +53,4 @@ namespace arasy::error {
                 return os << unknownErrorMsg;
         }
     }
-
-    // std::ostream& operator<<(std::ostream& os, const ThreadErrorCode& err) {
-    //     switch (err) {
-    //         case ThreadErrorCode::UNSPECIFIED:
-    //             return os << "<Unspecified>";
-    //         default:
-    //             return os << unknownErrorMsg;
-    //     }
-    // }
 }

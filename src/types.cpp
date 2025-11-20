@@ -10,17 +10,15 @@ using namespace arasy::core::internal;
 
 namespace arasy::core {
     std::optional<lua_Number> LuaValue::toNumber() const {
-        if (isA<LuaInteger>()) {
-            return static_cast<lua_Number>(asA<LuaInteger>().value);
-        } else if (isA<LuaNumber>()) {
+        if (isA<LuaNumber>()) {
             return asA<LuaNumber>().value;
         } else {
             return std::nullopt;
         }
     }
 
-    std::ostream& operator<<(std::ostream& os, const LuaValueVarIndex& value) {
-        using V = LuaValueVarIndex;
+    std::ostream& operator<<(std::ostream& os, const LuaValueType& value) {
+        using V = LuaValueType;
         switch (value) {
             case V::LuaBoolean:
                 return os << "<type:boolean>";
