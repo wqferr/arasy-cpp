@@ -35,6 +35,8 @@ add_library(
     src/registry.cpp
     "include/arasy/registry/reference.hpp"
     src/reference.cpp
+    "include/arasy/module.hpp"
+    src/module.cpp
 )
 target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
 

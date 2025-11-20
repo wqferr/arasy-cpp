@@ -29,6 +29,11 @@ namespace arasy::core {
 
     std::ostream& operator<<(std::ostream& os, const LuaValueType& value);
 
+    class LuaValue;
+
+    template<typename T>
+    constexpr bool is_lua_value_v = utils::internal::is_any_of_v<T, LuaValue, _ARASY_LUA_VARIANT_ORDER>;
+
     /**
      * @brief Variant that holds any valid Lua value.
      *
@@ -63,10 +68,12 @@ namespace arasy::core {
         using internal::LuaValueVariant::LuaValueVariant;
         using internal::LuaValueVariant::operator=;
 
-        template<typename T, typename = std::enable_if_t<utils::internal::is_any_of_v<T, _ARASY_LUA_VARIANT_ORDER>>>
+        template<typename T, typename = std::enable_if_t<is_lua_value_v<T>>>
         LuaValue(const T& val): internal::LuaValueVariant(val) {}
         LuaValue(const lua_Number& val): internal::LuaValueVariant(LuaNumber{val}) {}
         LuaValue(const std::string& str): internal::LuaValueVariant(LuaString{str.c_str()}) {}
+
+        LuaValue& operator=(const LuaValue& other);
 
         /**
          * @brief Check if LuaValue holds a particular Lua type.
@@ -79,7 +86,7 @@ namespace arasy::core {
          * @return true this LuaValue contains given type T.
          * @return false this LuaValue does not contain given type T.
          */
-        template<typename T, typename = std::enable_if_t<utils::internal::is_any_of_v<T, _ARASY_LUA_VARIANT_ORDER>>>
+        template<typename T, typename = std::enable_if_t<is_lua_value_v<T>>>
         constexpr bool isA() const {
             if constexpr (std::is_same_v<T, LuaNumber>) {
                 if (isA<LuaInteger>()) {
@@ -101,7 +108,7 @@ namespace arasy::core {
          * @throws std::bad_variant_access
          * If the given type does not match the LuaValue content.
          */
-        template<typename T, typename = std::enable_if_t<utils::internal::is_any_of_v<T, _ARASY_LUA_VARIANT_ORDER>>>
+        template<typename T, typename = std::enable_if_t<is_lua_value_v<T>>>
         constexpr T asA() const noexcept(false) {
             if constexpr (std::is_same_v<T, LuaNumber>) {
                 if (isA<LuaInteger>()) {

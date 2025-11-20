@@ -5,6 +5,7 @@
 namespace arasy::core {
     class LuaTable : public arasy::core::internal::LuaIndexable {
     public:
+        // LuaTable(lua_State* L)
         LuaTable(lua_State* L, int index): LuaIndexable(L, index) {}
     };
 
