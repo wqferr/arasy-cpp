@@ -190,14 +190,17 @@ namespace arasy::core {
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resumeOtherWith(bool moveRetOver, LuaThread& thread, LuaFunction& f, const Args&... args) {
-            return thread.resumeWith(moveRetOver, *this, f, args...);
+        thread::ResumeResult startOther(bool moveRetOver, LuaThread& thread, LuaFunction& f, const Args&... args) {
+            return thread.start(moveRetOver, *this, f, args...);
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resumeOtherWith(bool moveRetOver, LuaThread& thread, lua_CFunction f, const Args&... args) {
-            return thread.resumeWith(moveRetOver, *this, f, args...);
+        thread::ResumeResult startOther(bool moveRetOver, LuaThread& thread, lua_CFunction f, const Args&... args) {
+            return thread.start(moveRetOver, *this, f, args...);
         }
+
+        int yieldk(int nret, lua_KContext ctx, lua_KFunction k);
+        int yield(int nret);
 
         LuaThread createNewThread() {
             lua_newthread(state);
@@ -218,6 +221,9 @@ namespace arasy::core {
         error::MScriptError executeString(const std::string& code);
         error::MScriptError loadFile(const std::string& fileName);
         error::MScriptError executeFile(const std::string& fileName);
+
+        void concat(int n);
+        void arith(int op);
 
         operator lua_State*() const { return state; }
     };
@@ -245,6 +251,9 @@ namespace arasy {
     const inline LuaValue True_lv = core::True_lv;
     const inline LuaValue nil_lv = LuaValue{nil};
     const inline LuaValue False_lv = core::False_lv;
+
+    using ResumeResult = core::thread::ResumeResult;
+    using LuaValueVarIndex = core::LuaValueVarIndex;
 
     using Lua = core::Lua;
 }

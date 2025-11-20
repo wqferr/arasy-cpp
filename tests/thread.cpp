@@ -109,48 +109,103 @@ namespace {
     int yielder2(lua_State* ls, int status, lua_KContext ctx) {
         Lua L {ls};
         L.ensureStack(1);
-        L.setGlobal("Part2", *L.popStack());
-        L.push(99_li);
-        L.push(True);
-        return 2;
+        L.setGlobal("Part3", *L.popStack());
+
+        return L.yield(0);
     }
 
-    int yielder1(lua_State* ls) {
+    int nestedYielder(lua_State* ls) {
         Lua L {ls};
-        L.setGlobal("Part1", "a string"_ls);
-        L.push("this is an arg"_ls);
-        return lua_yieldk(L, 1, 0, &yielder2);
+        L.setGlobal("Part2", "a string"_ls); // (1)
+        L.push("this is an arg"_ls); // (2) (return)
+        return L.yieldk(1, 0, &yielder2);
+    }
+
+    void checkThreadResult(const ResumeResult& result, int nexp) {
+        if (result.isError()) {
+            throw std::runtime_error("Error returning from nestedYielder()");
+        }
+        if (result->nret != nexp) {
+            throw std::runtime_error("Unexpected number of returns");
+        }
+    }
+
+    int continueNestedThread(lua_State* ls, int status, lua_KContext ctx) {
+        Lua L {ls};
+        auto nestedThr = *L.popStack<LuaThread>();
+        auto i = *L.popStack<LuaInteger>();
+        if (i.value != 32) {
+            throw std::runtime_error("Unexpected argument in resume call");
+        }
+        nestedThr.resume(true, L, 0_li);
+        L["Part4"] = -1_ln;
+        return L.yield(0);
+    }
+
+    int setupNestedThread(lua_State* ls) {
+        Lua L {ls};
+        auto thr = L.createNewThread();
+        L.ensureStack(1);
+        L["Part1"] = *L.popStack();
+        auto result = thr.start(true, L, &nestedYielder); // start
+        checkThreadResult(result, 1);
+        EXPECT_EQ(*L.readStackTop(), "this is an arg"_lv);
+        L.push(" CONCAT"_ls);
+        L.concat(2);
+        L.push(thr);
+        return L.yieldk(2, 0, &continueNestedThread);
     }
 }
 
-TEST(Thread, CanCallFunctionsThatYield) {
+TEST(Thread, CanYieldFromInsideNestedThread) {
     Lua L;
     luaL_openlibs(L);
     lua_atpanic(L, &atPanic);
 
     auto thr = L.createNewThread();
-    thr.lua().pushCFunction(&yielder1);
     int s = L.stackSize();
     EXPECT_TRUE(L["Part1"].value().isNil());
     EXPECT_TRUE(L["Part2"].value().isNil());
+    EXPECT_TRUE(L["Part3"].value().isNil());
+    EXPECT_TRUE(L["Part4"].value().isNil());
 
-    auto result = L.resumeOther(true, thr, 0_ln, 0.5_ln, 0.25_ln);
-    ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
-    EXPECT_EQ(result->nret, 1) << "Unexpected number of returns: " << result->nret;
-    EXPECT_FALSE(result->finished) << "Coroutine finished unexpectedly";
-    int diff = L.stackSize() - s;
-    EXPECT_EQ(diff, result->nret) << "Stack did not grow as expected";
-    EXPECT_EQ(L.popStack<LuaString>(), "this is an arg"_ls);
-    EXPECT_EQ(L["Part1"].value(), "a string"_lv);
-    EXPECT_TRUE(L["Part2"].value().isNil());
+    auto result = thr.start(true, L, &setupNestedThread, 123_li);
+    ASSERT_TRUE(result.isOk());
+    EXPECT_EQ(L["Part1"].value(), 123_lv);
+    EXPECT_EQ(L["Part2"].value(), "a string"_lv);
+    EXPECT_TRUE(L["Part3"].value().isNil());
+    EXPECT_TRUE(L["Part4"].value().isNil());
 
-    result = thr.resume(true, L, "another string"_lv);
-    ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
-    EXPECT_EQ(result->nret, 2) << "Unexpected number of returns: " << result->nret;
-    EXPECT_TRUE(result->finished) << "Coroutine did not finish when expected";
-    L.ensureStack(2);
-    EXPECT_EQ(*L.readStack(1), 99_lv) << "Values returned did not match expected";
-    EXPECT_EQ(*L.readStack(2), True_lv) << "Values returned did not match expected";
-    EXPECT_EQ(L["Part1"].value(), "a string"_lv);
-    EXPECT_EQ(L["Part2"].value(), "another string"_lv);
+    EXPECT_EQ(result->nret, 2);
+    ASSERT_EQ(L.type(-1), LuaValueVarIndex::LuaThread);
+    ASSERT_TRUE(L.checkStackTop<LuaThread>());
+    ASSERT_TRUE(L.checkStack<LuaString>(-2));
+    auto nestedThread = *L.popStack<LuaThread>();
+    EXPECT_EQ(*L.popStack<LuaString>(), "this is an arg CONCAT"_ls);
+    result = thr.resume(true, L, 32_li, nestedThread);
+    EXPECT_EQ(result->nret, 0);
+    EXPECT_EQ(L["Part1"].value(), 123_lv);
+    EXPECT_EQ(L["Part2"].value(), "a string"_lv);
+    EXPECT_EQ(L["Part3"].value(), 0_lv);
+    EXPECT_EQ(L["Part4"].value().asA<LuaNumber>(), -1_ln);
+
+    // auto result = thr.start(true, L, &setupNestedThread);
+    // ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
+    // EXPECT_EQ(result->nret, 1) << "Unexpected number of returns: " << result->nret;
+    // EXPECT_FALSE(result->finished) << "Coroutine finished unexpectedly";
+    // int diff = L.stackSize() - s;
+    // EXPECT_EQ(diff, result->nret) << "Stack did not grow as expected";
+    // EXPECT_EQ(L.popStack<LuaString>(), "this is an arg"_ls);
+    // EXPECT_EQ(L["Part1"].value(), "a string"_lv);
+    // EXPECT_TRUE(L["Part2"].value().isNil());
+
+    // result = thr.resume(true, L, "another string"_lv);
+    // ASSERT_TRUE(result.isOk()) << "Yield failed: " << result.error();
+    // EXPECT_EQ(result->nret, 2) << "Unexpected number of returns: " << result->nret;
+    // EXPECT_TRUE(result->finished) << "Coroutine did not finish when expected";
+    // L.ensureStack(2);
+    // EXPECT_EQ(*L.readStack(1), 99_lv) << "Values returned did not match expected";
+    // EXPECT_EQ(*L.readStack(2), True_lv) << "Values returned did not match expected";
+    // EXPECT_EQ(L["Part1"].value(), "a string"_lv);
+    // EXPECT_EQ(L["Part2"].value(), "another string"_lv);
 }

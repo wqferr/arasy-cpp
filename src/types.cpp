@@ -101,10 +101,14 @@ namespace arasy::core {
                 return std::nullopt;
             } else if (LuaStackReader<LuaNil>::checkAt(L, idx)) {
                 return nil;
+            } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
+                return LuaStackReader<LuaBoolean>::readAt(L, idx);
             } else if (LuaStackReader<LuaInteger>::checkAt(L, idx)) {
                 return LuaStackReader<LuaInteger>::readAt(L, idx);
             } else if (LuaStackReader<LuaNumber>::checkAt(L, idx)) {
                 return LuaStackReader<LuaNumber>::readAt(L, idx);
+            } else if (LuaStackReader<LuaThread>::checkAt(L, idx)) {
+                return LuaStackReader<LuaThread>::readAt(L, idx);
             } else if (LuaStackReader<LuaLightUserData>::checkAt(L, idx)) {
                 return LuaStackReader<LuaLightUserData>::readAt(L, idx);
             } else if (LuaStackReader<LuaFullUserData>::checkAt(L, idx)) {
@@ -113,14 +117,10 @@ namespace arasy::core {
                 return LuaStackReader<LuaString>::readAt(L, idx);
             } else if (LuaStackReader<LuaTable>::checkAt(L, idx)) {
                 return LuaStackReader<LuaTable>::readAt(L, idx);
-            } else if (LuaStackReader<LuaThread>::checkAt(L, idx)) {
-                return LuaStackReader<LuaThread>::readAt(L, idx);
             } else if (LuaStackReader<LuaCFunction>::checkAt(L, idx)) {
                 return LuaStackReader<LuaCFunction>::readAt(L, idx);
             } else if (LuaStackReader<LuaFunction>::checkAt(L, idx)) {
                 return LuaStackReader<LuaFunction>::readAt(L, idx);
-            } else if (LuaStackReader<LuaBoolean>::checkAt(L, idx)) {
-                return LuaStackReader<LuaBoolean>::readAt(L, idx);
             } else {
                 throw std::runtime_error("Unknown lua type!");
             }

@@ -29,6 +29,14 @@ namespace arasy::core {
 
             Ok* operator->() { return std::get_if<Ok>(this); }
             const Ok* operator->() const { return std::get_if<Ok>(this); }
+
+            operator int() const {
+                if (isOk()) {
+                    return value().finished ? LUA_OK : LUA_YIELD;
+                } else {
+                    return static_cast<int>(error().code);
+                }
+            }
         };
 
         std::ostream& operator<<(std::ostream& os, const ResumeResult& r);
@@ -68,13 +76,13 @@ namespace arasy::core {
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resumeWith(bool moveRetOver, Lua& L, LuaFunction& f, const Args&... args) {
+        thread::ResumeResult start(bool moveRetOver, Lua& L, LuaFunction& f, const Args&... args) {
             lua().push(f);
             return resume(moveRetOver, L, args...);
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resumeWith(bool moveRetOver, Lua& L, lua_CFunction f, const Args&... args) {
+        thread::ResumeResult start(bool moveRetOver, Lua& L, lua_CFunction f, const Args&... args) {
             lua().pushCFunction(f);
             return resume(moveRetOver, L, args...);
         }
@@ -88,7 +96,7 @@ namespace arasy::core {
         template<>
         struct LuaStackReader<LuaThread> {
             static bool checkAt(lua_State* L, int idx) {
-                return lua_iscfunction(L, idx);
+                return lua_isthread(L, idx);
             }
 
             static std::optional<LuaThread> readAt(lua_State* L, int idx) {

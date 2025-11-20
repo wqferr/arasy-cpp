@@ -45,12 +45,22 @@ namespace arasy::core {
         }
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-        constexpr T& asA() {
+        constexpr T asA() {
+            if constexpr (std::is_same_v<T, LuaNumber>) {
+                if (isA<LuaInteger>()) {
+                    return LuaNumber{static_cast<lua_Number>(asA<LuaInteger>().value)};
+                }
+            }
             return std::get<T>(*this);
         }
 
         template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-        constexpr const T& asA() const {
+        constexpr const T asA() const {
+            if constexpr (std::is_same_v<T, LuaNumber>) {
+                if (isA<LuaInteger>()) {
+                    return LuaNumber{static_cast<lua_Number>(asA<LuaInteger>().value)};
+                }
+            }
             return std::get<T>(*this);
         }
 
@@ -79,7 +89,7 @@ namespace arasy::core {
         void pushOnto(lua_State* L) const {
             return std::visit(
                 [L](const auto& x) { x.pushOnto(L); },
-                static_cast<const internal::LuaValueVariant&>(*this)
+                *this
             );
         }
 

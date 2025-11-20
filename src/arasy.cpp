@@ -86,6 +86,14 @@ error::MScriptError Lua::wrapScriptError(int status) {
     }
 }
 
+int Lua::yieldk(int nret, lua_KContext ctx, lua_KFunction k) {
+    return lua_yieldk(state, nret, ctx, k);
+}
+
+int Lua::yield(int nret) {
+    return lua_yield(state, nret);
+}
+
 void Lua::call(int narg, int nret) {
     lua_call(state, narg, nret);
 }
@@ -244,7 +252,6 @@ void Lua::pushStr(const std::string& str) {
     push(LuaString{str.c_str()});
 }
 
-
 std::optional<LuaTable> Lua::makeTable(const std::vector<std::pair<LuaValue, LuaValue>>& entries) {
     lua_newtable(state);
 
@@ -259,4 +266,12 @@ std::optional<LuaTable> Lua::makeTable(const std::vector<std::pair<LuaValue, Lua
     }
 
     return *popStack<LuaTable>();
+}
+
+void Lua::arith(int op) {
+    lua_arith(state, op);
+}
+
+void Lua::concat(int n) {
+    lua_concat(state, n);
 }
