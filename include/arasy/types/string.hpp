@@ -7,7 +7,7 @@ namespace arasy::core {
     class LuaString : public internal::LuaBaseType {
         std::string str_;
 
-        const char* checkNullptr(const char* str) {
+        const char* checkNullptr(const char* str) noexcept(false) {
             if (str == nullptr) {
                 throw std::runtime_error("LuaString was given nullptr");
             }

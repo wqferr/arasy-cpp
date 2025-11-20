@@ -82,7 +82,7 @@ LuaReference::~LuaReference() {
     registry.releaseRef(id_);
 }
 
-void LuaReference::pushOnto(lua_State* L) const {
+void LuaReference::pushOnto(lua_State* L) const noexcept(false) {
     if (!fromSameThreadTreeAs(L)) {
         throw std::runtime_error("Mixed registry references from different Lua instances");
     }

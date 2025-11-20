@@ -145,7 +145,7 @@ IndexedValue::IndexedValue(LuaIndexable& t_, const LuaValue& k):
     dummyForArrowOp(std::make_shared<LuaValue>(nil))
 {}
 
-std::shared_ptr<LuaValue> IndexedValue::makeKey(const LuaValue& k) {
+std::shared_ptr<LuaValue> IndexedValue::makeKey(const LuaValue& k) noexcept(false) {
     if (k.isNil()) {
         throw std::runtime_error("Attempted to index a table or userdata with nil");
     }
