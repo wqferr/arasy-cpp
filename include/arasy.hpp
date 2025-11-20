@@ -13,6 +13,18 @@
 #include "arasy/registry.hpp"
 
 namespace arasy::core {
+    /**
+     * @brief Core lua_State wrapper class.
+     *
+     * If constructed with no arguments, calls luaL_newstate() and manages the lua_State
+     * lifetime according to its own. When a Lua instance that created its own lua_State
+     * is destroyed, it calls lua_close on its internal lua_State and all references
+     * that depend on it directly or indirectly are invalidated.
+     *
+     * If constructed with a lua_State argument, it does not manage the state's lifetime,
+     * and instead simply provides convenience functions. It can be destroyed without
+     * closing the lua_State.
+     */
     class Lua {
         bool checkIndexExists(int idx) const {
             if (idx < 0) {

@@ -97,6 +97,7 @@ namespace arasy::core {
          *
          * @tparam T specific type to cast to.
          * @return T Lua value contained within the variant.
+         *
          * @throws std::bad_variant_access
          * If the given type does not match the LuaValue content.
          */
