@@ -8,7 +8,7 @@ find_package(GTest CONFIG REQUIRED)
 find_package(Doxygen)
 
 add_library(
-    core
+    arasy
     "include/arasy.hpp"
     src/arasy.cpp
     "include/arasy/types.hpp"
@@ -38,7 +38,7 @@ add_library(
     "include/arasy/module.hpp"
     src/module.cpp
 )
-target_include_directories(core PUBLIC "include" ${LUA_INCLUDE_DIR})
+target_include_directories(arasy PUBLIC "include" ${LUA_INCLUDE_DIR})
 
 if(Doxygen_FOUND)
     doxygen_add_docs(
@@ -48,12 +48,12 @@ if(Doxygen_FOUND)
 endif()
 
 if(MSVC)
-    target_compile_options(core PRIVATE /W4)
+    target_compile_options(arasy PRIVATE /W4)
 else()
-    target_compile_options(core -Wpedantic -Wextra)
+    target_compile_options(arasy -Wpedantic -Wextra)
 endif()
 
-target_link_libraries(core PUBLIC ${LUA_LIBRARIES})
+target_link_libraries(arasy PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
 file(GLOB all_test_scripts ${CMAKE_SOURCE_DIR}/tests/scripts/**)
@@ -78,7 +78,7 @@ add_executable(
     tests/thread.cpp
     tests/module.cpp
 )
-target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
+target_link_libraries(arasy_unit_tests PUBLIC arasy GTest::gtest_main)
 add_dependencies(arasy_unit_tests test_lua_scripts)
 
 add_custom_target(
