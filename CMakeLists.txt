@@ -47,12 +47,6 @@ if(${Doxygen_FOUND})
     )
 endif()
 
-if(MSVC)
-    target_compile_options(arasy PRIVATE /W4)
-else()
-    target_compile_options(arasy -Wpedantic -Wextra)
-endif()
-
 target_link_libraries(arasy PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
