@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(LUA REQUIRED)
-find_package(GTest CONFIG REQUIRED)
+find_package(GTest CONFIG)
 find_package(Doxygen)
 
 add_library(
@@ -68,25 +68,27 @@ add_custom_command(
     ${CMAKE_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
 )
 
-add_executable(
-    arasy_unit_tests
-    tests/core.cpp
-    tests/fmt.cpp
-    tests/registry.cpp
-    tests/table.cpp
-    tests/functions.cpp
-    tests/thread.cpp
-    tests/module.cpp
-)
-target_link_libraries(arasy_unit_tests PUBLIC arasy GTest::gtest_main)
-add_dependencies(arasy_unit_tests test_lua_scripts)
+if(GTest_FOUND)
+    add_executable(
+        arasy_unit_tests
+        tests/core.cpp
+        tests/fmt.cpp
+        tests/registry.cpp
+        tests/table.cpp
+        tests/functions.cpp
+        tests/thread.cpp
+        tests/module.cpp
+    )
+    target_link_libraries(arasy_unit_tests PUBLIC arasy GTest::gtest_main)
+    add_dependencies(arasy_unit_tests test_lua_scripts)
 
-add_custom_target(
-    run_unit_tests
-    COMMAND $<TARGET_FILE:arasy_unit_tests> | tee tests/report.txt
-    DEPENDS arasy_unit_tests
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+    add_custom_target(
+        run_unit_tests
+        COMMAND $<TARGET_FILE:arasy_unit_tests> | tee tests/report.txt
+        DEPENDS arasy_unit_tests
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
 
-include(GoogleTest)
-gtest_discover_tests(arasy_unit_tests)
+    include(GoogleTest)
+    gtest_discover_tests(arasy_unit_tests)
+endif()
