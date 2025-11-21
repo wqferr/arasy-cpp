@@ -43,7 +43,7 @@ target_include_directories(arasy PUBLIC "include" ${LUA_INCLUDE_DIR})
 if(${Doxygen_FOUND})
     doxygen_add_docs(
         docs
-        CONFIG_FILE ${CMAKE_SOURCE_DIR}/Doxyfile
+        CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
     )
 endif()
 
@@ -56,7 +56,7 @@ endif()
 target_link_libraries(arasy PUBLIC ${LUA_LIBRARIES})
 
 enable_testing()
-file(GLOB all_test_scripts ${CMAKE_SOURCE_DIR}/tests/scripts/**)
+file(GLOB all_test_scripts ${CMAKE_CURRENT_SOURCE_DIR}/tests/scripts/**)
 add_custom_target(
     test_lua_scripts
     DEPENDS ${all_test_scripts}
@@ -65,7 +65,7 @@ add_custom_command(
     TARGET test_lua_scripts
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
 )
 
 if(${GTest_FOUND})
