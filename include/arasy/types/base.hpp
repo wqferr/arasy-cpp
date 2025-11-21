@@ -37,6 +37,11 @@ namespace arasy::core {
     //     || std::is_floating_point_v<T>
     //     || std::is_same_v<T, const char*>;
 
+    class LuaValue;
+
+    template<typename... Ts>
+    constexpr bool all_are_convertible_to_lua_value_v = (std::is_convertible_v<Ts, arasy::core::LuaValue> && ...);
+
     // template<typename... Ts>
     // struct all_are_lua_wrapper_type {
     //     static constexpr bool value = false;
