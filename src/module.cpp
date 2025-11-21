@@ -20,6 +20,19 @@ Field Module::field(const char* name_) {
     return {*this, name_};
 }
 
+int Module::ref() const {
+    return ref_;
+}
+
+void Module::setRef(int r) {
+    ref_ = r;
+}
+
+void Module::unref() {
+    luaL_unref(L, LUA_REGISTRYINDEX, ref_);
+    ref_ = LUA_NOREF;
+}
+
 LuaValue Field::value() const {
     return *parent.members.getField(name);
 }

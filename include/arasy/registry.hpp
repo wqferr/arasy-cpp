@@ -27,7 +27,10 @@ namespace arasy::registry {
             if (lua_isnil(luaInstance, -1) || overwriteNameConflicts) { // +0
                 lua_pop(luaInstance, 1); // -1
                 M* mod = static_cast<M*>(lua_newuserdata(luaInstance, sizeof(M))); // +1
+                lua_pushvalue(luaInstance, -1);
                 new (mod) M {luaInstance, name};
+                int ref = luaL_ref(luaInstance, LUA_REGISTRYINDEX);
+                mod->setRef(ref);
                 lua_setfield(luaInstance, -2, name); // -1
                 lua_settop(luaInstance, top);
                 return error::none;

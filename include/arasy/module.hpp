@@ -36,6 +36,10 @@ namespace arasy::utils {
             const core::LuaValue* operator->() const;
         };
 
+        void setRef(int ref);
+        int ref() const;
+        void unref();
+
         lua_State* const L;
         const std::string name;
 
@@ -43,6 +47,7 @@ namespace arasy::utils {
     private:
         internal::non_owning_ptr<Module> parent;
         core::LuaTable makeMembersTable(lua_State* L_);
+        int ref_ = LUA_NOREF;
 
     protected:
         core::LuaTable members;
