@@ -40,7 +40,7 @@ add_library(
 )
 target_include_directories(arasy PUBLIC "include" ${LUA_INCLUDE_DIR})
 
-if(Doxygen_FOUND)
+if(${Doxygen_FOUND})
     doxygen_add_docs(
         docs
         CONFIG_FILE ${CMAKE_SOURCE_DIR}/Doxyfile
@@ -68,7 +68,7 @@ add_custom_command(
     ${CMAKE_SOURCE_DIR}/tests/scripts/ ./tests/scripts/
 )
 
-if(GTest_FOUND)
+if(${GTest_FOUND})
     add_executable(
         arasy_unit_tests
         tests/core.cpp
