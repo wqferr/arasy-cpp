@@ -193,6 +193,9 @@ namespace arasy::core {
         }
     };
 
+    template<typename... Ts>
+    constexpr bool all_are_convertible_to_lua_value_v = (std::is_convertible_v<Ts, arasy::core::LuaValue> && ...);
+
 #undef _ARASY_LUA_VARIANT_ORDER
 
     template<>
