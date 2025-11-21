@@ -80,7 +80,7 @@ std::ostream& arasy::core::operator<<(std::ostream& os, const LuaValue& lv) {
                 os << "cfunction: " << std::hex << cf.cfunc;
             },
             [&os](const LuaThread& thr) {
-                os << "thread: " << std::hex << thr.lua().state;
+                os << "thread: " << std::hex << thr.lua();
             },
             [&os](const LuaTable& tbl) {
                 os << "table: id #" << tbl.id();

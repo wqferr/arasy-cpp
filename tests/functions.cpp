@@ -126,7 +126,7 @@ TEST_F(CFunctions, CanUseUpvaluesNatively) {
 }
 
 TEST_F(CFunctions, CanBeCreatedFromUpValuesInline) {
-    int upvalue = 10;
+    LuaInteger upvalue = 10;
     int callValue = 5;
     L.pushNum(0); // Sentinel
 
@@ -138,7 +138,7 @@ TEST_F(CFunctions, CanBeCreatedFromUpValuesInline) {
     ASSERT_EQ(L.stackSize(), 2) << "Function did not push expected number of return values";
     auto maybeNum = L.popStack<LuaNumber>();
     ASSERT_TRUE(maybeNum.has_value()) << "Function did not return a number";
-    EXPECT_EQ(*maybeNum, upvalue + callValue);
+    EXPECT_EQ(*maybeNum, upvalue.value + callValue);
 }
 
 namespace {

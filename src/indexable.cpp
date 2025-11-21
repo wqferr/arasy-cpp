@@ -164,9 +164,9 @@ IndexedValue LuaIndexable::operator[](const char* k) {
     return {*this, LuaString{k}};
 }
 
-IndexedValue LuaIndexable::operator[](const lua_Integer& k) {
-    return {*this, LuaInteger{k}};
-}
+// IndexedValue LuaIndexable::operator[](const lua_Integer& k) {
+//     return {*this, LuaInteger{k}};
+// }
 
 IndexedValue::operator LuaValue() const {
     return *get<LuaValue>();

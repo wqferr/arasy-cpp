@@ -14,7 +14,7 @@ namespace arasy::core {
 
         LuaCFunction(lua_State* L, int index): LuaCallable(L, index) {}
 
-        template<typename... Args, typename = std::enable_if_t<(std::is_base_of_v<internal::LuaBaseType, Args> && ...)>>
+        template<typename... Args, typename = std::enable_if_t<all_are_lua_types_v<Args...>>>
         static LuaCFunction withUpvalues(lua_State* L, lua_CFunction cfunc, const Args&... args) {
             (args.pushOnto(L), ...);
             return LuaCFunction(L, cfunc, std::in_place, sizeof...(args));

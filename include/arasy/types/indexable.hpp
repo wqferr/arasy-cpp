@@ -115,6 +115,6 @@ namespace arasy::core::internal {
 
         IndexedValue operator[](const LuaValue& k);
         IndexedValue operator[](const char* k);
-        IndexedValue operator[](const lua_Integer& i);
+        // IndexedValue operator[](const lua_Integer& i);
     };
 }
