@@ -76,19 +76,19 @@ namespace arasy::utils::internal {
 
             case 'd':
             case 'c':
-                if constexpr (!std::is_convertible_v<T1, LuaInteger>) {
+                if constexpr (!std::is_convertible_v<T1, core::LuaInteger>) {
                     return internal::incompatArg<T1>(fmt, idx);
                 }
                 break;
 
             case 'f':
-                if constexpr (!std::is_convertible_v<T1, LuaNumber>) {
+                if constexpr (!std::is_convertible_v<T1, core::LuaNumber>) {
                     return internal::incompatArg<T1>(fmt, idx);
                 }
                 break;
 
             case 's':
-                if constexpr (!std::is_convertible_v<T1, LuaString>) {
+                if constexpr (!std::is_convertible_v<T1, core::LuaString>) {
                     return internal::incompatArg<T1>(fmt, idx);
                 }
                 break;
