@@ -3,6 +3,7 @@
 #include <optional>
 
 #include "lua.hpp"
+#include "arasy/errors.hpp"
 
 namespace arasy::core {
     class LuaValue;
@@ -16,6 +17,25 @@ namespace arasy::registry {
 
         // DO NOT IMPLEMENT readField(int), this is reserved for luaL_ref
         void retrieveField(const char* fieldName) const;
+
+        template<typename M>
+        error::MLoadModuleError loadModule(const char* name, bool overwriteNameConflicts) {
+            int top = lua_gettop(luaInstance);
+            lua_getglobal(luaInstance, "package"); // +1
+            lua_getfield(luaInstance, -1, "loaded"); // +1
+            lua_getfield(luaInstance, -1, name); // +1
+            if (lua_isnil(luaInstance, -1) || overwriteNameConflicts) { // +0
+                lua_pop(luaInstance, 1); // -1
+                M* mod = static_cast<M*>(lua_newuserdata(luaInstance, sizeof(M))); // +1
+                new (mod) M {luaInstance, name};
+                lua_setfield(luaInstance, -2, name); // -1
+                lua_settop(luaInstance, top);
+                return error::none;
+            } else {
+                lua_settop(luaInstance, top);
+                return {error::LoadModuleErrorCode::DUPLICATE_NAME};
+            }
+        }
 
         template<typename T = arasy::core::LuaValue, typename = std::enable_if_t<arasy::core::is_lua_wrapper_type_v<T>>>
         std::optional<T> readField(const char* fieldName) const {

@@ -9,5 +9,8 @@ namespace arasy::utils {
 
         template<typename A, typename... Ts>
         constexpr bool is_any_of_v = (std::is_same_v<A, Ts> || ...);
+
+        template<typename T>
+        using non_owning_ptr = T*;
     }
 }

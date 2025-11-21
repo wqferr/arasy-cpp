@@ -1,41 +1,63 @@
 #pragma once
 
+#include <type_traits>
+#include <string>
 #include "arasy/types.hpp"
+
+#ifndef declfield
+#define declfield(ident) Field ident = field(#ident);
+#endif
+
+#ifndef declsubmod
+#define declsubmod(ident, type) type ident = submodule<type>(#ident);
+#endif
+
+// TODO: use package.load to lazy load modules
 
 namespace arasy::utils {
     class Module {
     public:
         struct Field {
-            const char* name;
+            const char* const name;
             Module& parent;
-            mutable core::LuaValue cachedValue;
 
-            Field(Module& parent_, const char* name_): parent(parent_), name(name_) {}
+        private:
+            mutable core::LuaValue cachedValue_;
 
-            core::LuaValue value() const {
-                return *parent.members.getField(name);
-            }
+        public:
+            Field(Module& parent_, const char* name_);
 
-            core::LuaValue* operator->() {
-                cachedValue = value();
-                return &cachedValue;
-            }
+            core::LuaValue value() const;
+            core::LuaValue cachedValue() const;
 
-            const core::LuaValue* operator->() const {
-                cachedValue = value();
-                return &cachedValue;
-            }
+            void set(const core::LuaValue& value);
+            Field& operator=(const core::LuaValue& value);
+
+            const core::LuaValue* operator->() const;
         };
 
-        const char* name;
+        lua_State* const L;
+        const std::string name;
+
+        Module(lua_State* L_, const char* name_);
+    private:
+        internal::non_owning_ptr<Module> parent;
+        core::LuaTable makeMembersTable(lua_State* L_);
+
     protected:
         core::LuaTable members;
 
-        Field field(const char* name, core::LuaValue v);
+        Field field(const char* name);
 
-        lua_State* init(lua_State* L) {
-
-            return L;
+        template<typename M, typename = std::enable_if_t<std::is_base_of_v<Module, M>>>
+        M submodule(const char* name_) {
+            std::string fullName = name;
+            fullName += ".";
+            fullName += name_;
+            M mod {L, fullName.c_str()};
+            mod.parent = this;
+            members.setField(name_, mod.members);
+            return mod;
         }
     };
 }

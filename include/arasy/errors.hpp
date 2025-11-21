@@ -96,6 +96,13 @@ namespace arasy::error {
     using IndexingError = Error<IndexingErrorCode>;
     using MIndexingError = MaybeError<IndexingError>;
     std::ostream& operator<<(std::ostream& os, const IndexingErrorCode& err);
+
+    enum class LoadModuleErrorCode {
+        DUPLICATE_NAME
+    };
+    using LoadModuleError = Error<LoadModuleErrorCode>;
+    using MLoadModuleError = MaybeError<LoadModuleError>;
+    std::ostream& operator<<(std::ostream& os, const LoadModuleErrorCode& err);
 }
 
 namespace arasy {

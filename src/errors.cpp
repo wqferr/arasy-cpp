@@ -53,4 +53,13 @@ namespace arasy::error {
                 return os << unknownErrorMsg;
         }
     }
+
+    std::ostream& operator<<(std::ostream& os, const LoadModuleErrorCode& err) {
+        switch (err) {
+            case LoadModuleErrorCode::DUPLICATE_NAME:
+                return os << "<Duplicate module name>";
+            default:
+                return os << unknownErrorMsg;
+        }
+    }
 }

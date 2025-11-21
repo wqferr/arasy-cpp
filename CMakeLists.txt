@@ -76,6 +76,7 @@ add_executable(
     tests/table.cpp
     tests/functions.cpp
     tests/thread.cpp
+    tests/module.cpp
 )
 target_link_libraries(arasy_unit_tests PUBLIC core GTest::gtest_main)
 add_dependencies(arasy_unit_tests test_lua_scripts)

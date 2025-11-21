@@ -1,3 +1,5 @@
+#pragma once
+
 #include "arasy/lua.hpp"
 
 #include "arasy/types/base.hpp"

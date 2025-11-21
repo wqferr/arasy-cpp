@@ -219,6 +219,11 @@ namespace arasy::core {
             return *popStack<LuaThread>();
         }
 
+        template<typename M>
+        error::MLoadModuleError loadModule(const char* name, bool overwriteNameConflicts=false) {
+            return registry.loadModule<M>(name, overwriteNameConflicts);
+        }
+
         // WARNING: Cannot be used if function yields
         void call(int narg=0, int nret=LUA_MULTRET);
 
