@@ -3,7 +3,7 @@ project(arasy LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(LUA REQUIRED)
+find_package(Lua REQUIRED)
 find_package(GTest CONFIG)
 find_package(Doxygen)
 
@@ -38,16 +38,16 @@ add_library(
     "include/arasy/module.hpp"
     src/module.cpp
 )
-target_include_directories(arasy PUBLIC "include" ${LUA_INCLUDE_DIR})
+target_include_directories(arasy PUBLIC "include" ${Lua_INCLUDE_DIR})
 
 if(${Doxygen_FOUND})
     doxygen_add_docs(
-        docs
+        arasy_docs
         CONFIG_FILE ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
     )
 endif()
 
-target_link_libraries(arasy PUBLIC ${LUA_LIBRARIES})
+target_link_libraries(arasy PUBLIC ${Lua_LIBRARIES})
 
 enable_testing()
 file(GLOB all_test_scripts ${CMAKE_CURRENT_SOURCE_DIR}/tests/scripts/**)
