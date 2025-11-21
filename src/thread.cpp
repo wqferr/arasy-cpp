@@ -4,15 +4,15 @@
 
 using namespace arasy::core;
 
-LuaThread::LuaThread(lua_State* L): thread_(std::make_shared<Lua>(L)) {}
+LuaThread::LuaThread(lua_State* L): thread_(L) {}
 
 void LuaThread::pushOnto(lua_State* L) const {
-    lua_pushthread(thread_->state);
-    lua_xmove(thread_->state, L, 1);
+    lua_pushthread(thread_);
+    lua_xmove(thread_, L, 1);
 }
 
 bool arasy::core::operator==(const LuaThread& a, const LuaThread& b) {
-    return a.lua().state == b.lua().state;
+    return a.lua() == b.lua();
 }
 
 namespace arasy::core::thread {

@@ -3,6 +3,7 @@
 #include <optional>
 
 #include "lua.hpp"
+#include "arasy/types/base.hpp"
 #include "arasy/errors.hpp"
 
 namespace arasy::core {
@@ -54,7 +55,7 @@ namespace arasy::registry {
         std::optional<T> readKey(const T& key) const {
             using SR = arasy::core::internal::LuaStackReader<T>;
 
-            retrieveKey(fieldName);
+            retrieveKey(key);
             auto value = SR::readAt(luaInstance, -1);
             lua_pop(luaInstance, 1);
             return value;

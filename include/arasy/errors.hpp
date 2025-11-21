@@ -31,11 +31,14 @@ namespace arasy::error {
      */
     template<typename Err, typename = std::enable_if_t<std::is_enum_v<typename Err::CodeType>>>
     struct MaybeError : std::optional<Err> {
-        MaybeError(typename Err::CodeType code_): optional(Err{code_}) {}
-        MaybeError(typename Err::CodeType code_, const std::string& message_): optional(Err{code_, message_}) {}
-        MaybeError(const Err& e): optional(e) {}
-        MaybeError(const std::nullopt_t& n): optional(n) {}
-        MaybeError(const std::optional<Err>& opt): optional(opt) {}
+        MaybeError(typename Err::CodeType code_): std::optional<Err>(Err{code_}) {}
+        MaybeError(typename Err::CodeType code_, const std::string& message_): std::optional<Err>(Err{code_, message_}) {}
+        MaybeError(const Err& e): std::optional<Err>(e) {}
+        MaybeError(const std::nullopt_t& n): std::optional<Err>(n) {}
+        MaybeError(const std::optional<Err>& opt): std::optional<Err>(opt) {}
+
+        using std::optional<Err>::has_value;
+        using std::optional<Err>::value;
 
         bool matches(const typename Err::CodeType& e) const {
             return has_value() && value().code == e;
@@ -85,6 +88,7 @@ namespace arasy::error {
     };
     using MScriptError = MaybeError<ScriptError>;
     std::ostream& operator<<(std::ostream& os, const ScriptErrorCode& err);
+    MScriptError wrapScriptError(lua_State* L, int status);
 
     enum class IndexingErrorCode {
         // If not enough values were present on the stack for the operation

@@ -1,6 +1,5 @@
 #include "arasy.hpp"
 
-
 namespace {
     const char* unknownErrorMsg = "<Unknown error code: please contact an Arasy developer>";
 }
@@ -60,6 +59,34 @@ namespace arasy::error {
                 return os << "<Duplicate module name>";
             default:
                 return os << unknownErrorMsg;
+        }
+    }
+
+    MScriptError wrapScriptError(lua_State* L, int status) {
+        if (status == LUA_ERRRUN) {
+            std::string errMsg = lua_tostring(L, -1);
+            lua_pop(L, 1);
+            return MScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                std::move(errMsg)
+            };
+        } else if (status == LUA_ERRMEM) {
+            return MScriptError{
+                ScriptErrorCode::MEMORY_ERROR,
+                "Runtime memory allocation error"
+            };
+        } else if (status == LUA_ERRERR) {
+            return MScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                "Memory allocation error"
+            };
+        } else if (status != LUA_YIELD && status != LUA_OK) {
+            return MScriptError{
+                ScriptErrorCode::RUNTIME_ERROR,
+                "Unknown runtime error"
+            };
+        } else {
+            return std::nullopt;
         }
     }
 }

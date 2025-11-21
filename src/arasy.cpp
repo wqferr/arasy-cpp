@@ -55,35 +55,7 @@ void Lua::retrieveGlobal(const std::string& name) {
 }
 
 error::MScriptError Lua::wrapScriptError(int status) {
-    if (status == LUA_ERRRUN) {
-        std::string errMsg;
-        if (auto luaStr = popStack<LuaString>()) {
-            errMsg = luaStr->str();
-        } else {
-            errMsg = "No error message";
-        }
-        return MScriptError{
-            ScriptErrorCode::RUNTIME_ERROR,
-            std::move(errMsg)
-        };
-    } else if (status == LUA_ERRMEM) {
-        return MScriptError{
-            ScriptErrorCode::MEMORY_ERROR,
-            "Runtime memory allocation error"
-        };
-    } else if (status == LUA_ERRERR) {
-        return MScriptError{
-            ScriptErrorCode::RUNTIME_ERROR,
-            "Memory allocation error"
-        };
-    } else if (status != LUA_YIELD && status != LUA_OK) {
-        return MScriptError{
-            ScriptErrorCode::RUNTIME_ERROR,
-            "Unknown runtime error"
-        };
-    } else {
-        return std::nullopt;
-    }
+    return error::wrapScriptError(state, status);
 }
 
 int Lua::yieldk(int nret, lua_KContext ctx, lua_KFunction k) {

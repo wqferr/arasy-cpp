@@ -1,0 +1,207 @@
+arguments: C:\\Users\\wqfer\\Projects\\AMatchMadeInHell\\out\\build\\Debug\\mapdemo.exe
+Current dir: C:\Users\wqfer\Projects\AMatchMadeInHell\arasy-cpp
+File verbosity level: 0
+date       time         ( uptime  ) [ thread name/id ]                   file:line     v| 
+2025-11-21 10:30:39.730 (   0.002s) [main thread     ]             loguru.cpp:844   INFO| Logging to 'info.log', mode: 'w', verbosity: 0
+2025-11-21 10:30:39.732 (   0.003s) [main thread     ]             loguru.cpp:844   INFO| Logging to './logs/2025-11-21_10-30-39.log', mode: 'w', verbosity: 9
+2025-11-21 10:30:39.732 (   0.004s) [main thread     ]             loguru.cpp:844   INFO| Logging to './logs/LATEST.log', mode: 'w', verbosity: 9
+2025-11-21 10:30:39.732 (   0.004s) [main thread     ]               main.cpp:68    INFO| Initializing raylib 5.0-mmih
+2025-11-21 10:30:39.733 (   0.005s) [main thread     ]               main.cpp:68    INFO| Platform backend: DESKTOP (GLFW)
+2025-11-21 10:30:39.733 (   0.005s) [main thread     ]               main.cpp:68    INFO| Supported raylib modules:
+2025-11-21 10:30:39.734 (   0.005s) [main thread     ]               main.cpp:68    INFO|     > rcore:..... loaded (mandatory)
+2025-11-21 10:30:39.734 (   0.006s) [main thread     ]               main.cpp:68    INFO|     > rlgl:...... loaded (mandatory)
+2025-11-21 10:30:39.734 (   0.006s) [main thread     ]               main.cpp:68    INFO|     > rshapes:... loaded (optional)
+2025-11-21 10:30:39.734 (   0.006s) [main thread     ]               main.cpp:68    INFO|     > rtextures:. loaded (optional)
+2025-11-21 10:30:39.734 (   0.006s) [main thread     ]               main.cpp:68    INFO|     > rtext:..... loaded (optional)
+2025-11-21 10:30:39.734 (   0.006s) [main thread     ]               main.cpp:68    INFO|     > rmodels:... not loaded (optional)
+2025-11-21 10:30:39.735 (   0.007s) [main thread     ]               main.cpp:68    INFO|     > raudio:.... loaded (optional)
+2025-11-21 10:30:40.047 (   0.319s) [main thread     ]               main.cpp:68    INFO| DISPLAY: Device initialized successfully
+2025-11-21 10:30:40.047 (   0.319s) [main thread     ]               main.cpp:68    INFO|     > Display size: 1920 x 1080
+2025-11-21 10:30:40.047 (   0.319s) [main thread     ]               main.cpp:68    INFO|     > Screen size:  1200 x 800
+2025-11-21 10:30:40.047 (   0.319s) [main thread     ]               main.cpp:68    INFO|     > Render size:  1200 x 800
+2025-11-21 10:30:40.048 (   0.320s) [main thread     ]               main.cpp:68    INFO|     > Viewport offsets: 0, 0
+2025-11-21 10:30:40.052 (   0.324s) [main thread     ]               main.cpp:68    INFO| GLAD: OpenGL extensions loaded successfully
+2025-11-21 10:30:40.053 (   0.325s) [main thread     ]               main.cpp:68    INFO| GL: Supported extensions count: 403
+2025-11-21 10:30:40.053 (   0.325s) [main thread     ]               main.cpp:68    INFO| GL: OpenGL device information:
+2025-11-21 10:30:40.053 (   0.325s) [main thread     ]               main.cpp:68    INFO|     > Vendor:   NVIDIA Corporation
+2025-11-21 10:30:40.053 (   0.325s) [main thread     ]               main.cpp:68    INFO|     > Renderer: NVIDIA GeForce RTX 3050/PCIe/SSE2
+2025-11-21 10:30:40.054 (   0.326s) [main thread     ]               main.cpp:68    INFO|     > Version:  3.3.0 NVIDIA 565.90
+2025-11-21 10:30:40.054 (   0.326s) [main thread     ]               main.cpp:68    INFO|     > GLSL:     3.30 NVIDIA via Cg compiler
+2025-11-21 10:30:40.054 (   0.326s) [main thread     ]               main.cpp:68    INFO| GL: VAO extension detected, VAO functions loaded successfully
+2025-11-21 10:30:40.054 (   0.326s) [main thread     ]               main.cpp:68    INFO| GL: NPOT textures extension detected, full NPOT textures supported
+2025-11-21 10:30:40.055 (   0.326s) [main thread     ]               main.cpp:68    INFO| GL: DXT compressed textures supported
+2025-11-21 10:30:40.055 (   0.327s) [main thread     ]               main.cpp:68    INFO| GL: ETC2/EAC compressed textures supported
+2025-11-21 10:30:40.055 (   0.327s) [main thread     ]               main.cpp:68    INFO| PLATFORM: DESKTOP (GLFW): Initialized successfully
+2025-11-21 10:30:40.055 (   0.327s) [main thread     ]               main.cpp:68    INFO| TEXTURE: [ID 1] Texture loaded successfully (1x1 | R8G8B8A8 | 1 mipmaps)
+2025-11-21 10:30:40.055 (   0.327s) [main thread     ]               main.cpp:68    INFO| TEXTURE: [ID 1] Default texture loaded successfully
+2025-11-21 10:30:40.056 (   0.328s) [main thread     ]               main.cpp:68    INFO| SHADER: [ID 1] Vertex shader compiled successfully
+2025-11-21 10:30:40.056 (   0.328s) [main thread     ]               main.cpp:68    INFO| SHADER: [ID 2] Fragment shader compiled successfully
+2025-11-21 10:30:40.057 (   0.329s) [main thread     ]               main.cpp:68    INFO| SHADER: [ID 3] Program shader loaded successfully
+2025-11-21 10:30:40.057 (   0.329s) [main thread     ]               main.cpp:68    INFO| SHADER: [ID 3] Default shader loaded successfully
+2025-11-21 10:30:40.058 (   0.330s) [main thread     ]               main.cpp:68    INFO| RLGL: Render batch vertex buffers loaded successfully in RAM (CPU)
+2025-11-21 10:30:40.060 (   0.332s) [main thread     ]               main.cpp:68    INFO| RLGL: Render batch vertex buffers loaded successfully in VRAM (GPU)
+2025-11-21 10:30:40.060 (   0.332s) [main thread     ]               main.cpp:68    INFO| RLGL: Default OpenGL state initialized successfully
+2025-11-21 10:30:40.060 (   0.332s) [main thread     ]               main.cpp:68    INFO| TEXTURE: [ID 2] Texture loaded successfully (128x128 | GRAY_ALPHA | 1 mipmaps)
+2025-11-21 10:30:40.061 (   0.333s) [main thread     ]               main.cpp:68    INFO| FONT: Default font loaded successfully (224 glyphs)
+2025-11-21 10:30:40.061 (   0.333s) [main thread     ]               main.cpp:68    INFO| TIMER: Target time per frame: 16.667 milliseconds
+2025-11-21 10:30:40.061 (   0.333s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Bolt Affinity.png] Failed to open file
+2025-11-21 10:30:40.061 (   0.333s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/encounters/battle.png] Failed to open file
+2025-11-21 10:30:40.062 (   0.334s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Burn.png] Failed to open file
+2025-11-21 10:30:40.062 (   0.334s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/encounters/boss.png] Failed to open file
+2025-11-21 10:30:40.062 (   0.334s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Damage Modifier.png] Failed to open file
+2025-11-21 10:30:40.062 (   0.334s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Standard of Honoris.png] Failed to open file
+2025-11-21 10:30:40.063 (   0.335s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Rune of Akla.png] Failed to open file
+2025-11-21 10:30:40.063 (   0.335s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Magic Affinity.png] Failed to open file
+2025-11-21 10:30:40.063 (   0.335s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/ui/item-frame-clickable.png] Failed to open file
+2025-11-21 10:30:40.063 (   0.335s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Eidolon's Bloom.png] Failed to open file
+2025-11-21 10:30:40.064 (   0.336s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/ui/item-frame.png] Failed to open file
+2025-11-21 10:30:40.064 (   0.336s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Soul Amalgam.png] Failed to open file
+2025-11-21 10:30:40.064 (   0.336s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Vulnerability.png] Failed to open file
+2025-11-21 10:30:40.064 (   0.336s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Poison.png] Failed to open file
+2025-11-21 10:30:40.064 (   0.336s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Oversouled.png] Failed to open file
+2025-11-21 10:30:40.065 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Freeze.png] Failed to open file
+2025-11-21 10:30:40.065 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Bunsen's Eternal Flame.png] Failed to open file
+2025-11-21 10:30:40.065 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Frostbite.png] Failed to open file
+2025-11-21 10:30:40.065 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Regeneration.png] Failed to open file
+2025-11-21 10:30:40.065 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Elixir of Healing.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.337s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/status_effects/Resistance.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Max HP.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Bunsen's Eternal Flame.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Frost Affinity.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/General Affinity.png] Failed to open file
+2025-11-21 10:30:40.066 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Armor.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.338s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Enchanted Obsidian Ring.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.339s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Holy Affinity.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.339s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Soul Affinity.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.339s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Fire Affinity.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.339s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Shield of Dorian.png] Failed to open file
+2025-11-21 10:30:40.067 (   0.339s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Celestial Feather.png] Failed to open file
+2025-11-21 10:30:40.068 (   0.340s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Dubious Concoction.png] Failed to open file
+2025-11-21 10:30:40.068 (   0.340s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Crit Multiplier.png] Failed to open file
+2025-11-21 10:30:40.068 (   0.340s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Kron's Time Rune.png] Failed to open file
+2025-11-21 10:30:40.068 (   0.340s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Crit Chance.png] Failed to open file
+2025-11-21 10:30:40.069 (   0.341s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Enchanted Sapphire Ring.png] Failed to open file
+2025-11-21 10:30:40.069 (   0.341s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Elixir of Healing.png] Failed to open file
+2025-11-21 10:30:40.069 (   0.341s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Kron's Time Rune.png] Failed to open file
+2025-11-21 10:30:40.070 (   0.341s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Flute of Punctuality.png] Failed to open file
+2025-11-21 10:30:40.070 (   0.342s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Eidolon's Bloom.png] Failed to open file
+2025-11-21 10:30:40.070 (   0.342s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Soul Amalgam.png] Failed to open file
+2025-11-21 10:30:40.070 (   0.342s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Dubious Concoction.png] Failed to open file
+2025-11-21 10:30:40.070 (   0.342s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Enchanted Emerald Ring.png] Failed to open file
+2025-11-21 10:30:40.071 (   0.343s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Enchanted Ruby Ring.png] Failed to open file
+2025-11-21 10:30:40.071 (   0.343s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Enchanted Emerald Ring.png] Failed to open file
+2025-11-21 10:30:40.071 (   0.343s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Rune of Yorm.png] Failed to open file
+2025-11-21 10:30:40.071 (   0.343s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Enchanted Ruby Ring.png] Failed to open file
+2025-11-21 10:30:40.072 (   0.344s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Enchanted Sapphire Ring.png] Failed to open file
+2025-11-21 10:30:40.072 (   0.344s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Tipped Scales.png] Failed to open file
+2025-11-21 10:30:40.072 (   0.344s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Enchanted Obsidian Ring.png] Failed to open file
+2025-11-21 10:30:40.072 (   0.344s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Rune of Akla.png] Failed to open file
+2025-11-21 10:30:40.072 (   0.344s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Rune of Olt.png] Failed to open file
+2025-11-21 10:30:40.073 (   0.345s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Eyes of the Abyss.png] Failed to open file
+2025-11-21 10:30:40.073 (   0.345s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Rune of Olt.png] Failed to open file
+2025-11-21 10:30:40.073 (   0.345s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Rune of Yorm.png] Failed to open file
+2025-11-21 10:30:40.073 (   0.345s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Celestial Feather.png] Failed to open file
+2025-11-21 10:30:40.073 (   0.345s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Flute of Punctuality.png] Failed to open file
+2025-11-21 10:30:40.074 (   0.346s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Letter.png] Failed to open file
+2025-11-21 10:30:40.074 (   0.346s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Horn of Bophades.png] Failed to open file
+2025-11-21 10:30:40.074 (   0.346s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Letter.png] Failed to open file
+2025-11-21 10:30:40.074 (   0.346s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Mirror of the Four.png] Failed to open file
+2025-11-21 10:30:40.075 (   0.347s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/The Art of Berserk.png] Failed to open file
+2025-11-21 10:30:40.075 (   0.347s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Mirror of the Four.png] Failed to open file
+2025-11-21 10:30:40.075 (   0.347s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/The Art of Berserk.png] Failed to open file
+2025-11-21 10:30:40.075 (   0.347s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Horn of Bophades.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.347s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Shield of Dorian.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.348s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Chain Ruler.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.348s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Chain Ruler.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.348s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Rod of Ivandis.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.348s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Rod of Ivandis.png] Failed to open file
+2025-11-21 10:30:40.076 (   0.348s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Eyes of the Abyss.png] Failed to open file
+2025-11-21 10:30:40.077 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Tipped Scales.png] Failed to open file
+2025-11-21 10:30:40.077 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Trident of Zul-Andra.png] Failed to open file
+2025-11-21 10:30:40.077 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Trident of Zul-Andra.png] Failed to open file
+2025-11-21 10:30:40.077 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Topaz Anode.png] Failed to open file
+2025-11-21 10:30:40.077 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Topaz Anode.png] Failed to open file
+2025-11-21 10:30:40.078 (   0.349s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Ring of Favor and Protection.png] Failed to open file
+2025-11-21 10:30:40.078 (   0.350s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Ring of Favor and Protection.png] Failed to open file
+2025-11-21 10:30:40.078 (   0.350s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/WHY! Protein.png] Failed to open file
+2025-11-21 10:30:40.078 (   0.350s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/WHY! Protein.png] Failed to open file
+2025-11-21 10:30:40.078 (   0.350s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Avernic Platebody.png] Failed to open file
+2025-11-21 10:30:40.079 (   0.351s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Avernic Platebody.png] Failed to open file
+2025-11-21 10:30:40.079 (   0.351s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Everflight Arrow.png] Failed to open file
+2025-11-21 10:30:40.079 (   0.351s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Everflight Arrow.png] Failed to open file
+2025-11-21 10:30:40.079 (   0.351s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Cloak of Agility.png] Failed to open file
+2025-11-21 10:30:40.079 (   0.351s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Cloak of Agility.png] Failed to open file
+2025-11-21 10:30:40.080 (   0.352s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Hide of Arkon.png] Failed to open file
+2025-11-21 10:30:40.080 (   0.352s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Hide of Arkon.png] Failed to open file
+2025-11-21 10:30:40.080 (   0.352s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Syphoning Kris.png] Failed to open file
+2025-11-21 10:30:40.080 (   0.352s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Boreal Flamberge.png] Failed to open file
+2025-11-21 10:30:40.080 (   0.352s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Syphoning Kris.png] Failed to open file
+2025-11-21 10:30:40.081 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Executioner.png] Failed to open file
+2025-11-21 10:30:40.081 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Executioner.png] Failed to open file
+2025-11-21 10:30:40.081 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Revitalizing Electrolyte.png] Failed to open file
+2025-11-21 10:30:40.081 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Revitalizing Electrolyte.png] Failed to open file
+2025-11-21 10:30:40.081 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Blazing Flamberge.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.353s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Blazing Flamberge.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.354s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Boreal Flamberge.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.354s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Vicious Gladius.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.354s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Vicious Gladius.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.354s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Radiant Incantations.png] Failed to open file
+2025-11-21 10:30:40.082 (   0.354s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Radiant Incantations.png] Failed to open file
+2025-11-21 10:30:40.083 (   0.355s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Crystalline Droplet.png] Failed to open file
+2025-11-21 10:30:40.083 (   0.355s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Crystalline Droplet.png] Failed to open file
+2025-11-21 10:30:40.083 (   0.355s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Ball Lightning.png] Failed to open file
+2025-11-21 10:30:40.083 (   0.355s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Ball Lightning.png] Failed to open file
+2025-11-21 10:30:40.083 (   0.355s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Boy-Like Turnip.png] Failed to open file
+2025-11-21 10:30:40.084 (   0.356s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Boy-Like Turnip.png] Failed to open file
+2025-11-21 10:30:40.084 (   0.356s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Standard of Honoris.png] Failed to open file
+2025-11-21 10:30:40.084 (   0.356s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Mithril Platebody.png] Failed to open file
+2025-11-21 10:30:40.085 (   0.357s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Mithril Platebody.png] Failed to open file
+2025-11-21 10:30:40.085 (   0.357s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Ironwood Scepter.png] Failed to open file
+2025-11-21 10:30:40.085 (   0.357s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Ironwood Scepter.png] Failed to open file
+2025-11-21 10:30:40.085 (   0.357s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/items/Ob-Noxious Scythe.png] Failed to open file
+2025-11-21 10:30:40.086 (   0.358s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/items/Ob-Noxious Scythe.png] Failed to open file
+2025-11-21 10:30:40.086 (   0.358s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Bolt.png] Failed to open file
+2025-11-21 10:30:40.086 (   0.358s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Nimble.png] Failed to open file
+2025-11-21 10:30:40.087 (   0.359s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Heavy.png] Failed to open file
+2025-11-21 10:30:40.087 (   0.359s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Lethal.png] Failed to open file
+2025-11-21 10:30:40.087 (   0.359s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Fire.png] Failed to open file
+2025-11-21 10:30:40.087 (   0.359s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Frost.png] Failed to open file
+2025-11-21 10:30:40.088 (   0.360s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Soul.png] Failed to open file
+2025-11-21 10:30:40.088 (   0.360s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/strikes/Holy.png] Failed to open file
+2025-11-21 10:30:40.088 (   0.360s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/shaders/forward-uvs.vs] Failed to open text file
+2025-11-21 10:30:40.088 (   0.360s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/shaders/activatable-item-spotlight.fs] Failed to open text file
+2025-11-21 10:30:40.089 (   0.361s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/fonts/Brawler-Regular.otf] Failed to open file
+2025-11-21 10:30:40.089 (   0.361s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/fonts/Brawler-Bold.otf] Failed to open file
+2025-11-21 10:30:40.089 (   0.361s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/fonts/Castoro-Regular.otf] Failed to open file
+2025-11-21 10:30:40.089 (   0.361s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/fonts/Castoro-Bold.otf] Failed to open file
+2025-11-21 10:30:40.090 (   0.361s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/fonts/Brawler-Regular.otf] Failed to open file
+2025-11-21 10:30:40.095 (   0.367s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Turn Timer Length.png] Failed to open file
+2025-11-21 10:30:40.096 (   0.368s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Shop Discount.png] Failed to open file
+2025-11-21 10:30:40.097 (   0.369s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Shop Discount %.png] Failed to open file
+2025-11-21 10:30:40.097 (   0.369s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Stride Size.png] Failed to open file
+2025-11-21 10:30:40.098 (   0.370s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Bolt Power.png] Failed to open file
+2025-11-21 10:30:40.098 (   0.370s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Nimble Power.png] Failed to open file
+2025-11-21 10:30:40.099 (   0.371s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Holy Power.png] Failed to open file
+2025-11-21 10:30:40.099 (   0.371s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Soul Power.png] Failed to open file
+2025-11-21 10:30:40.100 (   0.372s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Lethal Power.png] Failed to open file
+2025-11-21 10:30:40.100 (   0.372s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Fire Power.png] Failed to open file
+2025-11-21 10:30:40.101 (   0.373s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Frost Power.png] Failed to open file
+2025-11-21 10:30:40.101 (   0.373s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/stats/Heavy Power.png] Failed to open file
+2025-11-21 10:30:40.102 (   0.374s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/sprite_sheets/pcs/raven-battle.png] Failed to open file
+2025-11-21 10:30:40.103 (   0.375s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/faces/pcs/raven.png] Failed to open file
+2025-11-21 10:30:40.104 (   0.376s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/sprite_sheets/pcs/guinevere-battle.png] Failed to open file
+2025-11-21 10:30:40.104 (   0.376s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/faces/pcs/guinevere.png] Failed to open file
+2025-11-21 10:30:40.105 (   0.377s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/sprite_sheets/pcs/bryar-battle.png] Failed to open file
+2025-11-21 10:30:40.106 (   0.377s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/characters/faces/pcs/bryar.png] Failed to open file
+2025-11-21 10:30:40.119 (   0.391s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/enemies/Pyrofiend.png] Failed to open file
+2025-11-21 10:30:40.120 (   0.392s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/enemies/Hellhound.png] Failed to open file
+2025-11-21 10:30:40.120 (   0.392s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/enemies/Flametalon.png] Failed to open file
+2025-11-21 10:30:40.123 (   0.395s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/encounters/unrevealed.png] Failed to open file
+2025-11-21 10:30:40.124 (   0.396s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/encounters/none.png] Failed to open file
+2025-11-21 10:30:40.126 (   0.398s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/gui/pane.png] Failed to open file
+2025-11-21 10:30:40.126 (   0.398s) [main thread     ]               main.cpp:68    WARN| FILEIO: [assets/placeholder/gui/healthbars.png] Failed to open file
+2025-11-21 10:30:42.935 (   3.207s) [main thread     ]               main.cpp:68    INFO| TEXTURE: [ID 2] Unloaded texture data from VRAM (GPU)
+2025-11-21 10:30:42.935 (   3.207s) [main thread     ]               main.cpp:68    INFO| SHADER: [ID 3] Default shader unloaded successfully
+2025-11-21 10:30:42.936 (   3.208s) [main thread     ]               main.cpp:68    INFO| TEXTURE: [ID 1] Default texture unloaded successfully
+2025-11-21 10:30:42.977 (   3.249s) [main thread     ]               main.cpp:68    INFO| Window closed successfully
+2025-11-21 10:30:42.980 (   3.252s) [main thread     ]             loguru.cpp:541   INFO| atexit

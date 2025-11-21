@@ -43,24 +43,24 @@ namespace arasy::core {
     }
 
     class LuaThread : public internal::LuaBaseType {
-        std::shared_ptr<Lua> thread_;
+        lua_State* thread_;
 
     public:
         LuaThread(lua_State* L);
         LuaThread(const LuaThread& other): thread_(other.thread_) {}
         void pushOnto(lua_State* L) const override;
 
-        template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult resume(bool moveRetOver, Lua& L, const Args&... args) {
-            (lua().push(LuaValue{args}), ...);
+        template<typename... Args, typename = std::enable_if_t<all_are_lua_types_v<Args...>>>
+        thread::ResumeResult resume(bool moveRetOver, lua_State* L, const Args&... args) {
+            (args.pushOnto(thread_), ...);
 
             int nret;
-            int status = lua_resume(lua(), L, sizeof...(args), &nret);
+            int status = lua_resume(thread_, L, sizeof...(args), &nret);
 
             auto doMoveRet = [this, &L, moveRetOver, nret]() {
-                lua().ensureStack(nret);
+                lua_checkstack(thread_, nret);
                 if (moveRetOver) {
-                    lua_xmove(lua(), L, nret);
+                    lua_xmove(thread_, L, nret);
                 }
             };
             switch (status) {
@@ -71,24 +71,24 @@ namespace arasy::core {
                     doMoveRet();
                     return thread::Ok({ true, nret });
                 default:
-                    return *lua().wrapScriptError(status);
+                    return *error::wrapScriptError(thread_, status);
             }
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult start(bool moveRetOver, Lua& L, LuaFunction& f, const Args&... args) {
-            lua().push(f);
+        thread::ResumeResult start(bool moveRetOver, lua_State* L, LuaFunction& f, const Args&... args) {
+            f.pushOnto(thread_);
             return resume(moveRetOver, L, args...);
         }
 
         template<typename... Args, typename = std::enable_if_t<all_are_convertible_to_lua_value_v<Args...>>>
-        thread::ResumeResult start(bool moveRetOver, Lua& L, lua_CFunction f, const Args&... args) {
-            lua().pushCFunction(f);
+        thread::ResumeResult start(bool moveRetOver, lua_State* L, lua_CFunction f, const Args&... args) {
+            lua_pushcfunction(thread_, f);
             return resume(moveRetOver, L, args...);
         }
 
-        Lua& lua() { return *thread_; }
-        const Lua& lua() const { return *thread_; }
+        lua_State* lua() { return thread_; }
+        const lua_State* lua() const { return thread_; }
     };
     bool operator==(const LuaThread& a, const LuaThread& b);
 

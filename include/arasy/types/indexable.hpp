@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <type_traits>
+
 #include "arasy/errors.hpp"
 #include "arasy/types/callable.hpp"
 #include "arasy/types/integer.hpp"
@@ -113,10 +116,5 @@ namespace arasy::core::internal {
         IndexedValue operator[](const LuaValue& k);
         IndexedValue operator[](const char* k);
         IndexedValue operator[](const lua_Integer& i);
-
-        template<typename T, typename = std::enable_if_t<is_nonvariant_lua_wrapper_type_v<T>>>
-        IndexedValue operator[](const T& k) {
-            return (*this)[LuaValue{k}];
-        }
     };
 }

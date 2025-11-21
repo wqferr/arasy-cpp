@@ -160,7 +160,7 @@ namespace arasy::core {
         R visit(C&& callable) const {
             return std::visit<R>(
                 std::forward<C>(callable),
-                static_cast<const LuaValueVariant&>(*this)
+                static_cast<const internal::LuaValueVariant&>(*this)
             );
         }
 

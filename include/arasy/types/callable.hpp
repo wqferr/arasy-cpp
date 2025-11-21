@@ -51,8 +51,7 @@ namespace arasy::core::internal {
             } else if constexpr (std::is_same_v<LuaValue, Arg1>) {
                 arg1.pushOnto(registry.luaInstance);
             } else if constexpr (std::is_base_of_v<LuaBaseType, Arg1>) {
-                LuaValue value {arg1};
-                value.pushOnto(registry.luaInstance);
+                arg1.pushOnto(registry.luaInstance);
             }
             return invokeHelper<nret, Args...>(mode, nargs, args...);
         }
