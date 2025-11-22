@@ -27,7 +27,7 @@ namespace arasy::core {
      */
     class Lua {
         bool checkIndexExists(int idx) const {
-            return lua_isnone(state, idx);
+            return !lua_isnone(state, idx);
         }
 
         class GlobalVariableProxy {

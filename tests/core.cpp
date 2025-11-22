@@ -5,12 +5,12 @@ using namespace arasy;
 
 TEST(BasicLua, GetGlobal) {
     Lua L;
-    ASSERT_EQ(luaL_dostring(L, "x = 1 + 2"), LUA_OK) << "Snippet didn't compile";
+    ASSERT_FALSE(L.executeString("x = 1 + 2").has_value()) << "Snippet didn't run";
 
     {
         auto val = L["x"].value();
-        ASSERT_TRUE(std::holds_alternative<LuaInteger>(val)) << "Global variable indexing did not return an integer";
-        ASSERT_EQ(std::get<LuaInteger>(val), 3) << "Global had unexpected value";
+        ASSERT_TRUE(val.isA<LuaNumber>()) << "Global variable indexing did not return an integer";
+        ASSERT_EQ(val.asA<LuaNumber>(), 3) << "Global had unexpected value";
         EXPECT_EQ(L.stackSize(), 0) << "Extra values pushed onto the stack";
     }
 }
