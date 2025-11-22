@@ -5,11 +5,11 @@
 #include "arasy/types.hpp"
 
 #ifndef declfield
-#define declfield(ident) Field ident = field(#ident);
+#define declfield(ident) Field ident = field(#ident)
 #endif
 
 #ifndef declsubmod
-#define declsubmod(ident, type) type ident = submodule<type>(#ident);
+#define declsubmod(ident, type) type ident = submodule<type>(#ident)
 #endif
 
 // TODO: use package.load to lazy load modules
