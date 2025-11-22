@@ -64,5 +64,7 @@ namespace arasy::utils {
             members.setField(name_, mod.members);
             return mod;
         }
+
+        friend class registry::LuaRegistry;
     };
 }

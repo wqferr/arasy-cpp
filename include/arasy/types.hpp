@@ -196,7 +196,7 @@ namespace arasy::core {
 #undef _ARASY_LUA_VARIANT_ORDER
 
     template<>
-    constexpr const bool is_lua_wrapper_type_v<LuaValue> = true;
+    constexpr const inline bool is_lua_wrapper_type_v<LuaValue> = true;
 
     namespace internal {
         template<>
