@@ -9,7 +9,9 @@ namespace arasy::core {
         LuaLightUserData(void* ptr__): ptr_(ptr__) {}
         LuaLightUserData(const LuaLightUserData& other): ptr_(other.ptr_) {}
         void pushOnto(lua_State* L) const override { lua_pushlightuserdata(L, ptr_); }
-        constexpr void* ptr() const { return ptr_; }
+
+        template<typename P = void*, typename = std::enable_if_t<std::is_pointer_v<P>>>
+        constexpr P ptr() const { return static_cast<P>(ptr_); }
     };
     constexpr bool operator==(const LuaLightUserData& a, const LuaLightUserData& b) {
         return a.ptr() == b.ptr();

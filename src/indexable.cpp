@@ -125,6 +125,13 @@ void LuaIndexable::retrieveField(const char* fieldName) {
     lua_remove(L, -2);
 }
 
+void LuaIndexable::retrieveI(int i) {
+    lua_State* L = registry.luaInstance;
+    pushSelf();
+    lua_geti(L, -1, i);
+    lua_remove(L, -2);
+}
+
 void LuaIndexable::setMetatable(const LuaTable& mt) {
     pushSelf();
     mt.pushSelf();

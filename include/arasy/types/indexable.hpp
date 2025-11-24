@@ -87,7 +87,7 @@ namespace arasy::core::internal {
         template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
         std::optional<T> get(const LuaValue& key, std::optional<arasy::error::IndexingError>& err) {
             lua_State* L = registry.luaInstance;
-            if (err = retrieve(key)) {
+            if ((err = retrieve(key))) {
                 return std::nullopt;
             }
             auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
@@ -104,9 +104,19 @@ namespace arasy::core::internal {
             return ret;
         }
 
+        template<typename T = LuaValue, typename = std::enable_if_t<is_lua_wrapper_type_v<T>>>
+        std::optional<T> getI(int i) {
+            lua_State* L = registry.luaInstance;
+            retrieveI(i);
+            auto ret = arasy::core::internal::LuaStackReader<T>::readAt(L, -1);
+            lua_pop(L, 1);
+            return ret;
+        }
+
         error::MIndexingError retrieve(const LuaValue& key);
         error::MIndexingError retrieveStackK();
         void retrieveField(const char* fieldName);
+        void retrieveI(int i);
         error::MIndexingError retrieveRaw(const LuaValue& key);
         error::MIndexingError retrieveRawStackK();
 
