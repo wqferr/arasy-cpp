@@ -3,12 +3,15 @@
 #include <string_view>
 #include <optional>
 
+#include "arasy/types/integer.hpp"
+#include "arasy/types/number.hpp"
+#include "arasy/types/string.hpp"
 #include "arasy/errors.hpp"
 
 
 namespace arasy::utils::internal {
     template<typename... Args>
-    constexpr std::optional<arasy::error::PushFmtError> checkPushFmt(const std::string_view fmt) {
+    error::MPushFmtError checkPushFmt(const std::string_view fmt) {
         using namespace std::string_literals;
 
         auto idx = fmt.find('%');
@@ -45,7 +48,7 @@ namespace arasy::utils::internal {
     }
 
     template<typename T1, typename... Args>
-    constexpr std::optional<arasy::error::PushFmtError> checkPushFmt(const std::string_view fmt, T1& firstArg, Args&... args) {
+    error::MPushFmtError checkPushFmt(const std::string_view fmt, T1& firstArg, Args&... args) {
         using namespace std::string_literals;
 
         auto idx = fmt.find('%');
@@ -69,7 +72,7 @@ namespace arasy::utils::internal {
                 return checkPushFmt(fmt.substr(idx+1), firstArg, args...);
 
             case 'p':
-                if constexpr (!std::is_convertible_v<T1, void *>) {
+                if constexpr (!std::is_convertible_v<T1, void*>) {
                     return internal::incompatArg<T1>(fmt, idx);
                 }
                 break;
