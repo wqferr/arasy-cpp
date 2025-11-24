@@ -36,7 +36,6 @@ namespace arasy::core::internal {
             IndexedValue(LuaIndexable& t_, const LuaValue& k);
 
             IndexedValue& operator=(const IndexedValue& other) = delete;
-            IndexedValue& operator=(IndexedValue&& other) = default;
             IndexedValue(const IndexedValue& other) = delete;
             IndexedValue(IndexedValue&& other) = default;
 
