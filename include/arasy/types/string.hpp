@@ -3,6 +3,8 @@
 #include <string>
 #include <stdexcept>
 
+#include "arasy/types/base.hpp"
+
 namespace arasy::core {
     class LuaString : public internal::LuaBaseType {
         std::string str_;
