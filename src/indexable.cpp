@@ -1,5 +1,6 @@
 #include "arasy/types/indexable.hpp"
 #include "arasy.hpp"
+#include "lua.h"
 #include "lua.hpp"
 
 using namespace arasy;
@@ -29,6 +30,14 @@ error::MIndexingError LuaIndexable::set(
     lua_settable(L, -3);
     lua_pop(L, 1);
     return std::nullopt;
+}
+
+lua_Integer LuaIndexable::len() const {
+    pushSelf();
+    lua_len(registry.luaInstance, -1);
+    lua_Integer res = lua_tointeger(registry.luaInstance, -1);
+    lua_pop(registry.luaInstance, 1);
+    return res;
 }
 
 error::MIndexingError LuaIndexable::setField(

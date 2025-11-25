@@ -112,6 +112,8 @@ namespace arasy::core::internal {
             return ret;
         }
 
+        lua_Integer len() const;
+
         error::MIndexingError retrieve(const LuaValue& key);
         error::MIndexingError retrieveStackK();
         void retrieveField(const char* fieldName);

@@ -5,8 +5,10 @@
 namespace arasy::core {
     class LuaTable : public arasy::core::internal::LuaIndexable {
     public:
-        // LuaTable(lua_State* L)
         LuaTable(lua_State* L, int index): LuaIndexable(L, index) {}
+
+        void insert(const LuaInteger& position, const LuaValue& value);
+        void insert(const LuaValue& value);
     };
 
     namespace internal {

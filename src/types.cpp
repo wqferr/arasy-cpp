@@ -1,6 +1,7 @@
 #include "arasy/types.hpp"
 #include "arasy/utils.hpp"
 #include "arasy.hpp"
+#include "arasy/types/table.hpp"
 
 #include <variant>
 #include <iomanip>
@@ -127,4 +128,23 @@ namespace arasy::core::internal {
             throw std::runtime_error("Unknown lua type!");
         }
     }
+}
+
+void LuaTable::insert(const LuaInteger& position, const LuaValue& value) {
+    Lua L {registry.luaInstance};
+
+    L.getGlobal<LuaTable>("table")->getField("insert");
+    L.push(*this);
+    L.push(position);
+    L.push(value);
+    L.call(3, 0);
+}
+
+void LuaTable::insert(const LuaValue& value) {
+    Lua L {registry.luaInstance};
+
+    L.getGlobal<LuaTable>("table")->getField("insert");
+    L.push(*this);
+    L.push(value);
+    L.call(2, 0);
 }
